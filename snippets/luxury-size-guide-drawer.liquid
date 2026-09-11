@@ -1,0 +1,280 @@
+{% comment %}
+  Luxury Size Guide Drawer & Spec Table
+  Accurately matches reference design and product metafields:
+  - product.metafields.custom.size_chart_info (JSON)
+  - product.metafields.custom.size_chart_image (File/Image)
+{% endcomment %}
+
+{% liquid
+  assign current_prod = product
+  assign sg_info = current_prod.metafields.custom.size_chart_info.value
+  assign sg_image = current_prod.metafields.custom.size_chart_image
+
+  assign sg_title = sg_info.title | default: 'Size Guide'
+  assign how_to_measure_title = sg_info.how_to_measure_title | default: 'How to Measure'
+  assign measurement_note = sg_info.measurement_note | default: 'All measurements are in centimeters.'
+  assign size_chart_title = sg_info.size_chart_title | default: 'Size Chart'
+  assign size_chart_unit = sg_info.size_chart_unit | default: 'CM'
+
+  assign sg_img_url = ''
+  if sg_image != blank
+    assign sg_img_url = sg_image | image_url: width: 800
+  elsif sg_info.image != blank
+    assign sg_img_url = sg_info.image
+  else
+    assign sg_img_url = 'luxury-size-guide-diagram.png' | asset_url
+  endif
+%}
+
+<div id="m-luxury-size-guide-panel" class="m-luxury-sg-panel" aria-hidden="true">
+  <div class="m-luxury-sg-card">
+    
+    <!-- Top Action Bar: Return Button & Unit Switcher -->
+    <div class="m-luxury-sg-topbar">
+      <button type="button" class="m-luxury-sg-back-btn" data-close-sizeguide aria-label="{{ 'products.product.return_to_product' | t | default: 'Return to product' }}">
+        <span class="m-luxury-sg-back-arrow">&lt;</span>
+        <span class="m-luxury-sg-back-text">{{ 'products.product.return_to_product' | t | default: 'Return to product' }}</span>
+      </button>
+
+      <div class="m-luxury-sg-unit-switcher">
+        <button type="button" class="m-luxury-sg-unit-btn active" data-unit="cm">CM</button>
+        <span class="m-luxury-sg-unit-divider">|</span>
+        <button type="button" class="m-luxury-sg-unit-btn" data-unit="in">IN</button>
+      </div>
+    </div>
+
+    <!-- Main Header Title -->
+    <div class="m-luxury-sg-title-wrap">
+      <h2 class="m-luxury-sg-title">{{ sg_title | upcase }}</h2>
+    </div>
+
+    <!-- Upper Section: How to Measure & Model Diagram -->
+    <div class="m-luxury-sg-measure-section">
+      <div class="m-luxury-sg-section-title">{{ how_to_measure_title | upcase }}</div>
+      
+      <div class="m-luxury-sg-measure-flow">
+        <!-- Floated Right Diagram Image -->
+        <div class="m-luxury-sg-diagram-wrap">
+          <img
+            src="{{ sg_img_url }}"
+            alt="{{ how_to_measure_title | default: 'How to Measure' }}"
+            class="m-luxury-sg-diagram-img"
+            loading="lazy"
+            width="390"
+            height="565"
+          >
+        </div>
+
+        <!-- Measurement Guide Items (Flows beside image at top, and spans 100% full width below image) -->
+        {% if sg_info != blank and sg_info.measurements != blank %}
+          {% for item in sg_info.measurements %}
+            {% assign p_key = item.name | downcase | strip | replace: ' ', '_' %}
+            <div class="m-luxury-sg-measure-item" data-param="{{ p_key }}" data-number="{{ item.number }}">
+              <div class="m-luxury-sg-measure-heading">
+                <span class="m-luxury-sg-num">{{ item.number }}.</span>
+                <span class="m-luxury-sg-name">{{ item.name }}</span>
+              </div>
+              <div class="m-luxury-sg-measure-desc">{{ item.description }}</div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <!-- Default 100% Accurate Fallback matching user reference -->
+          <div class="m-luxury-sg-measure-item" data-param="shoulder" data-number="1">
+            <div class="m-luxury-sg-measure-heading">
+              <span class="m-luxury-sg-num">1.</span>
+              <span class="m-luxury-sg-name">Shoulder</span>
+            </div>
+            <div class="m-luxury-sg-measure-desc">Measure from one shoulder point to the other.</div>
+          </div>
+          <div class="m-luxury-sg-measure-item" data-param="bust" data-number="2">
+            <div class="m-luxury-sg-measure-heading">
+              <span class="m-luxury-sg-num">2.</span>
+              <span class="m-luxury-sg-name">Bust</span>
+            </div>
+            <div class="m-luxury-sg-measure-desc">Measure around the fullest part of your bust.</div>
+          </div>
+          <div class="m-luxury-sg-measure-item" data-param="waist" data-number="3">
+            <div class="m-luxury-sg-measure-heading">
+              <span class="m-luxury-sg-num">3.</span>
+              <span class="m-luxury-sg-name">Waist</span>
+            </div>
+            <div class="m-luxury-sg-measure-desc">Measure around the narrowest part of your waist.</div>
+          </div>
+          <div class="m-luxury-sg-measure-item" data-param="hip" data-number="4">
+            <div class="m-luxury-sg-measure-heading">
+              <span class="m-luxury-sg-num">4.</span>
+              <span class="m-luxury-sg-name">Hip</span>
+            </div>
+            <div class="m-luxury-sg-measure-desc">Measure around the fullest part of your hips.</div>
+          </div>
+          <div class="m-luxury-sg-measure-item" data-param="sleeve_length" data-number="5">
+            <div class="m-luxury-sg-measure-heading">
+              <span class="m-luxury-sg-num">5.</span>
+              <span class="m-luxury-sg-name">Sleeve Length</span>
+            </div>
+            <div class="m-luxury-sg-measure-desc">Measure from the shoulder seam to the end of the sleeve.</div>
+          </div>
+          <div class="m-luxury-sg-measure-item" data-param="length" data-number="6">
+            <div class="m-luxury-sg-measure-heading">
+              <span class="m-luxury-sg-num">6.</span>
+              <span class="m-luxury-sg-name">Length</span>
+            </div>
+            <div class="m-luxury-sg-measure-desc">Measure from the highest point of the shoulder to the hem.</div>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Measurement Note -->
+      <div
+        class="m-luxury-sg-note"
+        data-note-cm="All measurements are in centimeters."
+        data-note-in="All measurements are in inches."
+      >
+        {{ measurement_note }}
+      </div>
+
+      <!-- Divider -->
+      <div class="m-luxury-sg-divider"></div>
+    </div>
+
+    <!-- Lower Section: Size Chart Table -->
+    <div class="m-luxury-sg-chart-section">
+      <div class="m-luxury-sg-chart-header">
+        <span class="m-luxury-sg-chart-title">{{ size_chart_title | upcase }}</span>
+        <span class="m-luxury-sg-chart-unit-badge">(<span class="m-luxury-sg-unit-label">{{ size_chart_unit }}</span>)</span>
+      </div>
+
+      <div class="m-luxury-sg-table-container">
+        <table class="m-luxury-sg-spec-table" id="m-luxury-sg-spec-table">
+          <thead>
+            <tr>
+              <th class="m-luxury-sg-th-title">
+                MEASUREMENT (<span class="m-luxury-sg-unit-label">{{ size_chart_unit }}</span>)
+              </th>
+              {% if sg_info != blank and sg_info.sizes != blank %}
+                {% for s in sg_info.sizes %}
+                  <th class="m-luxury-sg-th-size" data-size="{{ s.size }}" title="Select size {{ s.size }}">
+                    {{ s.size }}
+                  </th>
+                {% endfor %}
+              {% else %}
+                <th class="m-luxury-sg-th-size" data-size="S" title="Select size S">S</th>
+                <th class="m-luxury-sg-th-size" data-size="M" title="Select size M">M</th>
+                <th class="m-luxury-sg-th-size" data-size="L" title="Select size L">L</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% if sg_info != blank and sg_info.measurements != blank and sg_info.sizes != blank %}
+              {% for item in sg_info.measurements %}
+                {% assign param_key = item.name | downcase | strip | replace: ' ', '_' %}
+                <tr class="m-luxury-sg-row" data-param="{{ param_key }}">
+                  <td class="m-luxury-sg-td-title">{{ item.name }}</td>
+                  {% for s in sg_info.sizes %}
+                    {% assign cell_val = '' %}
+                    {% case param_key %}
+                      {% when 'shoulder' %}
+                        {% assign cell_val = s.measurements.shoulder | default: s.measurements[param_key] %}
+                      {% when 'bust' %}
+                        {% assign cell_val = s.measurements.bust | default: s.measurements[param_key] %}
+                      {% when 'waist' %}
+                        {% assign cell_val = s.measurements.waist | default: s.measurements[param_key] %}
+                      {% when 'hip' %}
+                        {% assign cell_val = s.measurements.hip | default: s.measurements[param_key] %}
+                      {% when 'sleeve_length' %}
+                        {% assign cell_val = s.measurements.sleeve_length | default: s.measurements[param_key] %}
+                      {% when 'length' %}
+                        {% assign cell_val = s.measurements.length | default: s.measurements[param_key] %}
+                      {% else %}
+                        {% assign cell_val = s.measurements[param_key] %}
+                    {% endcase %}
+                    <td class="m-luxury-sg-td-val" data-size="{{ s.size }}" data-raw-cm="{{ cell_val }}">
+                      {{ cell_val | default: '-' }}
+                    </td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            {% else %}
+              <!-- 100% Accurate Fallback Data matching user spec -->
+              <tr class="m-luxury-sg-row" data-param="shoulder">
+                <td class="m-luxury-sg-td-title">Shoulder</td>
+                <td class="m-luxury-sg-td-val" data-size="S" data-raw-cm="37">37</td>
+                <td class="m-luxury-sg-td-val" data-size="M" data-raw-cm="38">38</td>
+                <td class="m-luxury-sg-td-val" data-size="L" data-raw-cm="39">39</td>
+              </tr>
+              <tr class="m-luxury-sg-row" data-param="bust">
+                <td class="m-luxury-sg-td-title">Bust</td>
+                <td class="m-luxury-sg-td-val" data-size="S" data-raw-cm="84">84</td>
+                <td class="m-luxury-sg-td-val" data-size="M" data-raw-cm="88">88</td>
+                <td class="m-luxury-sg-td-val" data-size="L" data-raw-cm="92">92</td>
+              </tr>
+              <tr class="m-luxury-sg-row" data-param="waist">
+                <td class="m-luxury-sg-td-title">Waist</td>
+                <td class="m-luxury-sg-td-val" data-size="S" data-raw-cm="72">72</td>
+                <td class="m-luxury-sg-td-val" data-size="M" data-raw-cm="76">76</td>
+                <td class="m-luxury-sg-td-val" data-size="L" data-raw-cm="80">80</td>
+              </tr>
+              <tr class="m-luxury-sg-row" data-param="hip">
+                <td class="m-luxury-sg-td-title">Hip</td>
+                <td class="m-luxury-sg-td-val" data-size="S" data-raw-cm="92">92</td>
+                <td class="m-luxury-sg-td-val" data-size="M" data-raw-cm="96">96</td>
+                <td class="m-luxury-sg-td-val" data-size="L" data-raw-cm="100">100</td>
+              </tr>
+              <tr class="m-luxury-sg-row" data-param="sleeve_length">
+                <td class="m-luxury-sg-td-title">Sleeve Length</td>
+                <td class="m-luxury-sg-td-val" data-size="S" data-raw-cm="58">58</td>
+                <td class="m-luxury-sg-td-val" data-size="M" data-raw-cm="59">59</td>
+                <td class="m-luxury-sg-td-val" data-size="L" data-raw-cm="60">60</td>
+              </tr>
+              <tr class="m-luxury-sg-row" data-param="length">
+                <td class="m-luxury-sg-td-title">Length</td>
+                <td class="m-luxury-sg-td-val" data-size="S" data-raw-cm="112">112</td>
+                <td class="m-luxury-sg-td-val" data-size="M" data-raw-cm="113">113</td>
+                <td class="m-luxury-sg-td-val" data-size="L" data-raw-cm="114">114</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Return to product CTA link -->
+    <div class="m-luxury-sg-footer">
+      <button type="button" class="m-luxury-sg-return-btn" data-close-sizeguide>
+        <span>{{ 'products.product.return_to_product' | t | default: 'Return to product' }}</span>
+        <span class="m-luxury-sg-return-arrow">&gt;</span>
+      </button>
+    </div>
+
+    <!-- JSON Metadata Payload for Dynamic Scripts -->
+    <script type="application/json" class="m-luxury-sg-json-payload">
+      {% if sg_info != blank %}
+        {{ sg_info | json }}
+      {% else %}
+        {
+          "title": "Size Guide",
+          "image": "",
+          "unit": "cm",
+          "how_to_measure_title": "How to Measure",
+          "measurements": [
+            { "number": 1, "name": "Shoulder", "description": "Measure from one shoulder point to the other." },
+            { "number": 2, "name": "Bust", "description": "Measure around the fullest part of your bust." },
+            { "number": 3, "name": "Waist", "description": "Measure around the narrowest part of your waist." },
+            { "number": 4, "name": "Hip", "description": "Measure around the fullest part of your hips." },
+            { "number": 5, "name": "Sleeve Length", "description": "Measure from the shoulder seam to the end of the sleeve." },
+            { "number": 6, "name": "Length", "description": "Measure from the highest point of the shoulder to the hem." }
+          ],
+          "measurement_note": "All measurements are in centimeters.",
+          "size_chart_title": "Size Chart",
+          "size_chart_unit": "CM",
+          "sizes": [
+            { "size": "S", "measurements": { "shoulder": 37, "bust": 84, "waist": 72, "hip": 92, "sleeve_length": 58, "length": 112 } },
+            { "size": "M", "measurements": { "shoulder": 38, "bust": 88, "waist": 76, "hip": 96, "sleeve_length": 59, "length": 113 } },
+            { "size": "L", "measurements": { "shoulder": 39, "bust": 92, "waist": 80, "hip": 100, "sleeve_length": 60, "length": 114 } }
+          ]
+        }
+      {% endif %}
+    </script>
+
+  </div>
+</div>

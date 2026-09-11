@@ -1,0 +1,276 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "favicon": "",
+    "container_width": 1640,
+    "container_fluid_width": 1600,
+    "container_fluid_offset": 65,
+    "type_base_font": "poppins_n4",
+    "use_custom_font_body": false,
+    "custom_body_font": "https://cdn.shopify.com/s/files/1/0561/2742/2636/files/Jost-Regular.ttf?v=1618297125@400\nhttps://cdn.shopify.com/s/files/1/0561/2742/2636/files/Jost-Medium.ttf?v=1618297125@500\nhttps://cdn.shopify.com/s/files/1/0561/2742/2636/files/Jost-SemiBold.ttf?v=1618297125@600",
+    "custom_body_weight": "400",
+    "type_header_font": "poppins_n5",
+    "use_custom_font_heading": true,
+    "custom_heading_font": "https://cdn.shopify.com/s/files/1/0919/0978/3882/files/GFSDidot-Regular.ttf?v=1787632036",
+    "custom_heading_weight": "400",
+    "type_header_base_size": 36,
+    "h4_font_size": 24,
+    "pcard_title_font_size": 14,
+    "pcard_title_letter_spacing": 0,
+    "uppercase_prd_name": true,
+    "btn_border_radius": 0,
+    "btn_weight": "500",
+    "inputs_border_radius": 0,
+    "bg_cart_wishlist_count": "#da3f3f",
+    "img_overlay_opacity": 20,
+    "spacing_sections": 0,
+    "spacing_sections_mobile": 0,
+    "page_transition": false,
+    "animations": "fade-in-up",
+    "pcard_layout": "6",
+    "pcard_alignment": "center",
+    "pcard_image_ratio": "original",
+    "show_quickview_button": false,
+    "show_compare_button": false,
+    "show_review_badge": false,
+    "show_badge_sale": true,
+    "show_vendor": false,
+    "pcard_show_lowest_prices": false,
+    "article_show_date": false,
+    "article_show_excerpt": true,
+    "article_show_button": true,
+    "variant_option_design1": "button",
+    "variant_option_design2": "default",
+    "variant_option_display_name2": "",
+    "variant_option_design3": "color",
+    "product_colors": "red: #FF6961,\nyellow: #FDDA76,\nblack: #000000,\nblack band: #000000,\nblue: #8DB4D2,\ngreen: #C1E1C1,\npurple: #B19CD9,\nsilver: #EEEEEF,\nwhite: #FFFFFF,\nbrown: #836953,\nlight brown: #B5651D,\ndark turquoise: #23cddc,\norange: #FFB347,\ntan: #E9D1BF,\nviolet: #B490B0,\npink: #FFD1DC,\ngrey: #E0E0E0,\nsky: #96BDC6,\npale leaf: #CCD4BF,\nlight blue: #b1c5d4,\ndark grey: #aca69f,\nbeige: #EBE6DB,\nbeige band: #EED9C4,\ndark blue: #063e66,\ncream: #F1F2E2,\nlight pink: #FBCFCD,\nmint: #bedce3,\ndark gray: #3A3B3C,\nrosy brown: #c4a287,\nlight grey:#D3D3D3,\ncopper: #B87333,\nrose gold: #ECC5C0,\nnight blue: #151B54,\ncoral: #FF7F50,\nlight purple: #C6AEC7,\nivy green: #5b7763,\nsand: #f2d2a9,\npale grey: #878785,\nlead: #6c6b6c",
+    "filter_color1": "Gingham",
+    "filter_color2": "flannel",
+    "filter_color3": "floral",
+    "social_sharing_blog": false,
+    "share_facebook": false,
+    "share_twitter": false,
+    "share_pinterest": false,
+    "share_telegram": false,
+    "share_whatsApp": false,
+    "share_email": false,
+    "social_twitter_link": "",
+    "social_twitter_label": "",
+    "social_facebook_link": "",
+    "social_facebook_label": "",
+    "social_pinterest_link": "",
+    "social_pinterest_label": "",
+    "social_instagram_link": "https://www.instagram.com/mylaleh.co",
+    "social_instagram_label": "",
+    "social_tiktok_link": "https://www.tiktok.com/@mylaleh.co",
+    "enable_cart_drawer": false,
+    "discount_code_enable": true,
+    "cart_estimate_shipping": true,
+    "show_delivery_days": true,
+    "wishlist_page": "wishlist",
+    "product_compare_page": "product-compare",
+    "show_cookie_consent": true,
+    "cookie_design_mode": false,
+    "cookie_consent_message": "We use cookies to improve your experience. By continuing, you agree to our use of cookies.",
+    "cookie_consent_allow": "Accept",
+    "cookie_consent_learnmore": "Privacy Policy",
+    "cookie_consent_learnmore_link": "/policies/privacy-policy",
+    "cookie_consent_placement": "bottom",
+    "cookie_consent_theme": "white",
+    "gm_api": "",
+    "custom_css": ".m-topbar a[href*=\"pinterest\"],\n.m-topbar a[href*=\"twitter\"] {\n\tdisplay: none;\n}\n\nbody .m-product-tag--new {\n  background-color: #64BF99;\n}\nbody .m-product-tag--sale {\n  background-color: #DA3F3F;\n}",
+    "instagram_token": "",
+    "color_primary": "#000000",
+    "color_main_bg": "#ffffff",
+    "color_field_bg": "#ffffff",
+    "color_body_text": "#000000",
+    "color_heading_text": "#000000",
+    "color_sub_text": "#666666",
+    "color_btn_bg_hover": "#000000",
+    "prod_sale_price_color": "#666666",
+    "prod_type_color": "#666666",
+    "color_annoucement_bg": "#da3f3f",
+    "color_topbar_bg": "#ffffff",
+    "color_topbar_text": "#000000",
+    "color_header_bg": "#ffffff",
+    "color_header_link": "#000000",
+    "color_header_transparent": "#000000",
+    "color_menu_bar_bg": "#000000",
+    "color_menu_bar_text": "#f8f8f8",
+    "color_footer_bg": "#f5f5f5",
+    "color_footer_text": "#000000",
+    "color_footer_subtext": "#666666",
+    "color_footer_link_hover": "#000000",
+    "color_footer_bottom_bg": "#f5f5f5",
+    "color_border": "#eeeeee",
+    "tooltip_background_color": "#000000",
+    "enable_page_transition": true,
+    "show_variant_swatch_image": true,
+    "use_theme_currencies": true,
+    "theme_currencies": "USD | EUR | GBP | VND",
+    "bg_cart_count": "#da3f3f",
+    "content_for_index": [],
+    "color_schemes": {
+      "default": {
+        "settings": {
+          "background": "#ffffff",
+          "background_secondary": "#f5f5f5",
+          "background_gradient": "",
+          "text": "#222222",
+          "subtext": "#666666",
+          "heading_text": "#222222",
+          "button": "#000000",
+          "button_label": "#ffffff",
+          "outline_button_label": "#000000",
+          "button_hover": "#222222",
+          "button_text_hover": "#ffffff",
+          "price_sale": "#e84e4e",
+          "price_regular": "#000000",
+          "form_field": "#f2f2f2",
+          "form_field_label": "#000000",
+          "tooltip": "#222222",
+          "tooltip_label": "#ffffff",
+          "border": "#927E63"
+        }
+      },
+      "dark": {
+        "settings": {
+          "background": "#000000",
+          "background_secondary": "#f5f5f5",
+          "background_gradient": "",
+          "text": "#ffffff",
+          "subtext": "#c9c9c9",
+          "heading_text": "#ffffff",
+          "button": "#ffffff",
+          "button_label": "#222222",
+          "outline_button_label": "#ffffff",
+          "button_hover": "#ffffff",
+          "button_text_hover": "#222222",
+          "price_sale": "#e84e4e",
+          "price_regular": "#ffffff",
+          "form_field": "#ffffff",
+          "form_field_label": "#222222",
+          "tooltip": "#ffffff",
+          "tooltip_label": "#222222",
+          "border": "#4b4b4b"
+        }
+      },
+      "footer": {
+        "settings": {
+          "background": "#f2eeeb",
+          "background_secondary": "#f5f5f5",
+          "background_gradient": "",
+          "text": "#000000",
+          "subtext": "#666666",
+          "heading_text": "#222222",
+          "button": "#222222",
+          "button_label": "#ffffff",
+          "outline_button_label": "#222222",
+          "button_hover": "#222222",
+          "button_text_hover": "#ffffff",
+          "price_sale": "#e84e4e",
+          "price_regular": "#000000",
+          "form_field": "#ffffff",
+          "form_field_label": "#000000",
+          "tooltip": "#222222",
+          "tooltip_label": "#ffffff",
+          "border": "#dedede"
+        }
+      },
+      "badge-hot": {
+        "settings": {
+          "background": "#9a84c8",
+          "background_secondary": "#f5f5f5",
+          "background_gradient": "",
+          "text": "#ffffff",
+          "subtext": "#ffffff",
+          "heading_text": "#ffffff",
+          "button": "#ffffff",
+          "button_label": "#222222",
+          "outline_button_label": "#ffffff",
+          "button_hover": "#ffffff",
+          "button_text_hover": "#222222",
+          "price_sale": "#ffffff",
+          "price_regular": "#ffffff",
+          "form_field": "#ffffff",
+          "form_field_label": "#000000",
+          "tooltip": "#ffffff",
+          "tooltip_label": "#222222",
+          "border": "#dedede"
+        }
+      },
+      "badge-new": {
+        "settings": {
+          "background": "#98d8ca",
+          "background_secondary": "#f5f5f5",
+          "background_gradient": "",
+          "text": "#ffffff",
+          "subtext": "#ffffff",
+          "heading_text": "#ffffff",
+          "button": "#ffffff",
+          "button_label": "#222222",
+          "outline_button_label": "#ffffff",
+          "button_hover": "#ffffff",
+          "button_text_hover": "#222222",
+          "price_sale": "#ffffff",
+          "price_regular": "#ffffff",
+          "form_field": "#ffffff",
+          "form_field_label": "#000000",
+          "tooltip": "#ffffff",
+          "tooltip_label": "#222222",
+          "border": "#dedede"
+        }
+      },
+      "badge-sale": {
+        "settings": {
+          "background": "#da3f3f",
+          "background_secondary": "#f5f5f5",
+          "background_gradient": "",
+          "text": "#ffffff",
+          "subtext": "#ffffff",
+          "heading_text": "#ffffff",
+          "button": "#ffffff",
+          "button_label": "#222222",
+          "outline_button_label": "#ffffff",
+          "button_hover": "#ffffff",
+          "button_text_hover": "#222222",
+          "price_sale": "#ffffff",
+          "price_regular": "#ffffff",
+          "form_field": "#ffffff",
+          "form_field_label": "#000000",
+          "tooltip": "#ffffff",
+          "tooltip_label": "#222222",
+          "border": "#dedede"
+        }
+      }
+    }
+  },
+  "presets": {
+    "Default": {
+      "sections": {
+        "featured-collection": {
+          "type": "featured-collection",
+          "settings": {
+            "collection": "frontpage"
+          }
+        }
+      },
+      "content_for_index": [
+        "featured-collection"
+      ]
+    }
+  },
+  "platform_customizations": {
+    "custom_css": [
+      ".template-page #MainContent {padding-bottom: 20px;}"
+    ]
+  }
+}

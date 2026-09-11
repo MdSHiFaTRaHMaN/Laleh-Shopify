@@ -1,0 +1,262 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "1621243260e1af0c20": {
+      "type": "slider",
+      "blocks": {
+        "1621243260e1af0c20-0": {
+          "type": "slider_item",
+          "name": "Hero banner section",
+          "settings": {
+            "color_scheme": "default",
+            "background": "shopify://shop_images/ChatGPT_Image_Aug_31_2026_12_06_44_PM.png",
+            "mb_background": "shopify://shop_images/ChatGPT_Image_Aug_24_2026_04_55_49_PM_c5b15b56-481c-4239-8576-7f85a51ea070.png",
+            "content_in_container": false,
+            "content_position": "center bottom",
+            "text_alignment": "center",
+            "text_color": "white",
+            "subheading": "",
+            "title": "The Art of Elegance",
+            "text_size": "h2",
+            "description": "",
+            "desc_size": "text-lg",
+            "image_link": "",
+            "button_text": "SHOP NOW",
+            "button_link": "shopify://collections/all",
+            "button_style": "m-button--white",
+            "button_size": "",
+            "second_button_text": "",
+            "second_button_link": "",
+            "second_button_style": "m-button--primary",
+            "second_button_size": "",
+            "show_footer": false,
+            "footer_alignment": "end",
+            "footer_text": "The ReCotton Tee",
+            "footer_button": "Shop Now",
+            "footer_link": "#",
+            "enable_preload_image": false
+          }
+        }
+      },
+      "block_order": [
+        "1621243260e1af0c20-0"
+      ],
+      "custom_css": [
+        "@media (max-width: 786px) {h2.m-richtext__title.m-slide__title.m\\:text-white.h2 {font-size: 20px; }}"
+      ],
+      "settings": {
+        "container": "w-full",
+        "slideshow_height": "adapt",
+        "show_overlay": true,
+        "dots_position": "bottom",
+        "dots_color": "dark",
+        "show_dots": false,
+        "show_arrows": false,
+        "autorotate": false,
+        "autorotate_speed": 4,
+        "use_content_above": true,
+        "custom_class": "",
+        "animations": "inherit"
+      }
+    },
+    "featured_collection_KKMBmd": {
+      "type": "featured-collection",
+      "custom_css": [
+        "@media screen and (max-width: 767px) {.m-section-py {padding-bottom: 0px; } .h3 {font-size: 20px; }}",
+        ".m-section__description.rte.m-scroll-trigger.animate--fade-in-up {font-size: 14px;}",
+        ".m-section__header {margin-bottom: 8px;}"
+      ],
+      "name": "Featured collection",
+      "settings": {
+        "heading": "The Collection",
+        "heading_size": "h3",
+        "subheading": "",
+        "description": "",
+        "header_alignment": "center",
+        "color_scheme": "default",
+        "container": "container-fluid",
+        "collection": "favorite-laleh",
+        "enable_flashsale": false,
+        "show_countdown": false,
+        "product_to_show": 8,
+        "items_per_row": 3,
+        "item_gap": 8,
+        "pcard_layout": "",
+        "pcard_image_ratio": "",
+        "show_vendor": false,
+        "hide_title": false,
+        "enable_slider": true,
+        "show_pagination": false,
+        "show_navigation": false,
+        "show_button_on_header": false,
+        "button_type": "link",
+        "button_text": "",
+        "button_style": "m-button--primary",
+        "button_size": "",
+        "infinite_load": false,
+        "max_page_load": 3,
+        "columns_mobile": "2",
+        "show_scrollbar": false,
+        "mobile_disable_slider": false,
+        "use_scroll_mobile": true,
+        "item_gap_mobile": 4,
+        "padding_top": 24,
+        "padding_bottom": 40,
+        "custom_class": "",
+        "animations": "inherit"
+      }
+    },
+    "image_with_text_ajW7Uw": {
+      "type": "image-with-text",
+      "custom_css": [
+        "@media (max-width: 786px) {.h2 {font-size: 20px; line-height: 1.267; } .h6 {font-size: 12px; } .m\\:text-base {font-size: 14px; line-height: 1.5rem; } .m-content-box__description {color: #333; }}"
+      ],
+      "name": "Image with text",
+      "settings": {
+        "heading": "",
+        "heading_size": "h3",
+        "subheading": "",
+        "container": "container-fluid",
+        "color_scheme": "",
+        "item_gap": 100,
+        "item_gap_mobile": 30,
+        "layout": "left",
+        "image_column_size": "6",
+        "image_overlap": false,
+        "show_image_reverse": false,
+        "hover_effect": false,
+        "image_animation": "none",
+        "image": "shopify://shop_images/65D259F2-5B99-4C27-A0B1-88CF4216C9C9.png",
+        "link": "",
+        "link_2": "",
+        "second_image_offset_top": 10,
+        "sub_title": "ABOUT US",
+        "title": "Born from two worlds, shaped by one vision.",
+        "text_size": "h2",
+        "text": "<p>Founded by a Middle Eastern woman raised in Switzerland, LALEH brings together the elegance of both worlds. Each piece is designed to celebrate femininity through timeless silhouettes, refined details and thoughtful craftsmanship.</p>",
+        "desc_size": "text-base",
+        "content_alignment": "center",
+        "button_label": "DISCOVER OUR STORY",
+        "button_link": "shopify://pages/about-us",
+        "button_style": "m-button--primary",
+        "button_size": "",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "custom_class": "",
+        "animations": "inherit"
+      }
+    },
+    "luxury_brand_pillars_RnRrpr": {
+      "type": "luxury-brand-pillars",
+      "blocks": {
+        "pillar_AWB8Dz": {
+          "type": "pillar",
+          "settings": {
+            "number": "01",
+            "custom_svg": "",
+            "title": "Thoughtful Design",
+            "description": "Considered silhouettes created to transcend seasons.",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "pillar_fiqJMk": {
+          "type": "pillar",
+          "settings": {
+            "number": "02",
+            "custom_svg": "",
+            "title": "Limited Collections",
+            "description": "Produced in carefully considered quantities.",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "pillar_HjXFPr": {
+          "type": "pillar",
+          "settings": {
+            "number": "03",
+            "custom_svg": "",
+            "title": "Attention to Detail",
+            "description": "Finished with a focus on fit, structure and femininity.",
+            "link_label": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "pillar_AWB8Dz",
+        "pillar_fiqJMk",
+        "pillar_HjXFPr"
+      ],
+      "disabled": true,
+      "name": "Luxury Brand Pillars",
+      "settings": {
+        "eyebrow": "OUR PROMISE",
+        "heading": "Created With Care",
+        "heading_size": "h3",
+        "subheading": "<p>Timeless pieces, made to be part of your story.</p>",
+        "text_alignment": "center",
+        "container": "container",
+        "columns_desktop": 3,
+        "columns_mobile": "1",
+        "card_style": "minimal",
+        "show_accent_line": true,
+        "show_ambient_glow": true,
+        "color_scheme": "default",
+        "custom_bg_color": "#ffffff",
+        "custom_text_color": "#000000",
+        "accent_color": "#000000",
+        "accent_color_light": "#f7e7c4",
+        "button_label": "Discover Our LALEH",
+        "button_link": "",
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "padding_top_mobile": 16,
+        "padding_bottom_mobile": 16,
+        "animations": "inherit",
+        "custom_class": ""
+      }
+    },
+    "newsletter_t3mR3P": {
+      "type": "newsletter",
+      "custom_css": [
+        "@media (max-width: 786px) {.h2 {font-size: 20px; }}"
+      ],
+      "name": "Newsletter",
+      "settings": {
+        "container": "w-full",
+        "color_scheme": "",
+        "heading": "Join the LALEH List",
+        "text_size": "h2",
+        "description": "<p>Be the first to discover new collections, restocks and private releases.</p>",
+        "form_layout": "vertical",
+        "form_design": "1",
+        "email_placeholder": "Enter your email",
+        "submit_button": "Subscribe",
+        "text_color": "inherit",
+        "show_icon": false,
+        "icon_img_width": "30",
+        "show_agreement": false,
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "custom_class": "",
+        "animations": "inherit"
+      }
+    }
+  },
+  "order": [
+    "1621243260e1af0c20",
+    "featured_collection_KKMBmd",
+    "image_with_text_ajW7Uw",
+    "luxury_brand_pillars_RnRrpr",
+    "newsletter_t3mR3P"
+  ]
+}

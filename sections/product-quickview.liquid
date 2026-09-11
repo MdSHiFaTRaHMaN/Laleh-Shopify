@@ -1,0 +1,661 @@
+<div id="MainProduct-quick-view__content" class="m-luxury-quickview-modal-content">
+  {{ 'luxury-product.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'luxury-product.js' | asset_url }}" defer="defer"></script>
+
+  {% liquid
+    assign current_variant = product.selected_or_first_available_variant
+    assign product_form_id = 'product-form-quickview-' | append: section.id
+
+    assign color_option_index = -1
+    assign size_option_index = -1
+    for option in product.options_with_values
+      assign downcased_name = option.name | downcase
+      if downcased_name contains 'color' or downcased_name contains 'colour'
+        assign color_option_index = forloop.index0
+      elsif downcased_name contains 'size' or downcased_name contains 'taille' or downcased_name contains 'talla' or downcased_name contains 'größe'
+        assign size_option_index = forloop.index0
+      endif
+    endfor
+  %}
+
+  <section
+    id="LuxuryProduct-{{ section.id }}"
+    class="m-luxury-product-section m-luxury-quickview-section"
+    data-section-id="{{ section.id }}"
+    data-product-id="{{ product.id }}"
+    data-product-handle="{{ product.handle }}"
+    data-color-scheme="m-color-{{ settings.drawer_popup_color_scheme | default: 'default' }}"
+  >
+    <div class="m-luxury-3col-container m-luxury-quickview-container">
+      <!--
+        ==========================================================
+        COLUMN 1: THUMBNAILS & BACK LINK
+        ==========================================================
+      -->
+      <div class="m-luxury-col-thumb">
+        <div class="m-luxury-thumb-inner">
+          <a href="{{ product.url }}" class="m-luxury-back-link" aria-label="{{ 'products.product.view_details' | t | default: 'View all details' }}">
+            <span class="m-luxury-back-arrow">&lt;</span>
+            <span class="m-luxury-back-text">{{ 'products.product.all' | t | default: 'All' }}</span>
+          </a>
+
+          {% if product.media.size > 1 %}
+            <div class="m-luxury-thumbnails-container">
+              <!-- Top Chevron -->
+              <button type="button" class="m-luxury-thumb-arrow m-luxury-thumb-prev" aria-label="Scroll thumbnails up">
+                <svg
+                  viewBox="0 0 10 6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="9 5 5 1 1 5"></polyline>
+                </svg>
+              </button>
+
+              <div class="m-luxury-thumbnails-wrap" id="LuxuryThumbnails-{{ section.id }}">
+                <ul class="m-luxury-thumbnails-list" role="tablist">
+                  {% for media in product.media %}
+                    <li
+                      class="m-luxury-thumb-item{% if forloop.first %} is-active{% endif %}"
+                      data-index="{{ forloop.index0 }}"
+                      data-media-id="{{ media.id }}"
+                      role="tab"
+                      aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                      tabindex="0"
+                    >
+                      <div class="m-luxury-thumb-box">
+                        <img
+                          src="{{ media | image_url: width: 240, height: 320, crop: 'center' }}"
+                          alt="{{ media.alt | default: product.title | escape }}"
+                          class="m-luxury-thumb-img"
+                          loading="lazy"
+                          width="86"
+                          height="116"
+                        >
+                      </div>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+
+              <!-- Bottom Chevron -->
+              <button
+                type="button"
+                class="m-luxury-thumb-arrow m-luxury-thumb-next"
+                aria-label="Scroll thumbnails down"
+              >
+                <svg
+                  viewBox="0 0 10 6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="1 1 5 5 9 1"></polyline>
+                </svg>
+              </button>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!--
+        ==========================================================
+        COLUMN 2: MAIN HERO IMAGE SLIDER
+        ==========================================================
+      -->
+      <div class="m-luxury-col-main">
+        <div class="m-luxury-media-gallery" id="LuxuryGallery-{{ section.id }}">
+          <div class="m-luxury-slider-viewport" id="LuxurySliderViewport-{{ section.id }}" data-draggable="true">
+            <!-- Slider Track -->
+            <div class="m-luxury-slider-track" id="LuxurySliderTrack-{{ section.id }}">
+              {% if product.media.size > 0 %}
+                {% for media in product.media %}
+                  <div
+                    class="m-luxury-slide-item{% if forloop.first %} is-active{% endif %}"
+                    data-index="{{ forloop.index0 }}"
+                    data-media-id="{{ media.id }}"
+                  >
+                    <div class="m-luxury-slide-inner">
+                      <img
+                        src="{{ media | image_url: width: 1400 }}"
+                        alt="{{ media.alt | default: product.title | escape }}"
+                        class="m-luxury-main-img"
+                        {% if forloop.first %}
+                          fetchpriority="high"
+                        {% else %}
+                          loading="lazy"
+                        {% endif %}
+                        width="640"
+                        height="880"
+                      >
+                    </div>
+                  </div>
+                {% endfor %}
+              {% else %}
+                <div class="m-luxury-slide-item is-active" data-index="0">
+                  <div class="m-luxury-slide-inner">
+                    {{ 'product-1' | placeholder_svg_tag: 'm-luxury-main-img' }}
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Floating Prev/Next Buttons -->
+            {% if product.media.size > 1 %}
+              <button type="button" class="m-luxury-nav-btn m-luxury-nav-prev" aria-label="Previous image">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <button type="button" class="m-luxury-nav-btn m-luxury-nav-next" aria-label="Next image">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+
+              <!-- Bottom Progress Line Indicator -->
+              <div class="m-luxury-progress-bar-wrap">
+                <div class="m-luxury-progress-bar-track">
+                  <div
+                    class="m-luxury-progress-bar-fill"
+                    style="width: {{ 100.0 | divided_by: product.media.size }}%;"
+                  ></div>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!--
+        ==========================================================
+        COLUMN 3: PRODUCT INFORMATION & ACTIONS
+        ==========================================================
+      -->
+      <div class="m-luxury-col-info">
+        <!-- View 1: Product Main Details -->
+        <div class="m-luxury-product-details-view is-visible" id="m-luxury-product-details-view-{{ section.id }}">
+          <!-- Product Title -->
+          <h1 class="m-luxury-product-title">
+            <a href="{{ product.url }}" style="color: inherit; text-decoration: none;">{{ product.title }}</a>
+          </h1>
+
+          <!-- Product Price -->
+          <div class="m-luxury-product-price-row" id="Price-{{ section.id }}">
+            {% if current_variant.compare_at_price > current_variant.price %}
+              <span class="m-luxury-product-price m-luxury-product-price--sale">
+                {{ current_variant.price | money }}
+              </span>
+              <s class="m-luxury-product-price--compare" style="margin-left: 8px; color: #a1a1aa; font-size: 14px;">
+                {{ current_variant.compare_at_price | money }}
+              </s>
+            {% else %}
+              <span class="m-luxury-product-price">
+                {{ current_variant.price | money }}
+              </span>
+            {% endif %}
+          </div>
+
+          <!-- Color Option (if exists) -->
+          {% if color_option_index >= 0 %}
+            {% assign color_option = product.options_with_values[color_option_index] %}
+            <div class="m-luxury-color-section">
+              <span class="m-luxury-color-label">
+                {{- color_option.name }}:
+                <strong class="m-luxury-selected-color-name">{{ color_option.selected_value }}</strong></span
+              >
+              <div class="m-luxury-color-swatches-row">
+                {% for value in color_option.values %}
+                  {% liquid
+                    assign variant_for_color = null
+                    for var in product.variants
+                      if var.options[color_option_index] == value
+                        assign variant_for_color = var
+                        break
+                      endif
+                    endfor
+                  %}
+                  <button
+                    type="button"
+                    class="m-luxury-color-swatch-box{% if color_option.selected_value == value %} active{% endif %}"
+                    data-option-index="{{ color_option_index }}"
+                    data-value="{{ value | escape }}"
+                    title="{{ value | escape }}"
+                    aria-label="{{ value | escape }}"
+                  >
+                    {% if variant_for_color.featured_image %}
+                      <img
+                        src="{{ variant_for_color.featured_image | image_url: width: 80, height: 80, crop: 'center' }}"
+                        alt="{{ value | escape }}"
+                        class="m-luxury-color-swatch-img"
+                      >
+                    {% else %}
+                      <span
+                        class="m-luxury-color-swatch-circle"
+                        style="background-color: {{ value | downcase | remove: ' ' }};"
+                      ></span>
+                    {% endif %}
+                  </button>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+
+          <!-- Size Sizing Standard Row & Dropdown (Right-aligned AU/FR/US/UK/IT) -->
+          {% if size_option_index >= 0 %}
+            {% assign size_option = product.options_with_values[size_option_index] %}
+
+            <div class="m-luxury-size-header-row">
+              <div class="m-luxury-size-system-dropdown">
+                <select
+                  id="m-luxury-size-system-select-{{ section.id }}"
+                  class="m-luxury-size-system-select"
+                  aria-label="{{ 'products.product.select_size' | t | default: 'Select Sizing standard' }}"
+                >
+                  <option value="AU" selected>{{ 'products.product.size_au' | t | default: 'Size AU' }}</option>
+                  <option value="FR">{{ 'products.product.size_fr' | t | default: 'Size FR' }}</option>
+                  <option value="US">{{ 'products.product.size_us' | t | default: 'Size US' }}</option>
+                  <option value="UK">{{ 'products.product.size_uk' | t | default: 'Size UK' }}</option>
+                  <option value="IT">{{ 'products.product.size_it' | t | default: 'Size IT' }}</option>
+                </select>
+                <svg
+                  class="m-luxury-size-system-chevron"
+                  viewBox="0 0 10 6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="1 1 5 5 9 1"></polyline>
+                </svg>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="size-v-title">{{ 'products.product.select_size' | t | default: 'Select Size:' }}</h3>
+            </div>
+
+            <!-- Size Buttons Grid -->
+            <div
+              class="m-luxury-sizes-grid"
+              id="m-luxury-sizes-grid-{{ section.id }}"
+              data-option-index="{{ size_option_index }}"
+            >
+              {% for value in size_option.values %}
+                {% liquid
+                  assign is_available = false
+                  assign variant_for_size = null
+                  for var in product.variants
+                    if var.options[size_option_index] == value
+                      assign variant_for_size = var
+                      if var.available
+                        assign is_available = true
+                      endif
+                      break
+                    endif
+                  endfor
+                %}
+                <button
+                  type="button"
+                  class="m-luxury-size-box{% if size_option.selected_value == value %} active{% endif %}{% unless is_available %} is-unavailable{% endunless %}"
+                  data-value="{{ value | escape }}"
+                  data-original-value="{{ value | escape }}"
+                  data-variant-id="{{ variant_for_size.id }}"
+                  {% unless is_available %}
+                    title="{{ 'products.product.sold_out' | t | default: 'Out of Stock' }}"
+                  {% endunless %}
+                  aria-label="{{ value }}"
+                >
+                  {{ value }}
+                </button>
+              {% endfor %}
+            </div>
+
+            <!-- Size Guide Trigger Link -->
+            <div class="m-luxury-size-guide-trigger-row">
+              <button type="button" class="m-luxury-size-guide-trigger-btn" data-open-sizeguide>
+                {{ 'products.product.size_guide' | t | default: 'Size guide' }}
+              </button>
+            </div>
+          {% else %}
+            {% if product.options.size > 0 and product.has_only_default_variant == false %}
+              {% for option in product.options_with_values %}
+                {% unless forloop.index0 == color_option_index %}
+                  <div class="m-luxury-size-header-row">
+                    <div class="m-luxury-size-system-dropdown">
+                      <select class="m-luxury-size-system-select" aria-label="{{ 'products.product.select_size' | t | default: 'Select Sizing standard' }}">
+                        <option value="AU" selected>{{ 'products.product.size_au' | t | default: 'Size AU' }}</option>
+                        <option value="FR">{{ 'products.product.size_fr' | t | default: 'Size FR' }}</option>
+                        <option value="US">{{ 'products.product.size_us' | t | default: 'Size US' }}</option>
+                        <option value="UK">{{ 'products.product.size_uk' | t | default: 'Size UK' }}</option>
+                        <option value="IT">{{ 'products.product.size_it' | t | default: 'Size IT' }}</option>
+                      </select>
+                      <svg
+                        class="m-luxury-size-system-chevron"
+                        viewBox="0 0 10 6"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="1 1 5 5 9 1"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="m-luxury-sizes-grid" data-option-index="{{ forloop.index0 }}">
+                    {% for value in option.values %}
+                      <button
+                        type="button"
+                        class="m-luxury-size-box{% if option.selected_value == value %} active{% endif %}"
+                        data-value="{{ value | escape }}"
+                        data-original-value="{{ value | escape }}"
+                      >
+                        {{ value }}
+                      </button>
+                    {% endfor %}
+                  </div>
+                  <div class="m-luxury-size-guide-trigger-row">
+                    <button type="button" class="m-luxury-size-guide-trigger-btn" data-open-sizeguide>
+                      {{ 'products.product.size_guide' | t | default: 'Size guide' }}
+                    </button>
+                  </div>
+                {% endunless %}
+              {% endfor %}
+            {% endif %}
+          {% endif %}
+
+          <!-- Product Form & Action Buttons (Add to Bag & Wishlist) -->
+          <product-form class="m-product-form m-product-form--main" data-product-id="{{ product.id }}">
+            {%- form 'product',
+              product,
+              id: product_form_id,
+              data-product-id: product.id,
+              class: 'm-luxury-product-form',
+              novalidate: 'novalidate',
+              data-type: 'add-to-cart-form',
+              data-product-handle: product.handle
+            -%}
+              <input type="hidden" name="id" value="{{ current_variant.id }}">
+              <div class="m-product-form-message"></div>
+
+              <div class="m-luxury-actions-group">
+                <!-- Add to Bag Button -->
+                <button
+                  type="submit"
+                  name="add"
+                  id="ProductSubmitButton-{{ section.id }}"
+                  class="m-add-to-cart m-luxury-add-to-bag-btn"
+                  data-atc-text="{{ 'products.product.add_to_cart' | t | default: 'Add to Bag' }}"
+                  data-soldout-text="{{ 'products.product.sold_out' | t | default: 'Out of Stock' }}"
+                  {% unless current_variant.available %}
+                    disabled
+                  {% endunless %}
+                >
+                  <span class="m-add-to-cart--text">
+                    {%- if current_variant.available -%}
+                      {{ 'products.product.add_to_cart' | t | default: 'Add to Bag' }}
+                    {%- else -%}
+                      {{ 'products.product.sold_out' | t | default: 'Out of Stock' }}
+                    {%- endif -%}
+                  </span>
+                </button>
+
+                <!-- Wishlist Button -->
+                <button
+                  type="button"
+                  class="m-wishlist-button m-luxury-wishlist-btn in-prod-page"
+                  data-product-handle="{{ product.handle }}"
+                  aria-label="{{ 'products.product.add_to_wishlist' | t | default: 'Add to Wishlist' }}"
+                >
+                  <span class="m-luxury-wishlist-icon m-luxury-wishlist-icon--default">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#18181b"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                  </span>
+                  <span class="m-luxury-wishlist-icon m-luxury-wishlist-icon--active">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="#e11d48"
+                      stroke="#e11d48"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                  </span>
+                  <span
+                    class="m-wishlist-button-text"
+                    data-revert-text="{{ 'products.product.remove_from_wishlist' | t | default: 'Remove from Wishlist' }}"
+                    >{{ 'products.product.add_to_wishlist' | t | default: 'Add to Wishlist' }}</span
+                  >
+                </button>
+              </div>
+            {%- endform -%}
+          </product-form>
+
+          <!-- Collapsible Accordions -->
+          <div class="m-luxury-accordions">
+            <!-- Description Accordion (Expanded by default) -->
+            <div class="m-luxury-accordion-item is-open">
+              <button type="button" class="m-luxury-accordion-header" aria-expanded="true">
+                <span>{{ 'products.product.description_title' | t | default: 'Description' }}</span>
+                <svg
+                  class="m-luxury-accordion-chevron"
+                  viewBox="0 0 10 6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="1 1 5 5 9 1"></polyline>
+                </svg>
+              </button>
+              <div class="m-luxury-accordion-body">
+                <div class="m-luxury-accordion-content rte">
+                  <div class="m-luxury-accordion-truncated">
+                    {% if product.description != blank %}
+                      {{ product.description }}
+                    {% else %}
+                      <p>
+                        Sculpted midi dress in noble couture fabric. An ode to elegance sculpted in form and texture
+                        with subtle shine and refined finish.
+                      </p>
+                    {% endif %}
+                  </div>
+                  <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="desc">{{ 'general.accessibility.view_more' | t | default: 'View more' }}</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Delivery & Returns Accordion -->
+            <div class="m-luxury-accordion-item">
+              <button type="button" class="m-luxury-accordion-header" aria-expanded="false">
+                <span>{{ 'products.product.delivery_returns_title' | t | default: 'Delivery & Returns' }}</span>
+                <svg
+                  class="m-luxury-accordion-chevron"
+                  viewBox="0 0 10 6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="1 1 5 5 9 1"></polyline>
+                </svg>
+              </button>
+              <div class="m-luxury-accordion-body">
+                <div class="m-luxury-accordion-content rte">
+                  <div class="m-luxury-accordion-truncated">
+                    <p>
+                      We offer complimentary shipping on all online orders, with delivery typically completed within
+                      3-10 business days.
+                    </p>
+                    <p>
+                      We accept returns within 30 days of delivery. Items must be returned in their original
+                      condition—unworn, unwashed, with all tags intact.
+                    </p>
+                  </div>
+                  <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="delivery">
+                    {{ 'general.accessibility.view_more' | t | default: 'View more' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Product Care Accordion -->
+            <div class="m-luxury-accordion-item">
+              <button type="button" class="m-luxury-accordion-header" aria-expanded="false">
+                <span>{{ 'products.product.product_care_title' | t | default: 'Product Care' }}</span>
+                <svg
+                  class="m-luxury-accordion-chevron"
+                  viewBox="0 0 10 6"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="1 1 5 5 9 1"></polyline>
+                </svg>
+              </button>
+              <div class="m-luxury-accordion-body">
+                <div class="m-luxury-accordion-content rte">
+                  <p>
+                    Specialist dry clean only. Do not tumble dry. Store in a breathable garment bag away from direct
+                    sunlight.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View 2: Interactive Size Guide Drawer & Spec Table -->
+        {% render 'luxury-size-guide-drawer', product: product %}
+
+        <!-- View 3: Expanded Tabs Details Panel -->
+        <div id="m-luxury-more-details-panel" class="m-luxury-more-details-panel" aria-hidden="true">
+          <div class="m-luxury-more-inner">
+            <!-- Top Tabs Navigation -->
+            <div class="m-luxury-more-tabs-nav" role="tablist">
+              <button
+                type="button"
+                class="m-luxury-more-tab-btn active"
+                data-tab="desc"
+                role="tab"
+                aria-selected="true"
+              >
+                {{ 'products.product.description_title' | t | default: 'Description' }}
+              </button>
+              <button type="button" class="m-luxury-more-tab-btn" data-tab="delivery" role="tab" aria-selected="false">
+                {{ 'products.product.delivery_returns_title' | t | default: 'Delivery & Returns' }}
+              </button>
+              <button type="button" class="m-luxury-more-tab-btn" data-tab="care" role="tab" aria-selected="false">
+                {{ 'products.product.product_care_title' | t | default: 'Product Care' }}
+              </button>
+            </div>
+
+            <!-- Tabs Body -->
+            <div class="m-luxury-more-tabs-body">
+              <!-- Tab 1: Description -->
+              <div class="m-luxury-more-tab-pane active" id="m-tab-desc" role="tabpanel">
+                <div class="m-luxury-more-content rte">
+                  <p>
+                    <strong>{{ product.title }}</strong>
+                  </p>
+                  <ul>
+                    <li>Product Code: {{ current_variant.sku | default: 'D1320EP26YA072' }}</li>
+                    <li>Sculpted Silhouette</li>
+                    <li>Couture Detailing & Finish</li>
+                    <li>Concealed Back Zipper Closure</li>
+                    <li>Premium Silk Lining</li>
+                  </ul>
+                  {% if product.description != blank %}
+                    <div class="m-luxury-full-desc-extra" style="margin-top: 14px;">
+                      {{ product.description }}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Tab 2: Delivery & Returns -->
+              <div class="m-luxury-more-tab-pane" id="m-tab-delivery" role="tabpanel">
+                <div class="m-luxury-more-content rte">
+                  <p>
+                    We offer complimentary express shipping on all online orders, with delivery typically completed
+                    within 3-10 business days.
+                  </p>
+                  <p>
+                    Please note that you may be subject to additional import duties, taxes, or fees depending on your
+                    delivery destination.
+                  </p>
+                  <p>
+                    We accept returns within 30 days of delivery. To request an exchange, please contact our concierge
+                    service with your order number. Items must be returned in their original condition with all tags and
+                    packaging intact.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Tab 3: Product Care -->
+              <div class="m-luxury-more-tab-pane" id="m-tab-care" role="tabpanel">
+                <div class="m-luxury-more-content rte">
+                  <p>Specialist dry clean only. Do not tumble dry.</p>
+                  <p>Store in a breathable garment bag away from direct sunlight and moisture.</p>
+                  <p>Handle delicate embroidery and embellishments with care.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Return to Product Footer CTA -->
+            <div class="m-luxury-more-footer">
+              <button type="button" class="m-luxury-more-return-btn" data-close-moredetails>
+                <span>{{ 'products.product.return_to_product' | t | default: 'Return to product' }}</span>
+                <span class="m-luxury-more-return-arrow">&gt;</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Variant JSON Map for JS Synchronizer -->
+    <script type="application/json" id="LuxuryProductJson-{{ section.id }}">
+      {{ product | json }}
+    </script>
+  </section>
+</div>

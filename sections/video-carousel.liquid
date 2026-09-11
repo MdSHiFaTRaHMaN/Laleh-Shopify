@@ -1,0 +1,835 @@
+<style>
+  .vgc-section {
+    width: 100%;
+    padding: 20px 20px;
+    box-sizing: border-box;
+  }
+
+  .vgc-inner {
+    max-width: var(--vgc-max-width, 1600px);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .vgc-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .vgc-heading {
+    font-size: 34px;
+    line-height: 1.2;
+    margin: 0 0 8px;
+  }
+
+  .vgc-subheading {
+    font-size: 1rem;
+    opacity: 0.7;
+    margin: 0;
+  }
+
+  .vgc-carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .vgc-track {
+    display: flex;
+    gap: var(--vgc-gap, 20px);
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: pan-y;
+    will-change: transform;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .vgc-track.is-dragging {
+    cursor: grabbing;
+  }
+
+  .vgc-track.is-dragging .vgc-item {
+    pointer-events: none;
+  }
+
+  .vgc-item {
+    position: relative;
+    flex: 0 0 auto;
+    width: calc((100% - (var(--vgc-gap, 20px) * 3)) / 4);
+    aspect-ratio: 3 / 5;
+  }
+
+  .vgc-video-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--vgc-radius, 12px);
+    overflow: hidden;
+    background-color: #121212;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: -webkit-radial-gradient(white, black);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    isolation: isolate;
+  }
+
+  .vgc-poster-img,
+  .vgc-poster-only,
+  .vgc-placeholder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    z-index: 1;
+    pointer-events: none;
+    background-color: #121212;
+  }
+
+  .vgc-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    z-index: 2;
+    background: transparent;
+    transition: transform 0.6s ease;
+  }
+
+  .vgc-placeholder-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .vgc-item.is-active .vgc-video {
+    transform: scale(1.02);
+  }
+
+  .vgc-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.85);
+    color: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 3;
+  }
+
+  .vgc-video-wrap:hover .vgc-play-btn,
+  .vgc-item.is-playing .vgc-play-btn {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .vgc-item:not(.is-playing) .vgc-play-btn {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .vgc-play-btn:hover {
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+
+  .vgc-caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 14px 16px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .vgc-caption-title {
+    color: #fff;
+    font-size: 0.85rem;
+  }
+
+  .vgc-controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .vgc-nav {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .vgc-nav:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  /* ---------- Responsive breakpoints ---------- */
+  @media screen and (max-width: 989px) {
+    .vgc-item {
+      width: calc((100% - (var(--vgc-gap, 20px) * 2)) / 3);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .vgc-section {
+      padding: 20px 16px 0px 16px;
+    }
+
+    .vgc-heading {
+      font-size: 22px;
+    }
+
+    .vgc-item {
+      width: calc((100% - var(--vgc-gap, 20px)) / 2);
+      aspect-ratio: 3 / 4;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .vgc-item {
+      width: calc(100% - (var(--vgc-gap, 20px) * 0.4));
+    }
+  }
+</style>
+
+<div
+  class="vgc-section"
+  id="vgc-{{ section.id }}"
+  style="--vgc-max-width: {{ section.settings.max_width }}px; --vgc-gap: {{ section.settings.gap }}px; --vgc-radius: {{ section.settings.radius }}px;"
+  data-autoplay-interval="{{ section.settings.autoplay_interval | times: 1000 }}"
+>
+  <div class="vgc-inner">
+    {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
+      <div class="vgc-header">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="vgc-heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <p class="vgc-subheading">{{ section.settings.subheading }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="vgc-carousel" data-vgc-carousel>
+      <div class="vgc-track" data-vgc-track>
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'video' -%}
+            {%- liquid
+              assign poster_image = block.settings.poster
+              if poster_image == blank and block.settings.video != blank
+                assign poster_image = block.settings.video.preview_image
+              endif
+            -%}
+            <div class="vgc-item" data-vgc-item data-block-id="{{ block.id }}" {{ block.shopify_attributes }}>
+              <div class="vgc-video-wrap">
+                {%- if poster_image != blank -%}
+                  <img
+                    class="vgc-poster-img"
+                    src="{{ poster_image | image_url: width: 900 }}"
+                    alt="{{ block.settings.title | default: 'Video thumbnail' | escape }}"
+                    loading="lazy"
+                    width="900"
+                    height="1200"
+                  >
+                {%- endif -%}
+
+                {%- if block.settings.video != blank -%}
+                  <video
+                    class="vgc-video"
+                    data-vgc-video
+                    muted
+                    loop
+                    playsinline
+                    webkit-playsinline
+                    preload="metadata"
+                    {% if poster_image != blank %}
+                      poster="{{ poster_image | image_url: width: 900 }}"
+                    {% endif %}
+                  >
+                    {%- for source in block.settings.video.sources -%}
+                      {%- if source.format == 'mp4' -%}
+                        <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </video>
+                {%- elsif poster_image == blank -%}
+                  <div class="vgc-placeholder">{{ 'image' | placeholder_svg_tag: 'vgc-placeholder-svg' }}</div>
+                {%- endif -%}
+
+                <button class="vgc-play-btn" type="button" data-vgc-play-btn aria-label="Play video">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </button>
+
+                {%- if block.settings.title != blank -%}
+                  <div class="vgc-caption">
+                    <span class="vgc-caption-title">{{ block.settings.title }}</span>
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="vgc-controls">
+        <button class="vgc-nav vgc-prev" type="button" data-vgc-prev aria-label="Previous">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
+        <button class="vgc-nav vgc-next" type="button" data-vgc-next aria-label="Next">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+  /**
+   * Video Grid Carousel
+   * - Infinite cursor-drag carousel with momentum + smooth snap-to-card
+   * - Default behaviour: videos auto-play one by one in sequence (muted, required for autoplay)
+   * - On hover or click: that specific video plays instead, auto-cycle pauses, resumes after
+   * - Bulletproof for iOS Safari & Mobile Power-Saving / Autoplay restrictions
+   */
+  class VideoGridCarousel {
+    constructor(root) {
+      this.root = root;
+      this.carousel = root.querySelector('[data-vgc-carousel]');
+      this.track = root.querySelector('[data-vgc-track]');
+      this.prevBtn = root.querySelector('[data-vgc-prev]');
+      this.nextBtn = root.querySelector('[data-vgc-next]');
+
+      if (!this.track || !this.track.children.length) return;
+
+      this.autoplayInterval = parseInt(root.dataset.autoplayInterval, 10) || 5000;
+      this.autoplayTimer = null;
+      this.resumeTimer = null;
+      this.currentBlockIndex = 0;
+
+      this.isDragging = false;
+      this.startX = 0;
+      this.currentTranslate = 0;
+      this.startTranslate = 0;
+      this.hasMoved = false;
+
+      // velocity tracking for momentum
+      this.lastX = 0;
+      this.lastT = 0;
+      this.velocity = 0;
+
+      // easing used for every "snap"/programmatic move — smooth ease-out
+      this.easeSnap = 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)';
+
+      this.setupInfiniteClones();
+      this.blockIds = this.getUniqueBlockIds();
+      this.bindDrag();
+      this.bindNav();
+      this.bindVideoInteractions();
+      this.bindResize();
+
+      requestAnimationFrame(() => {
+        this.measure();
+        this.setTranslate(-2 * this.setWidth, false);
+        this.startAutoplay();
+      });
+    }
+
+    /* ---------- Infinite loop setup (5 sets: -2, -1, 0, +1, +2) ---------- */
+    setupInfiniteClones() {
+      const originals = Array.from(this.track.children);
+      if (originals.length === 0) return;
+
+      const cloneSet = () =>
+        originals.map((item) => {
+          const clone = item.cloneNode(true);
+          clone.setAttribute('data-clone', 'true');
+          return clone;
+        });
+
+      const before2 = cloneSet();
+      const before1 = cloneSet();
+      const after1 = cloneSet();
+      const after2 = cloneSet();
+
+      this.track.innerHTML = '';
+      before2.forEach((node) => this.track.appendChild(node));
+      before1.forEach((node) => this.track.appendChild(node));
+      originals.forEach((node) => this.track.appendChild(node));
+      after1.forEach((node) => this.track.appendChild(node));
+      after2.forEach((node) => this.track.appendChild(node));
+
+      this.originalCount = originals.length;
+
+      // CRITICAL FOR IOS SAFARI & MOBILE WEB:
+      // Re-initialize media properties and load video pipelines on all cloned & remounted elements
+      this.track.querySelectorAll('video').forEach((v) => {
+        v.muted = true;
+        v.defaultMuted = true;
+        v.playsInline = true;
+        v.setAttribute('playsinline', 'true');
+        v.setAttribute('webkit-playsinline', 'true');
+        v.setAttribute('muted', '');
+        try {
+          v.load();
+        } catch (e) {}
+      });
+    }
+
+    getUniqueBlockIds() {
+      const seen = [];
+      Array.from(this.track.children).forEach((item) => {
+        const id = item.dataset.blockId;
+        if (id && !seen.includes(id)) seen.push(id);
+      });
+      return seen;
+    }
+
+    measure() {
+      const items = Array.from(this.track.children);
+      if (!items.length) return;
+      const gap = parseFloat(getComputedStyle(this.track).gap) || 0;
+      const oneItemWidth = items[0].getBoundingClientRect().width + gap;
+      this.itemWidth = oneItemWidth;
+      this.setWidth = oneItemWidth * this.originalCount;
+    }
+
+    bindResize() {
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          const prevSetWidth = this.setWidth || 1;
+          this.measure();
+          const ratio = this.currentTranslate / prevSetWidth;
+          this.setTranslate(ratio * this.setWidth, false);
+          this.settleInfiniteBounds();
+        }, 150);
+      });
+    }
+
+    /* ---------- Drag / swipe with momentum + smooth snap ---------- */
+    bindDrag() {
+      const track = this.track;
+
+      const onDown = (e) => {
+        this.isDragging = true;
+        this.hasMoved = false;
+        this.startX = this.getClientX(e);
+        this.lastX = this.startX;
+        this.lastT = performance.now();
+        this.velocity = 0;
+        this.settleInfiniteBounds();
+        this.startTranslate = this.currentTranslate;
+        track.classList.add('is-dragging');
+        this.pauseAutoplay();
+        cancelAnimationFrame(this.momentumRaf);
+      };
+
+      const onMove = (e) => {
+        if (!this.isDragging) return;
+        const x = this.getClientX(e);
+        const now = performance.now();
+        const dt = Math.max(now - this.lastT, 1);
+
+        const delta = x - this.startX;
+        if (Math.abs(delta) > 4) this.hasMoved = true;
+
+        // instantaneous velocity (px per ms), smoothed
+        const instVelocity = (x - this.lastX) / dt;
+        this.velocity = this.velocity * 0.7 + instVelocity * 0.3;
+
+        this.lastX = x;
+        this.lastT = now;
+
+        let nextTranslate = this.startTranslate + delta;
+
+        // Seamless live wrapping during drag: never run out of cards even on infinite continuous drags
+        if (this.setWidth > 0) {
+          if (nextTranslate < -3.5 * this.setWidth) {
+            this.startTranslate += this.setWidth;
+            nextTranslate += this.setWidth;
+          } else if (nextTranslate > -0.5 * this.setWidth) {
+            this.startTranslate -= this.setWidth;
+            nextTranslate -= this.setWidth;
+          }
+        }
+
+        this.setTranslate(nextTranslate, false);
+      };
+
+      const onUp = () => {
+        if (!this.isDragging) return;
+        this.isDragging = false;
+        track.classList.remove('is-dragging');
+
+        if (!this.hasMoved) {
+          // treat as a tap/click
+          this.scheduleAutoplayResume(600);
+          return;
+        }
+
+        this.applyMomentumAndSnap();
+      };
+
+      track.addEventListener('pointerdown', onDown);
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+      window.addEventListener('pointercancel', onUp);
+
+      track.addEventListener(
+        'click',
+        (e) => {
+          if (this.hasMoved) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        },
+        true
+      );
+    }
+
+    getClientX(e) {
+      return e.touches ? e.touches[0].clientX : e.clientX;
+    }
+
+    setTranslate(px, animate) {
+      this.currentTranslate = px;
+      this.track.style.transition = animate ? this.easeSnap : 'none';
+      this.track.style.transform = `translateX(${px}px)`;
+    }
+
+    /* Fling based on release velocity, then ease into the nearest card */
+    applyMomentumAndSnap() {
+      const MAX_VELOCITY = 1.8; // px/ms clamp
+      const MOMENTUM_MULTIPLIER = 180; // how far the fling projects
+      const v = Math.max(Math.min(this.velocity, MAX_VELOCITY), -MAX_VELOCITY);
+      const projected = this.currentTranslate + v * MOMENTUM_MULTIPLIER;
+
+      const nearestIndex = Math.round(-projected / this.itemWidth);
+      let target = -nearestIndex * this.itemWidth;
+
+      // Ensure target stays safely within the 5-set track buffer [-3.5 * setWidth, -0.5 * setWidth]
+      if (this.setWidth > 0) {
+        while (target < -3.5 * this.setWidth) {
+          target += this.setWidth;
+          this.currentTranslate += this.setWidth;
+          this.setTranslate(this.currentTranslate, false);
+        }
+        while (target > -0.5 * this.setWidth) {
+          target -= this.setWidth;
+          this.currentTranslate -= this.setWidth;
+          this.setTranslate(this.currentTranslate, false);
+        }
+      }
+
+      this.setTranslate(target, true);
+
+      const onEnd = () => {
+        this.track.removeEventListener('transitionend', onEnd);
+        this.settleInfiniteBounds();
+        this.scheduleAutoplayResume(500);
+      };
+      this.track.addEventListener('transitionend', onEnd);
+    }
+
+    settleInfiniteBounds() {
+      if (!this.setWidth) return;
+      // Seamlessly wrap position back to the middle range [-2.5 * setWidth, -1.5 * setWidth]
+      while (this.currentTranslate > -1.5 * this.setWidth) {
+        this.currentTranslate -= this.setWidth;
+      }
+      while (this.currentTranslate < -2.5 * this.setWidth) {
+        this.currentTranslate += this.setWidth;
+      }
+      this.setTranslate(this.currentTranslate, false);
+    }
+
+    bindNav() {
+      const goTo = (direction) => {
+        this.pauseAutoplay();
+        this.settleInfiniteBounds();
+        const target = this.currentTranslate + direction * this.itemWidth;
+        this.setTranslate(target, true);
+
+        const onEnd = () => {
+          this.track.removeEventListener('transitionend', onEnd);
+          this.settleInfiniteBounds();
+          this.scheduleAutoplayResume(1200);
+        };
+        this.track.addEventListener('transitionend', onEnd);
+      };
+
+      if (this.prevBtn) this.prevBtn.addEventListener('click', () => goTo(1));
+      if (this.nextBtn) this.nextBtn.addEventListener('click', () => goTo(-1));
+    }
+
+    /* ---------- Video autoplay (sequential) + hover/click override ---------- */
+    bindVideoInteractions() {
+      Array.from(this.track.children).forEach((item) => {
+        const video = item.querySelector('[data-vgc-video]');
+        const playBtn = item.querySelector('[data-vgc-play-btn]');
+        const blockId = item.dataset.blockId;
+
+        const activateThis = (e) => {
+          if (this.hasMoved) return;
+          this.pauseAutoplay();
+
+          const isUserClick = e && (e.type === 'click' || e.type === 'pointerup');
+          this.playBlock(blockId, isUserClick);
+
+          const idx = this.blockIds.indexOf(blockId);
+          if (idx > -1) this.currentBlockIndex = idx;
+        };
+
+        if (video) {
+          video.addEventListener('playing', () => {
+            item.classList.add('is-playing');
+          });
+          video.addEventListener('pause', () => {
+            item.classList.remove('is-playing');
+          });
+          video.addEventListener('ended', () => {
+            item.classList.remove('is-playing');
+            if (item.dataset.clone !== 'true') this.advanceAutoplay();
+          });
+        }
+
+        item.addEventListener('mouseenter', activateThis);
+        item.addEventListener('click', activateThis);
+        if (playBtn) {
+          playBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            activateThis(e);
+          });
+        }
+
+        item.addEventListener('mouseleave', () => {
+          this.scheduleAutoplayResume(1500);
+        });
+      });
+    }
+
+    playBlock(blockId, allowSound) {
+      // Pause all other non-target videos
+      Array.from(this.track.children).forEach((item) => {
+        const video = item.querySelector('[data-vgc-video]');
+        if (item.dataset.blockId !== blockId) {
+          item.classList.remove('is-active', 'is-playing');
+          if (video && !video.paused) {
+            video.pause();
+          }
+        }
+      });
+
+      const matches = Array.from(this.track.querySelectorAll(`[data-block-id="${blockId}"]`));
+      if (!matches.length) return;
+
+      // On mobile / Safari, prioritize playing the visible or central match to prevent hardware decoder exhaustion
+      const carouselRect = this.carousel.getBoundingClientRect();
+      let primaryMatch = matches[0];
+      let closestDist = Infinity;
+
+      matches.forEach((item) => {
+        const rect = item.getBoundingClientRect();
+        const dist = Math.abs((rect.left + rect.width / 2) - (carouselRect.left + carouselRect.width / 2));
+        if (dist < closestDist) {
+          closestDist = dist;
+          primaryMatch = item;
+        }
+      });
+
+      matches.forEach((item) => {
+        const video = item.querySelector('[data-vgc-video]');
+        item.classList.add('is-active');
+
+        if (video) {
+          video.muted = !allowSound ? true : video.muted;
+          video.defaultMuted = true;
+          video.playsInline = true;
+
+          if (item === primaryMatch) {
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+              playPromise
+                .then(() => {
+                  item.classList.add('is-playing');
+                })
+                .catch(() => {
+                  // Autoplay restricted on iOS (e.g. Low Power Mode) - poster remains gracefully visible
+                  item.classList.remove('is-playing');
+                });
+            }
+          } else {
+            if (!video.paused) video.pause();
+            item.classList.remove('is-playing');
+          }
+        }
+      });
+    }
+
+    startAutoplay() {
+      if (!this.blockIds.length) return;
+      this.playBlock(this.blockIds[this.currentBlockIndex], false);
+      this.autoplayTimer = setInterval(() => this.advanceAutoplay(), this.autoplayInterval);
+    }
+
+    advanceAutoplay() {
+      if (!this.blockIds.length) return;
+      this.currentBlockIndex = (this.currentBlockIndex + 1) % this.blockIds.length;
+      this.playBlock(this.blockIds[this.currentBlockIndex], false);
+    }
+
+    pauseAutoplay() {
+      clearInterval(this.autoplayTimer);
+      clearTimeout(this.resumeTimer);
+      this.autoplayTimer = null;
+    }
+
+    scheduleAutoplayResume(delay) {
+      clearTimeout(this.resumeTimer);
+      this.resumeTimer = setTimeout(() => {
+        if (!this.autoplayTimer) {
+          this.playBlock(this.blockIds[this.currentBlockIndex], false);
+          this.autoplayTimer = setInterval(() => this.advanceAutoplay(), this.autoplayInterval);
+        }
+      }, delay);
+    }
+  }
+
+  function initVideoGridCarousels() {
+    document.querySelectorAll('.vgc-section').forEach((root) => {
+      if (root.dataset.vgcInit) return;
+      root.dataset.vgcInit = 'true';
+      new VideoGridCarousel(root);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVideoGridCarousels);
+  } else {
+    initVideoGridCarousels();
+  }
+
+  document.addEventListener('shopify:section:load', (e) => {
+    const root = e.target.querySelector('.vgc-section');
+    if (root) {
+      root.dataset.vgcInit = '';
+      initVideoGridCarousels();
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Video grid carousel",
+  "tag": "section",
+  "class": "shopify-section--video-grid-carousel",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Behind the scenes"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Section max width (px)",
+      "min": 1000,
+      "max": 1920,
+      "step": 20,
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap between videos (px)",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "radius",
+      "label": "Corner radius (px)",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "autoplay_interval",
+      "label": "Auto-cycle interval (seconds)",
+      "min": 3,
+      "max": 15,
+      "step": 1,
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Video",
+      "settings": [
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video"
+        },
+        {
+          "type": "image_picker",
+          "id": "poster",
+          "label": "Poster image (fallback / thumbnail)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Caption"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video grid carousel",
+      "blocks": [{ "type": "video" }, { "type": "video" }, { "type": "video" }, { "type": "video" }]
+    }
+  ]
+}
+{% endschema %}

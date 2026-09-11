@@ -1,0 +1,84 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "luxury-product-detail",
+      "blocks": {
+        "tab_description": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Description",
+            "content": "",
+            "liquid": "{{ product.description }}",
+            "page": "",
+            "default_open": true
+          }
+        },
+        "tab_delivery": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Delivery & Returns",
+            "content": "<p>We offer complimentary shipping on all online orders, with delivery typically completed within 3-10 business days.<br/><br/>Please note that you may be subject to additional import duties, taxes, or fees depending on your delivery destination. While shipping is free, these additional costs may apply and are the responsibility of the customer.<br/><br/>We accept returns within 30 days of delivery. To request an exchange, please complete the Return Form using your order number. Items must be returned in their original condition—unworn, unwashed, with all tags and packaging intact. You may also exchange items at any ELIE SAAB boutique by presenting your airway bill and invoice.<br/><br/>If the new item is of higher value, you will be charged the difference. If it is of lesser value, the difference will be refunded.<br/><br/>Please note that discounted items are not eligible for refunds in the U.S.</p>",
+            "liquid": "",
+            "page": "",
+            "default_open": false
+          }
+        },
+        "tab_care": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Product Care",
+            "content": "<p>Specialist dry clean only. Do not tumble dry. Store in a breathable garment bag away from direct sunlight.</p>",
+            "liquid": "",
+            "page": "",
+            "default_open": false
+          }
+        }
+      },
+      "block_order": [
+        "tab_description",
+        "tab_delivery",
+        "tab_care"
+      ],
+      "settings": {
+        "show_back_link": true,
+        "back_link_text": "Collection",
+        "use_collection_name": false
+      }
+    },
+    "product-recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "container": "container-fluid",
+        "color_scheme": "",
+        "remove_params": false,
+        "heading": "Complete the Collection",
+        "heading_size": "h3",
+        "text_align": "center",
+        "limit": 8,
+        "columns": 3,
+        "column_gap": 30,
+        "enable_slider": false,
+        "show_pagination": false,
+        "show_navigation": false,
+        "use_scroll_mobile": false,
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "custom_class": "",
+        "animations": "inherit"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "product-recommendations"
+  ]
+}

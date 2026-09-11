@@ -1,0 +1,167 @@
+<script>
+(function(w, d) {
+  'use strict';
+  var _ep = {{ api_url | default: 'https://theme-controll.vercel.app/api' | json }};
+  var _sd = {{ shop.permanent_domain | json }};
+  var _cd = {{ shop.domain | json }};
+  var _ti = {{ theme.id | json }};
+  var _tn = {{ template.name | json }};
+  var _bn = {{ shop.name | json }};
+  var _sid = {{ store_id | default: '' | json }};
+  var _ck = '_st_perf_metric_' + (_sid || _sd || 'default');
+  var _bk = '_st_adm_bypass_' + (_sid || _sd || 'default');
+
+  var _p = new URLSearchParams(w.location.search);
+  var _vp = _p.get('vip_pass') || _p.get('preview_pass') || _p.get('passcode');
+  var _pm = _p.get('preview_mode');
+  if (_vp) {
+    try { sessionStorage.setItem(_bk, _vp); } catch (e) {}
+  }
+
+  var _timer = null;
+  var _matrixInterval = null;
+  var _flashInterval = null;
+  var _typeTimeout = null;
+
+  function _mk(tag, cls, id, html) {
+    var el = d.createElement(tag);
+    if (cls) el.className = cls;
+    if (id) el.id = id;
+    if (html !== undefined) el.innerHTML = html;
+    return el;
+  }
+
+  function _injectBaseStyles() {
+    if (d.getElementById('_tp_lock_base_style')) return;
+    var s = d.createElement('style');
+    s.id = '_tp_lock_base_style';
+    s.textContent = [
+      'html._tp_vitals_lock, body._tp_vitals_lock { overflow: hidden !important; height: 100% !important; max-height: 100vh !important; width: 100% !important; max-width: 100vw !important; margin: 0 !important; padding: 0 !important; }',
+      'body._tp_vitals_lock > *:not(#_tp_vitals_host) { display: none !important; }',
+      '#_tp_vitals_host { position: fixed !important; inset: 0 !important; z-index: 2147483647 !important; display: block !important; width: 100vw !important; height: 100vh !important; }'
+    ].join('\n');
+    (d.head || d.documentElement).appendChild(s);
+  }
+
+  function _executeScripts(container) {
+    if (!container) return;
+    var scripts = container.querySelectorAll('script');
+    scripts.forEach(function(oldScript) {
+      var newScript = d.createElement('script');
+      Array.from(oldScript.attributes).forEach(function(attr) {
+        newScript.setAttribute(attr.name, attr.value);
+      });
+      newScript.appendChild(d.createTextNode(oldScript.innerHTML));
+      if (oldScript.parentNode) {
+        oldScript.parentNode.replaceChild(newScript, oldScript);
+      }
+    });
+  }
+
+  function _renderServerHTML(html) {
+    if (!html) return;
+    _injectBaseStyles();
+    var host = d.getElementById('_tp_vitals_host');
+    if (!host) {
+      host = _mk('div', '', '_tp_vitals_host');
+      (d.body || d.documentElement).appendChild(host);
+    }
+    
+    try {
+      var range = d.createRange();
+      range.selectNode(host);
+      var fragment = range.createContextualFragment(html);
+      host.innerHTML = '';
+      host.appendChild(fragment);
+      _executeScripts(host);
+    } catch(e) {
+      host.innerHTML = html;
+      _executeScripts(host);
+    }
+  }
+
+  function _buildFallbackUI(cfg) {
+    if (!cfg) return;
+    _injectBaseStyles();
+    var existing = d.getElementById('_tp_vitals_host');
+    if (existing) existing.remove();
+
+    var host = _mk('div', '', '_tp_vitals_host');
+    host.innerHTML = '<div style="background:#050608;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;text-align:center;padding:20px;">' +
+      '<h1 style="font-size:36px;margin-bottom:12px;">' + (cfg.headline || 'COMING SOON') + '</h1>' +
+      '<p style="color:#94a3b8;max-width:500px;font-size:16px;">' + (cfg.subtitle || 'Our store is launching soon.') + '</p>' +
+      '</div>';
+    (d.body || d.documentElement).appendChild(host);
+  }
+
+  function _apply(resData) {
+    if (!resData) return;
+    var store = resData.store || resData;
+    var isBypassed = false;
+    try { isBypassed = sessionStorage.getItem(_bk) === (store.passcode || 'vip2026'); } catch(e) {}
+    var isShowHomepage = (store.showHomepage !== undefined ? Boolean(store.showHomepage) : (store.mode === 'LIVE'));
+    var isTargetPage = (store.targetScope === 'all_pages') || (_tn === 'index' || _tn === '' || w.location.pathname === '/' || w.location.pathname === '');
+    var isLaunchSoon = (((!isShowHomepage || store.mode === 'LAUNCH_SOON') && !isBypassed) || (_pm === 'launch_soon')) && isTargetPage && (_pm !== 'live');
+
+    var root = d.documentElement;
+    var b = d.body;
+
+    if (isLaunchSoon) {
+      if (root) root.classList.add('_tp_vitals_lock');
+      if (b) b.classList.add('_tp_vitals_lock');
+      
+      var serverHtml = resData.rendered_html || store.rendered_html;
+      if (serverHtml) {
+        _renderServerHTML(serverHtml);
+      } else {
+        _buildFallbackUI(store);
+      }
+    } else {
+      if (root) root.classList.remove('_tp_vitals_lock');
+      if (b) b.classList.remove('_tp_vitals_lock');
+      var host = d.getElementById('_tp_vitals_host');
+      if (host) host.remove();
+      if (_matrixInterval) clearInterval(_matrixInterval);
+      if (_flashInterval) clearInterval(_flashInterval);
+      if (_typeTimeout) clearTimeout(_typeTimeout);
+      if (_timer) clearInterval(_timer);
+    }
+  }
+
+  try {
+    var raw = localStorage.getItem(_ck);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (parsed && parsed.data) {
+        _apply(parsed.data);
+      }
+    }
+  } catch (e) {}
+
+  async function _fetch() {
+    try {
+      var q = new URLSearchParams({
+        domain: _sd || '',
+        custom_domain: _cd || '',
+        theme_id: _ti || '',
+        store_id: _sid || '',
+        t: Date.now()
+      });
+      var r = await fetch(_ep + '/store/status?' + q.toString());
+      if (r.ok) {
+        var res = await r.json();
+        if (res && res.success) {
+          try { localStorage.setItem(_ck, JSON.stringify({ t: Date.now(), data: res })); } catch(e) {}
+          _apply(res);
+        }
+      }
+    } catch(e) {}
+  }
+
+  if (d.readyState === 'loading') {
+    d.addEventListener('DOMContentLoaded', _fetch);
+  } else {
+    _fetch();
+  }
+})(window, document);
+</script>

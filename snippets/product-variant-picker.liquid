@@ -1,0 +1,132 @@
+{% liquid
+  assign is_size = false
+  assign size_title_downcase = size_title | downcase
+  assign picker_types = ''
+  assign option_labels = ''
+
+  for option in product.options_with_values
+    assign found_option = false
+    assign option_design = ''
+    assign option_label = option.name
+
+    for i in (1..5)
+      unless found_option == true
+        assign option_name_key = 'variant_option_title' | append: i
+        assign option_design_key = 'variant_option_design' | append: i
+        assign option_label_key = 'variant_option_display_name' | append: i
+
+        assign option_name = settings[option_name_key]
+        if option_name == option.name
+          assign found_option = true
+          assign option_design = settings[option_design_key]
+          assign option_label = settings[option_label_key] | default: option.name
+        endif
+      endunless
+    endfor
+
+    assign design = option_design | prepend: ','
+    assign option_label = option_label | prepend: ','
+    if found_option == false or option_design == ''
+      assign design = settings.variant_option_design_default | prepend: ','
+    endif
+
+    assign picker_types = picker_types | append: design
+    assign option_labels = option_labels | append: option_label
+  endfor
+  assign picker_types = picker_types | remove_first: ',' | split: ','
+  assign option_labels = option_labels | remove_first: ',' | split: ','
+%}
+
+<variant-picker
+  id="variant-picker-{{ section.id }}"
+  data-product-id="{{ product.id }}"
+  data-section-id="{{ section.id }}"
+  data-update-url="{{ update_browser_history }}"
+  data-product-url="{{ product.url }}"
+  data-has-only-default-variant="{{ product.has_only_default_variant }}"
+>
+  {%- unless product.has_only_default_variant -%}
+    {%- for option in product.options_with_values -%}
+      {% liquid
+        assign picker_type = picker_types[forloop.index0]
+        assign option_label = option_labels[forloop.index0]
+        assign option_name_downcase = option.name | downcase
+        if size_title_downcase contains option_name_downcase or forloop.first and product.metafields.custom.size_chart_info != blank
+          assign is_size = true
+        else
+          assign is_size = false
+        endif
+
+        assign swatch_count = option.values | map: 'swatch' | compact | size
+
+        if swatch_count > 0
+          if picker_type == 'dropdown'
+            assign picker_type = 'swatch_dropdown'
+          elsif picker_type == 'color'
+            assign picker_type = 'swatch_color'
+          endif
+        endif
+      %}
+      <div
+        class="m-product-option m-product-option--{{ picker_type }}"
+        data-picker-type="{{ picker_type }}"
+      >
+        <div
+          data-picker-field="{% if picker_type == 'dropdown' or picker_type == 'swatch_dropdown' %}select{% else %}radio{% endif %}"
+          data-option-name="{{ option.name }}"
+          data-selected-value="{{ option.selected_value }}"
+          class="m-product-option__inner"
+        >
+          <div class="m-product-option--label">
+            <label class="option-label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
+              <span class="option-label--title">{{ option_label }}:</span>
+              <span class="option-label--selected">{{ option.selected_value }}</span>
+            </label>
+            {% if is_size %}
+              <div class="m-luxury-size-header-row">
+                <div class="m-luxury-size-system-dropdown">
+                  <select class="m-luxury-size-system-select" aria-label="{{ 'products.product.select_size' | t | default: 'Sizing standard' }}">
+                    <option value="FR" selected>{{ 'products.product.size_fr' | t | default: 'Size FR' }}</option>
+                    <option value="AU">{{ 'products.product.size_au' | t | default: 'Size AU' }}</option>
+                    <option value="US">{{ 'products.product.size_us' | t | default: 'Size US' }}</option>
+                    <option value="UK">{{ 'products.product.size_uk' | t | default: 'Size UK' }}</option>
+                    <option value="IT">{{ 'products.product.size_it' | t | default: 'Size IT' }}</option>
+                  </select>
+                  <svg class="m-luxury-size-system-chevron" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="1 1 5 5 9 1"></polyline>
+                  </svg>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+          <div class="m-product-option--content m:inline-flex m:flex-wrap">
+            {%- case picker_type -%}
+              {% when 'dropdown', 'swatch_dropdown' %}
+                <select
+                  id="Option-{{ section.id }}-{{ forloop.index0 }}"
+                  name="options[{{ option.name | escape }}]"
+                  form="{{ product_form_id }}"
+                >
+                  {% render 'product-variant-options', product: product, option: option, picker_type: picker_type %}
+                </select>
+              {% when 'swatch_color' %}
+                {% render 'product-variant-options', product: product, option: option, picker_type: picker_type %}
+              {% else %}
+                {% render 'product-variant-options', product: product, option: option, picker_type: picker_type %}
+            {%- endcase -%}
+          </div>
+          {% if is_size %}
+            <div class="m-luxury-size-guide-trigger-row">
+              <button type="button" class="m-luxury-size-guide-trigger-btn" data-open-sizeguide>
+                {{ 'products.product.size_guide' | t | default: 'Size Guide' }}
+              </button>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {%- endfor -%}
+  {%- endunless -%}
+  <script type="application/json" data-selected-variant>
+    {{ product.selected_or_first_available_variant | json }}
+  </script>
+</variant-picker>

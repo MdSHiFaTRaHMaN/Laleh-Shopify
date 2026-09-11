@@ -1,0 +1,702 @@
+{{ 'luxury-header.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+  assign animation_effect = settings.animations
+  assign animated = false
+  if animation_effect != 'none'
+    assign animated = true
+    if section.settings.animations != 'inherit'
+      assign animation_effect = section.settings.animations
+    endif
+  endif
+
+  assign container = section.settings.container
+  if container == 'w-full'
+    assign container = 'container-full'
+  endif
+
+  assign columns_desktop = section.settings.columns_desktop | default: 3
+  assign columns_mobile = section.settings.columns_mobile | default: 1
+  assign card_style = section.settings.card_style | default: 'minimal'
+  assign text_alignment = section.settings.text_alignment | default: 'center'
+%}
+
+{%- style -%}
+  #m-section--{{ section.id }} {
+    --section-pt: {{ section.settings.padding_top }}px;
+    --section-pb: {{ section.settings.padding_bottom }}px;
+    --accent-gold: {{ section.settings.accent_color | default: '#dfba73' }};
+    --accent-gold-light: {{ section.settings.accent_color_light | default: '#f7e7c4' }};
+    --custom-bg: {{ section.settings.custom_bg_color }};
+    --custom-text: {{ section.settings.custom_text_color }};
+  }
+
+  @media (max-width: 767px) {
+    #m-section--{{ section.id }} {
+      --section-pt: {{ section.settings.padding_top_mobile | default: 40 }}px;
+      --section-pb: {{ section.settings.padding_bottom_mobile | default: 40 }}px;
+    }
+  }
+
+  #m-section--{{ section.id }}.m-luxury-pillars-section {
+    padding-top: var(--section-pt);
+    padding-bottom: var(--section-pb);
+    position: relative;
+    overflow: hidden;
+    {% if section.settings.custom_bg_color != blank %}
+      background-color: var(--custom-bg);
+    {% endif %}
+    {% if section.settings.custom_text_color != blank %}
+      color: var(--custom-text);
+    {% endif %}
+  }
+
+  /* Background Ambient Glow */
+  #m-section--{{ section.id }} .m-luxury-pillars__ambient-glow {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 650px;
+    height: 380px;
+    background: radial-gradient(circle, rgba(223, 186, 115, 0.08) 0%, rgba(0, 0, 0, 0) 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Section Header */
+  #m-section--{{ section.id }} .m-luxury-pillars__header {
+    text-align: {{ text_alignment }};
+    max-width: 820px;
+    margin: 0 auto 0px auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  #m-section--{{ section.id }} .m-luxury-pillars__eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    margin-bottom: 18px;
+    position: relative;
+  }
+
+  #m-section--{{ section.id }} .m-luxury-pillars__heading {
+    font-weight: 300;
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 20px;
+    color: inherit;
+  }
+
+  #m-section--{{ section.id }} .m-luxury-pillars__subheading {
+    font-size: clamp(14px, 1.2vw, 16px);
+    line-height: 1.65;
+    color: inherit;
+    opacity: 0.75;
+    max-width: 640px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+
+  /* Pillars Grid */
+  #m-section--{{ section.id }} .m-luxury-pillars__grid {
+    display: grid;
+    grid-template-columns: repeat({{ columns_desktop }}, minmax(0, 1fr));
+    gap: 30px;
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 1024px) {
+    #m-section--{{ section.id }} .m-luxury-pillars__grid {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    #m-section--{{ section.id }} .m-luxury-pillars__grid {
+      grid-template-columns: repeat({{ columns_mobile }}, minmax(0, 1fr));
+      gap: 12px;
+    }
+  }
+
+  /* Pillar Card Styles */
+  #m-section--{{ section.id }} .m-luxury-pillar-card {
+    text-align: {{ text_alignment }};
+    padding: 12px 18px;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease, background 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: {% if text_alignment == 'center' %}center{% elsif text_alignment == 'right' %}flex-end{% else %}flex-start{% endif %};
+    border-radius: 6px;
+  }
+
+  /* Card Style: Minimal */
+  #m-section--{{ section.id }} .m-luxury-pillar-card--minimal {
+    background: transparent;
+  }
+
+  /* Card Style: Glassmorphism / Frosted */
+  #m-section--{{ section.id }} .m-luxury-pillar-card--glass {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(223, 186, 115, 0.12);
+    backdrop-filter: blur(8px);
+  }
+
+  #m-section--{{ section.id }} .m-luxury-pillar-card--glass:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(223, 186, 115, 0.35);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 25px rgba(223, 186, 115, 0.08);
+    transform: translateY(-4px);
+  }
+
+  /* Card Style: Bordered */
+  #m-section--{{ section.id }} .m-luxury-pillar-card--bordered {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  #m-section--{{ section.id }} .m-luxury-pillar-card--bordered:hover {
+    border-color: var(--accent-gold);
+    transform: translateY(-4px);
+  }
+
+  /* Pillar Luxury Top Accent Hairline */
+  #m-section--{{ section.id }} .m-luxury-pillar-card__accent-line {
+    width: 32px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+    margin-bottom: 12px;
+    opacity: 0.6;
+    transition: width 0.4s ease, opacity 0.4s ease;
+  }
+
+  #m-section--{{ section.id }} .m-luxury-pillar-card:hover .m-luxury-pillar-card__accent-line {
+    width: 64px;
+    opacity: 1;
+  }
+
+  /* Pillar Number / Index */
+  #m-section--{{ section.id }} .m-luxury-pillar-card__number {
+    font-family: var(--font-stack-header, 'Cormorant Garamond', 'Playfair Display', serif);
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.12em;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--accent-gold-light) 0%, var(--accent-gold) 60%, #b8860b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: transform 0.4s ease;
+  }
+
+  #m-section--{{ section.id }} .m-luxury-pillar-card:hover .m-luxury-pillar-card__number {
+    transform: scale(1.08);
+  }
+
+  /* Custom Icon */
+  #m-section--{{ section.id }} .m-luxury-pillar-card__icon {
+    margin-bottom: 20px;
+    color: var(--accent-gold);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #m-section--{{ section.id }} .m-luxury-pillar-card__icon svg {
+    width: 32px;
+    height: 32px;
+    stroke-width: 1.5;
+  }
+
+  /* Pillar Title */
+  #m-section--{{ section.id }} .m-luxury-pillar-card__title {
+    font-family: var(--font-stack-header, 'Cormorant Garamond', 'Playfair Display', serif);
+    font-size: clamp(19px, 1.5vw, 23px);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    margin-bottom: 14px;
+    color: inherit;
+    line-height: 1.25;
+  }
+
+  /* Pillar Description */
+  #m-section--{{ section.id }} .m-luxury-pillar-card__description {
+    font-size: 14px;
+    line-height: 1.7;
+    color: inherit;
+    opacity: 0.7;
+    font-weight: 300;
+    margin: 0;
+  }
+
+  /* Optional Pillar Link */
+  #m-section--{{ section.id }} .m-luxury-pillar-card__link {
+    margin-top: 18px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: gap 0.25s ease, opacity 0.25s ease;
+  }
+
+  #m-section--{{ section.id }} .m-luxury-pillar-card__link:hover {
+    gap: 10px;
+    opacity: 0.85;
+  }
+
+  /* Bottom CTA */
+  #m-section--{{ section.id }} .m-luxury-pillars__footer {
+    text-align: center;
+    margin-top: 52px;
+    position: relative;
+    z-index: 1;
+  }
+
+  #m-section--{{ section.id }} .m-luxury-pillars__cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 38px;
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold);
+    background: transparent;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  #m-section--{{ section.id }} .m-luxury-pillars__cta-btn:hover {
+    background: var(--accent-gold);
+    color: #111111;
+    box-shadow: 0 10px 25px rgba(223, 186, 115, 0.25);
+    transform: translateY(-2px);
+  }
+{%- endstyle -%}
+
+<div
+  id="m-section--{{ section.id }}"
+  class="m-section m-luxury-pillars-section{% if section.settings.color_scheme != blank and section.settings.custom_bg_color == blank %} m-gradient m-color-{{ section.settings.color_scheme }}{% endif %}{% if section.settings.custom_class != blank %} {{ section.settings.custom_class }}{% endif %}"
+  data-section-id="{{ section.id }}"
+  data-section-type="luxury-brand-pillars"
+>
+  {% if section.settings.show_ambient_glow %}
+    <div class="m-luxury-pillars__ambient-glow" aria-hidden="true"></div>
+  {% endif %}
+
+  <div class="m-luxury-pillars__container {{ container }}">
+    <!-- Header Block -->
+    {% if section.settings.eyebrow != blank or section.settings.heading != blank or section.settings.subheading != blank %}
+      <div class="m-luxury-pillars__header">
+        {% if section.settings.eyebrow != blank %}
+          <div class="m-luxury-pillars__eyebrow{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
+            {{ section.settings.eyebrow }}
+          </div>
+        {% endif %}
+
+        {% if section.settings.heading != blank %}
+          <h2 class="m-luxury-pillars__heading {{ section.settings.heading_size }}{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
+            {{ section.settings.heading }}
+          </h2>
+        {% endif %}
+
+        {% if section.settings.subheading != blank %}
+          <div class="m-luxury-pillars__subheading rte{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
+            {{ section.settings.subheading }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <!-- Pillars Grid -->
+    <div class="m-luxury-pillars__grid">
+      {% for block in section.blocks %}
+        <div
+          class="m-luxury-pillar-card m-luxury-pillar-card--{{ card_style }}{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}"
+          {{ block.shopify_attributes }}
+          {% if animated %}
+            style="--animation-order: {{ forloop.index }};"
+          {% endif %}
+        >
+          {% if section.settings.show_accent_line %}
+            <div class="m-luxury-pillar-card__accent-line"></div>
+          {% endif %}
+
+          {% if block.settings.icon != blank or block.settings.custom_svg != blank %}
+            <div class="m-luxury-pillar-card__icon">
+              {% if block.settings.custom_svg != blank %}
+                {{ block.settings.custom_svg }}
+              {% elsif block.settings.icon != blank %}
+                <img
+                  src="{{ block.settings.icon | image_url: width: 80 }}"
+                  alt="{{ block.settings.title | escape }}"
+                  width="40"
+                  height="40"
+                  loading="lazy"
+                >
+              {% endif %}
+            </div>
+          {% elsif block.settings.number != blank %}
+            <div class="m-luxury-pillar-card__number">
+              {{ block.settings.number }}
+            </div>
+          {% endif %}
+
+          {% if block.settings.title != blank %}
+            <h3 class="m-luxury-pillar-card__title">
+              {{ block.settings.title }}
+            </h3>
+          {% endif %}
+
+          {% if block.settings.description != blank %}
+            <div class="m-luxury-pillar-card__description rte">
+              {{ block.settings.description }}
+            </div>
+          {% endif %}
+
+          {% if block.settings.link_label != blank and block.settings.link != blank %}
+            <a href="{{ block.settings.link }}" class="m-luxury-pillar-card__link">
+              {{ block.settings.link_label }}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </a>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Bottom Action / CTA Button -->
+    {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+      <div class="m-luxury-pillars__footer{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
+        <a href="{{ section.settings.button_link }}" class="m-luxury-pillars__cta-btn">
+          {{ section.settings.button_label }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Luxury Brand Pillars",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow / Badge Text",
+      "default": "OUR PROMISE"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Created With Care"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "default": "h2",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "h4", "label": "H4" }
+      ]
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subheading / Description",
+      "default": "<p>From first sketch to final stitch, every LALEH piece passes through the same three commitments.</p>"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text Alignment",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Layout & Styling"
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container Width",
+      "default": "container",
+      "options": [
+        { "value": "container", "label": "Fixed Width Container" },
+        { "value": "container-fluid", "label": "Fluid Container" },
+        { "value": "w-full", "label": "Full Width" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Columns on Desktop",
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on Mobile",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "1 Column (Stacked)" },
+        { "value": "2", "label": "2 Columns" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "card_style",
+      "label": "Card Visual Style",
+      "default": "minimal",
+      "options": [
+        { "value": "minimal", "label": "Minimal Editorial (Clean)" },
+        { "value": "glass", "label": "Glassmorphism (Frosted Glow)" },
+        { "value": "bordered", "label": "Fine Bordered Card" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_accent_line",
+      "label": "Show Gold Accent Line",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ambient_glow",
+      "label": "Show Ambient Gold Glow in Background",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colors & Color Scheme"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Theme Color Scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "custom_bg_color",
+      "label": "Custom Background Color (Optional)",
+      "default": "#12100e"
+    },
+    {
+      "type": "color",
+      "id": "custom_text_color",
+      "label": "Custom Text Color (Optional)",
+      "default": "#f5f3ef"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent Color (Gold)",
+      "default": "#dfba73"
+    },
+    {
+      "type": "color",
+      "id": "accent_color_light",
+      "label": "Accent Color Light (Shimmer)",
+      "default": "#f7e7c4"
+    },
+    {
+      "type": "header",
+      "content": "Call To Action (Optional)"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "Discover Our LALEH"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Top Padding (Desktop)",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom Padding (Desktop)",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Top Padding (Mobile)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom Padding (Mobile)",
+      "default": 48
+    },
+    {
+      "type": "select",
+      "id": "animations",
+      "label": "Animations",
+      "default": "inherit",
+      "options": [
+        { "value": "inherit", "label": "Inherit from theme" },
+        { "value": "fade-in", "label": "Fade in" },
+        { "value": "fade-in-up", "label": "Fade in up" },
+        { "value": "none", "label": "None" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "custom_class",
+      "label": "Custom CSS Class"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "pillar",
+      "name": "Pillar / Commitment",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Number / Roman Numeral",
+          "default": "01"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Custom Icon (Optional)"
+        },
+        {
+          "type": "html",
+          "id": "custom_svg",
+          "label": "Custom SVG Code (Optional)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Responsibly Sourced"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Natural fibres selected from mills we've worked with for years, chosen for how they age — not just how they photograph."
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link Label (Optional)"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Luxury Brand Pillars",
+      "settings": {
+        "eyebrow": "OUR PROMISE",
+        "heading": "Created With Care",
+        "subheading": "<p>From first sketch to final stitch, every LALEH piece passes through the same three commitments.</p>",
+        "custom_bg_color": "#12100e",
+        "custom_text_color": "#f5f3ef",
+        "accent_color": "#dfba73",
+        "card_style": "minimal"
+      },
+      "blocks": [
+        {
+          "type": "pillar",
+          "settings": {
+            "number": "01",
+            "title": "Responsibly Sourced",
+            "description": "Natural fibres selected from mills we've worked with for years, chosen for how they age — not just how they photograph."
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "number": "02",
+            "title": "Made in Small Runs",
+            "description": "Every style is produced in limited quantities, avoiding the waste of mass overproduction and keeping each piece considered."
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "number": "03",
+            "title": "Finished by Hand",
+            "description": "Hems, closures and linings are finished by hand in our atelier, the same way they have been since our very first dress."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,190 @@
+{% comment %}
+  Luxury 3-Column Product Media Gallery with Vertical Thumbnails,
+  Top/Bottom Navigation Chevrons, Cursor Mouse-Drag / Touch-Swipe Hero,
+  Floating Next/Prev Arrows, and Bottom Progress Indicator.
+  Matching Elie Saab Design
+{% endcomment %}
+
+{% liquid
+  assign media_count = product.media.size
+  assign collection_url = product.collections.first.url | default: '/collections/all'
+  assign collection_title = product.collections.first.title | default: 'All'
+%}
+
+<div
+  class="m-luxury-media-gallery"
+  id="LuxuryMediaGallery-{{ section.id }}"
+  data-media-count="{{ media_count }}"
+  data-product-id="{{ product.id }}"
+>
+  
+  <!-- LEFT COLUMN: Back Link + Vertical Thumbnails with Chevrons -->
+  <div class="m-luxury-media-sidebar">
+    <!-- Top Back Link -->
+    <a href="{{ collection_url }}" class="m-luxury-back-link" aria-label="Back to {{ collection_title }}">
+      <span class="m-luxury-back-arrow">&lt;</span>
+      <span class="m-luxury-back-text">{{ 'products.product.all' | t | default: 'All' }}</span>
+    </a>
+
+    <!-- Vertical Thumbnails Stack with Up/Down Chevrons -->
+    {% if media_count > 1 %}
+      <div class="m-luxury-thumbnails-container">
+        <!-- Up Chevron Button -->
+        <button type="button" class="m-luxury-thumb-arrow m-luxury-thumb-prev" id="LuxuryThumbPrev-{{ section.id }}" aria-label="Scroll thumbnails up">
+          <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 5 5 1 1 5"></polyline>
+          </svg>
+        </button>
+
+        <div class="m-luxury-thumbnails-wrap" id="LuxuryThumbnails-{{ section.id }}">
+          <ul class="m-luxury-thumbnails-list" role="tablist" aria-label="Product media thumbnails">
+            {% for media in product.media %}
+              <li
+                class="m-luxury-thumb-item {% if forloop.first %}is-active{% endif %}"
+                data-index="{{ forloop.index0 }}"
+                data-media-id="{{ media.id }}"
+                role="tab"
+                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                tabindex="0"
+              >
+                <div class="m-luxury-thumb-box">
+                  <img
+                    src="{{ media.preview_image | image_url: width: 180, height: 240, crop: 'center' }}"
+                    alt="{{ media.alt | default: product.title | escape }}"
+                    class="m-luxury-thumb-img"
+                    width="90"
+                    height="120"
+                    loading="{% if forloop.index <= 4 %}eager{% else %}lazy{% endif %}"
+                  >
+                  {% if media.media_type contains 'video' %}
+                    <span class="m-luxury-thumb-badge" aria-label="Video">
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    </span>
+                  {% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <!-- Down Chevron Button -->
+        <button type="button" class="m-luxury-thumb-arrow m-luxury-thumb-next" id="LuxuryThumbNext-{{ section.id }}" aria-label="Scroll thumbnails down">
+          <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 1 5 5 9 1"></polyline>
+          </svg>
+        </button>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- CENTER COLUMN: Main Hero Image Slider with Drag, Floating Arrows, Progress Bar -->
+  <div class="m-luxury-media-main">
+    <div
+      class="m-luxury-slider-viewport"
+      id="LuxurySliderViewport-{{ section.id }}"
+      data-draggable="true"
+      role="region"
+      aria-label="Product Images Carousel"
+    >
+      
+      <!-- Slides Track -->
+      <div class="m-luxury-slider-track" id="LuxurySliderTrack-{{ section.id }}">
+        {% for media in product.media %}
+          <div
+            class="m-luxury-slide-item {% if forloop.first %}is-active{% endif %}"
+            data-index="{{ forloop.index0 }}"
+            data-media-id="{{ media.id }}"
+            data-media-type="{{ media.media_type }}"
+          >
+            <div class="m-luxury-slide-inner">
+              {% case media.media_type %}
+                {% when 'image' %}
+                  <img
+                    src="{{ media | image_url: width: 1400 }}"
+                    srcset="
+                      {{ media | image_url: width: 600 }} 600w,
+                      {{ media | image_url: width: 900 }} 900w,
+                      {{ media | image_url: width: 1200 }} 1200w,
+                      {{ media | image_url: width: 1600 }} 1600w
+                    "
+                    sizes="(min-width: 1024px) 45vw, 100vw"
+                    alt="{{ media.alt | default: product.title | escape }}"
+                    class="m-luxury-main-img"
+                    width="{{ media.width }}"
+                    height="{{ media.height }}"
+                    loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                    draggable="false"
+                  >
+                {% when 'video' %}
+                  <div class="m-luxury-video-wrapper" data-media-type="video">
+                    {{ media | video_tag: controls: true, autoplay: false, loop: true, muted: true, playsinline: true, preload: 'auto', image_size: '1400x', class: 'm-luxury-main-video' }}
+                  </div>
+                {% when 'external_video' %}
+                  <div class="m-luxury-video-wrapper" data-media-type="external_video">
+                    {% liquid
+                      assign video_class = 'm-luxury-main-video'
+                      if media.host == 'youtube'
+                        echo media | external_video_url: autoplay: 0, loop: 1, mute: 1, playlist: media.external_id, enablejsapi: 1 | external_video_tag: class: video_class, loading: 'lazy'
+                      elsif media.host == 'vimeo'
+                        echo media | external_video_url: autoplay: 0, loop: 1, muted: 1 | external_video_tag: class: video_class, loading: 'lazy'
+                      else
+                        echo media | external_video_tag: class: video_class, loading: 'lazy'
+                      endif
+                    %}
+                  </div>
+                {% when 'model' %}
+                  <div class="m-luxury-model-wrapper">
+                    {{ media | model_viewer_tag: image_size: '1000x', reveal: 'interaction', toggleable: true }}
+                  </div>
+                {% else %}
+                  <img
+                    src="{{ media | image_url: width: 1200 }}"
+                    alt="{{ product.title | escape }}"
+                    class="m-luxury-main-img"
+                    loading="lazy"
+                    draggable="false"
+                  >
+              {% endcase %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Floating Circular Prev & Next Buttons -->
+      {% if media_count > 1 %}
+        <button
+          type="button"
+          class="m-luxury-nav-btn m-luxury-nav-prev"
+          id="LuxuryNavPrev-{{ section.id }}"
+          aria-label="Previous image"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          class="m-luxury-nav-btn m-luxury-nav-next"
+          id="LuxuryNavNext-{{ section.id }}"
+          aria-label="Next image"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      {% endif %}
+
+      <!-- Bottom Progress Indicator Bar -->
+      {% if media_count > 1 %}
+        <div class="m-luxury-progress-bar-wrap">
+          <div class="m-luxury-progress-bar-track">
+            <div class="m-luxury-progress-bar-fill" id="LuxuryProgressFill-{{ section.id }}" style="width: {{ 100.0 | divided_by: media_count }}%;"></div>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+</div>

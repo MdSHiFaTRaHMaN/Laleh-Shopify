@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" fill="none" stroke="#222222" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Body Silhouette Outline -->
+  <g stroke-width="1.1" stroke="#333333" fill="none">
+    <!-- Head & Hair Outline -->
+    <path d="M180,24 C173,24 167,30 167,40 C167,52 173,62 180,64 C187,62 193,52 193,40 C193,30 187,24 180,24 Z" />
+    <path d="M168,36 C172,28 188,28 192,36 C195,44 193,55 190,60" />
+    <path d="M168,40 C167,48 170,56 172,60" />
+    
+    <!-- Neck -->
+    <path d="M174,63 L174,74" />
+    <path d="M186,63 L186,74" />
+
+    <!-- Shoulders & Upper Body -->
+    <path d="M174,74 C162,77 150,83 144,92 C140,98 136,112 133,130 L126,170 C124,180 123,195 125,202 C126,206 128,206 130,202 L136,174 L142,138 C144,128 147,118 150,114" />
+    <path d="M186,74 C198,77 210,83 216,92 C220,98 224,112 227,130 L234,170 C236,180 237,195 235,202 C234,206 232,206 230,202 L224,174 L218,138 C216,128 213,118 210,114" />
+
+    <!-- Torso & Waist -->
+    <path d="M150,114 C152,126 153,138 153,150 C153,158 151,166 150,172 C148,180 146,192 147,204 L149,215" />
+    <path d="M210,114 C208,126 207,138 207,150 C207,158 209,166 210,172 C212,180 214,192 213,204 L211,215" />
+
+    <!-- Hips & Pelvis -->
+    <path d="M149,215 C150,226 154,236 158,245 L163,258" />
+    <path d="M211,215 C210,226 206,236 202,245 L197,258" />
+    <path d="M172,228 L180,240 L188,228" />
+
+    <!-- Collarbone & Bust Details -->
+    <path d="M170,80 C175,82 180,82 180,82 C180,82 185,82 190,80" stroke-width="0.8" stroke="#777777" />
+    <path d="M165,116 C172,124 188,124 195,116" stroke-width="0.8" stroke="#888888" />
+  </g>
+
+  <!-- Measurement Dashed Lines & Labels -->
+  <g stroke="#18181b" stroke-width="0.9" stroke-dasharray="2.5,2.5" fill="none">
+    <!-- 1. Neck to Shoulder -->
+    <line x1="174" y1="74" x2="216" y2="74" />
+    <line x1="216" y1="74" x2="242" y2="74" />
+
+    <!-- 2. Chest -->
+    <line x1="147" y1="120" x2="213" y2="120" />
+    <line x1="213" y1="120" x2="242" y2="120" />
+
+    <!-- 3. Waist -->
+    <line x1="152" y1="168" x2="208" y2="168" />
+    <line x1="208" y1="168" x2="242" y2="168" />
+
+    <!-- 4. Hip -->
+    <line x1="148" y1="212" x2="212" y2="212" />
+    <line x1="212" y1="212" x2="242" y2="212" />
+
+    <!-- 5. Sleeve Length -->
+    <line x1="216" y1="92" x2="235" y2="198" stroke-dasharray="2,2" />
+    <line x1="235" y1="198" x2="242" y2="212" />
+  </g>
+
+  <!-- Labels -->
+  <g font-family="'Montserrat', sans-serif" font-size="8.5" fill="#27272a" font-weight="400" letter-spacing="0.2">
+    <text x="246" y="77">Neck to shoulder</text>
+    <text x="246" y="123">Chest</text>
+    <text x="246" y="171">Waist</text>
+    <text x="246" y="215">Hip</text>
+    <text x="246" y="248">Sleeve Length</text>
+  </g>
+</svg>

@@ -1,0 +1,519 @@
+<script src="{{ 'announcement-bar.js' | asset_url }}" defer="defer"></script>
+
+{% liquid
+  assign show_announcement = section.settings.show_announcement
+  assign homepage_only = section.settings.homepage_only
+  assign show_close = section.settings.show_close
+  assign show_divider = section.settings.show_divider
+  assign container = section.settings.container
+  if container == 'w-full'
+    assign container = 'container-full'
+  endif
+  assign blocks_size = section.blocks.size
+
+  assign bg_color = section.settings.bg_color | default: '#000000'
+  assign text_color = section.settings.text_color | default: '#ffffff'
+  assign separator_color = section.settings.separator_color | default: '#ffffff'
+  assign separator_symbol = section.settings.separator_symbol | default: '•'
+  assign font_size_desktop = section.settings.font_size_desktop | default: 13
+  assign font_size_mobile = section.settings.font_size_mobile | default: 12
+  assign font_weight = section.settings.font_weight | default: '400'
+  assign letter_spacing = section.settings.letter_spacing | default: 0.5
+  assign text_transform = section.settings.text_transform | default: 'none'
+  assign padding_vertical = section.settings.padding_vertical | default: 9
+  assign item_gap_desktop = section.settings.item_gap_desktop | default: 36
+  assign slide_interval = section.settings.slide_interval | default: 5
+  assign pause_on_hover = section.settings.pause_on_hover
+%}
+
+{% if show_announcement and blocks_size > 0 %}
+  {% if homepage_only == false or request.page_type == 'index' %}
+    <style>
+      #m-announcement--{{ section.id }} {
+        --ab-bg: {{ bg_color }};
+        --ab-color: {{ text_color }};
+        --ab-separator-color: {{ separator_color }};
+        --ab-fs-desktop: {{ font_size_desktop }}px;
+        --ab-fs-mobile: {{ font_size_mobile }}px;
+        --ab-fw: {{ font_weight }};
+        --ab-ls: {{ letter_spacing }}px;
+        --ab-tt: {{ text_transform }};
+        --ab-py: {{ padding_vertical }}px;
+        --ab-gap-desktop: {{ item_gap_desktop }}px;
+        background-color: var(--ab-bg);
+        color: var(--ab-color);
+        position: relative;
+        z-index: 40;
+        {% if show_divider %}
+          border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        {% endif %}
+      }
+
+      .m-announcement-bar__custom {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        position: relative;
+        padding-top: var(--ab-py);
+        padding-bottom: var(--ab-py);
+        font-family: inherit;
+        font-size: var(--ab-fs-mobile);
+        font-weight: var(--ab-fw);
+        letter-spacing: var(--ab-ls);
+        text-transform: var(--ab-tt);
+        line-height: 1.4;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      @media (min-width: 768px) {
+        .m-announcement-bar__custom {
+          font-size: var(--ab-fs-desktop);
+        }
+      }
+
+      /* Container Box / Full Width */
+      .m-announcement-bar__custom-inner {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Desktop View: Static Row */
+      .m-announcement-bar__desktop-view {
+        display: none;
+        width: 100%;
+      }
+
+      @media (min-width: 768px) {
+        .m-announcement-bar__desktop-view {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-wrap: wrap;
+          column-gap: var(--ab-gap-desktop);
+          row-gap: 4px;
+        }
+      }
+
+      .m-announcement-bar__desktop-item {
+        display: inline-flex;
+        align-items: center;
+        color: inherit;
+        text-decoration: none;
+        position: relative;
+      }
+
+      .m-announcement-bar__desktop-item a {
+        color: inherit;
+        text-decoration: none;
+        transition: opacity 0.2s ease;
+      }
+
+      .m-announcement-bar__desktop-item a:hover {
+        opacity: 0.8;
+      }
+
+      .m-announcement-bar__desktop-separator {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--ab-separator-color);
+        opacity: 0.75;
+        user-select: none;
+        font-size: 0.9em;
+        line-height: 1;
+      }
+
+      /* Mobile View: Fade Slider (one message at a time) */
+      .m-announcement-bar__mobile-view {
+        display: flex;
+        width: 100%;
+      }
+
+      @media (min-width: 768px) {
+        .m-announcement-bar__mobile-view {
+          display: none;
+        }
+      }
+
+      .m-announcement-bar__slider {
+        position: relative;
+        width: 100%;
+        min-height: calc(var(--ab-fs-mobile) * 1.4);
+      }
+
+      .m-announcement-bar__slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 0.6s ease;
+        pointer-events: none;
+      }
+
+      .m-announcement-bar__slide.is-active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .m-announcement-bar__slide a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* Close Button */
+      .m-announcement-bar__close-btn {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: inherit;
+        padding: 4px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+      .m-announcement-bar__close-btn:hover {
+        opacity: 1;
+      }
+      .m-announcement-bar__close-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+    </style>
+
+    <section
+      id="m-announcement--{{ section.id }}"
+      data-section-id="{{ section.id }}"
+      data-section-type="announcement"
+      class="m-announcement-bar"
+    >
+      <m-announcement-bar
+        class="m-announcement-bar__custom"
+        data-pause-hover="{{ pause_on_hover }}"
+        data-slide-interval="{{ slide_interval | times: 1000 }}"
+      >
+        <div class="m-announcement-bar__custom-inner {{ container }}">
+
+          <!-- Desktop Static Row Layout -->
+          <div class="m-announcement-bar__desktop-view">
+            {% for block in section.blocks %}
+              {%- assign raw_msg = block.settings.message -%}
+              {%- assign current_country_name = localization.country.name | default: 'Switzerland' -%}
+              {%- capture dynamic_country_span -%}<span class="m-announcement-country" data-announcement-country>{{ current_country_name }}</span>{%- endcapture -%}
+              {%- assign dynamic_msg = raw_msg -%}
+              {%- if raw_msg contains 'We ship to' or raw_msg contains 'we ship to' -%}
+                {%- if raw_msg contains 'Switzerland' -%}
+                  {%- assign dynamic_msg = raw_msg | replace: 'Switzerland', dynamic_country_span -%}
+                {%- else -%}
+                  {%- assign split_ship = raw_msg | split: 'We ship to ' -%}
+                  {%- if split_ship.size > 1 -%}
+                    {%- capture dynamic_msg -%}We ship to {{ dynamic_country_span }}{%- endcapture -%}
+                  {%- endif -%}
+                {%- endif -%}
+              {%- elsif raw_msg contains 'Switzerland' -%}
+                {%- assign dynamic_msg = raw_msg | replace: 'Switzerland', dynamic_country_span -%}
+              {%- endif -%}
+              <div class="m-announcement-bar__desktop-item" {{ block.shopify_attributes }}>
+                {% if block.settings.message_link != blank %}
+                  <a href="{{ block.settings.message_link }}">
+                    {{ dynamic_msg }}
+                  </a>
+                {% else %}
+                  <span>{{ dynamic_msg }}</span>
+                {% endif %}
+              </div>
+              {% unless forloop.last %}
+                {% if separator_symbol != 'none' %}
+                  <span class="m-announcement-bar__desktop-separator" aria-hidden="true">
+                    {{ separator_symbol }}
+                  </span>
+                {% endif %}
+              {% endunless %}
+            {% endfor %}
+          </div>
+
+          <!-- Mobile Fade Slider Layout -->
+          <div class="m-announcement-bar__mobile-view" aria-label="Announcement slider">
+            <div class="m-announcement-bar__slider">
+              {% for block in section.blocks %}
+                {%- assign raw_msg = block.settings.message -%}
+                {%- assign current_country_name = localization.country.name | default: 'Switzerland' -%}
+                {%- capture dynamic_country_span -%}<span class="m-announcement-country" data-announcement-country>{{ current_country_name }}</span>{%- endcapture -%}
+                {%- assign dynamic_msg = raw_msg -%}
+                {%- if raw_msg contains 'We ship to' or raw_msg contains 'we ship to' -%}
+                  {%- if raw_msg contains 'Switzerland' -%}
+                    {%- assign dynamic_msg = raw_msg | replace: 'Switzerland', dynamic_country_span -%}
+                  {%- else -%}
+                    {%- assign split_ship = raw_msg | split: 'We ship to ' -%}
+                    {%- if split_ship.size > 1 -%}
+                      {%- capture dynamic_msg -%}We ship to {{ dynamic_country_span }}{%- endcapture -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- elsif raw_msg contains 'Switzerland' -%}
+                  {%- assign dynamic_msg = raw_msg | replace: 'Switzerland', dynamic_country_span -%}
+                {%- endif -%}
+                <div
+                  class="m-announcement-bar__slide{% if forloop.first %} is-active{% endif %}"
+                  {{ block.shopify_attributes }}
+                >
+                  {% if block.settings.message_link != blank %}
+                    <a href="{{ block.settings.message_link }}">
+                      {{ dynamic_msg }}
+                    </a>
+                  {% else %}
+                    <span>{{ dynamic_msg }}</span>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+        </div>
+
+        {% if show_close %}
+          <button
+            type="button"
+            class="m-announcement-bar__close-btn"
+            aria-label="Close announcement"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        {% endif %}
+      </m-announcement-bar>
+    </section>
+  {% endif %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "General Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement bar",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "homepage_only",
+      "label": "Show on home page only",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container width",
+      "default": "container",
+      "options": [
+        { "value": "container-fluid", "label": "Fluid (Wide)" },
+        { "value": "w-full", "label": "Full width" },
+        { "value": "container", "label": "Fixed container" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_close",
+      "label": "Show close button",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show bottom divider line",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "separator_color",
+      "label": "Separator color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "font_size_desktop",
+      "label": "Desktop font size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "font_size_mobile",
+      "label": "Mobile font size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "Font weight",
+      "default": "400",
+      "options": [
+        { "value": "300", "label": "Light (300)" },
+        { "value": "400", "label": "Regular (400)" },
+        { "value": "500", "label": "Medium (500)" },
+        { "value": "600", "label": "Semi-bold (600)" },
+        { "value": "700", "label": "Bold (700)" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0.5
+    },
+    {
+      "type": "select",
+      "id": "text_transform",
+      "label": "Text transform",
+      "default": "none",
+      "options": [
+        { "value": "none", "label": "Normal" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Layout & Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_vertical",
+      "label": "Vertical padding (top & bottom)",
+      "min": 4,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 9
+    },
+    {
+      "type": "range",
+      "id": "item_gap_desktop",
+      "label": "Desktop spacing between items",
+      "min": 12,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "select",
+      "id": "separator_symbol",
+      "label": "Separator symbol (desktop)",
+      "default": "•",
+      "options": [
+        { "value": "•", "label": "Bullet Dot (•)" },
+        { "value": "✦", "label": "Sparkle Star (✦)" },
+        { "value": "★", "label": "Star (★)" },
+        { "value": "|", "label": "Vertical Pipe (|)" },
+        { "value": "-", "label": "Dash (-)" },
+        { "value": "/", "label": "Slash (/)" },
+        { "value": "none", "label": "None" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Mobile Slider Settings"
+    },
+    {
+      "type": "range",
+      "id": "slide_interval",
+      "label": "Auto-change interval",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 5
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on hover / touch (Mobile)",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Announcement item",
+      "settings": [
+        {
+          "type": "textarea",
+          "id": "message",
+          "label": "Announcement text",
+          "default": "We ship to Switzerland"
+        },
+        {
+          "type": "url",
+          "id": "message_link",
+          "label": "Optional link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement bar",
+      "category": "Header",
+      "blocks": [
+        { "type": "item", "settings": { "message": "We ship to Switzerland" } },
+        { "type": "item", "settings": { "message": "Your order arrives within 3-10 business days" } },
+        { "type": "item", "settings": { "message": "Free returns within 30 days" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,164 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "breadcrumb_RHyjx4": {
+      "type": "breadcrumb",
+      "settings": {
+        "container": "container",
+        "text_alignment": "center",
+        "hide_current": false,
+        "hide_on_mb": false,
+        "animations": "inherit"
+      }
+    },
+    "custom_content_tAfTRN": {
+      "type": "custom-content",
+      "custom_css": [
+        ".m-section__header {--m-section-header-spacing-bottom: 40px;}",
+        "@media screen and (max-width: 767px) {.m-section__header {margin-bottom: 0px; } p.m-section__subheading.m-scroll-trigger.animate--fade-in-up {font-size: 14px; } .h3 {font-size: 20px; }}"
+      ],
+      "settings": {
+        "heading": "Frequently Asked Questions",
+        "heading_size": "h3",
+        "subheading": "Need Help?",
+        "description": "",
+        "header_alignment": "center",
+        "container": "container-fluid",
+        "color_scheme": "",
+        "content_color_scheme": "",
+        "enable_parallax": false,
+        "parallax_direction": "vertical",
+        "gap": 30,
+        "row_gap": 30,
+        "use_scroll_mobile": false,
+        "gap_mobile": 16,
+        "row_gap_mobile": 16,
+        "padding_top": 10,
+        "padding_bottom": 10,
+        "enable_preload_image": false,
+        "custom_class": ""
+      }
+    },
+    "main": {
+      "type": "page-faqs",
+      "blocks": {
+        "accordion-1": {
+          "type": "accordion",
+          "settings": {
+            "title": "Where do you ship from?",
+            "content": "<p>All orders are carefully prepared and shipped from the United Arab Emirates.</p>",
+            "open": false
+          }
+        },
+        "accordion-2": {
+          "type": "accordion",
+          "settings": {
+            "title": "How long does shipping take?",
+            "content": "<p>Delivery typically takes 3—10 business days, depending on your destination. Once your order has been dispatched, you'll receive a tracking number by email.</p>",
+            "open": false
+          }
+        },
+        "accordion-3": {
+          "type": "accordion",
+          "settings": {
+            "title": "Can I track my order?",
+            "content": "<p>Yes.  Once your order has been dispatched, you'll receive an email with your tracking information.</p>",
+            "open": false
+          }
+        },
+        "accordion-4": {
+          "type": "accordion",
+          "settings": {
+            "title": "What is your return policy?",
+            "content": "<p>You can return eligible items within the applicable return period. <a href=\"/policies/refund-policy\" title=\"Refund Policy\"><strong>Read our full Return Policy</strong></a></p>",
+            "open": false
+          }
+        },
+        "accordion-5": {
+          "type": "accordion",
+          "settings": {
+            "title": "Can I exchange an item?",
+            "content": "<p>Yes. If your preferred size is available, we'll be happy to arrange an exchange.</p>",
+            "open": false
+          }
+        },
+        "accordion_KAr8gh": {
+          "type": "accordion",
+          "settings": {
+            "title": "How do I choose the right size?",
+            "content": "<p>Each product page includes a detailed size guide to help you find your perfect fit. If you need further assistance, feel free to contact us.<br/><br/></p>",
+            "open": false
+          }
+        },
+        "accordion_m7UqUy": {
+          "type": "accordion",
+          "settings": {
+            "title": "Will sold-out items be restocked?",
+            "content": "<p>Some of our styles may be restocked, while others are released in limited quantities. <br/>Follow us on <a href=\"https://www.instagram.com/mylaleh.co\" target=\"_blank\" title=\"https://www.instagram.com/mylaleh.co\"><strong>Instagram</strong> </a>for restock updates.<br/><br/></p>",
+            "open": false
+          }
+        },
+        "accordion_7fKgjR": {
+          "type": "accordion",
+          "settings": {
+            "title": "How can I contact LALEH?",
+            "content": "<p>You can reach our team at <a href=\"mailto:contact@mylaleh.com\" title=\"mailto:contact@mylaleh.com\">contact@mylaleh.com</a>. We aim to respond within 24–48 hours.<br/></p>",
+            "open": false
+          }
+        },
+        "accordion_4df6HU": {
+          "type": "accordion",
+          "settings": {
+            "title": "Do you offer international shipping?",
+            "content": "<p>We offer international shipping to selected destinations. Available shipping options and costs are calculated at checkout.</p>",
+            "open": false
+          }
+        },
+        "accordion_KbCwBh": {
+          "type": "accordion",
+          "settings": {
+            "title": "Are customs duties or taxes included?",
+            "content": "<p>International orders may be subject to local customs duties, import tariffs, or taxes depending on the destination country. Any applicable charges are the responsibility of the recipient.</p>",
+            "open": false
+          }
+        }
+      },
+      "block_order": [
+        "accordion-1",
+        "accordion-2",
+        "accordion-3",
+        "accordion-4",
+        "accordion-5",
+        "accordion_KAr8gh",
+        "accordion_m7UqUy",
+        "accordion_7fKgjR",
+        "accordion_4df6HU",
+        "accordion_KbCwBh"
+      ],
+      "custom_css": [
+        "section.m-section.m-faqs-section.m-gradient.m-color-default {max-width: 900px; margin: 0 auto;}",
+        ".m-faqs-section .m-collapsible--button {font-size: 15px !important; padding-top: 7px !important; padding-bottom: 7px !important;}",
+        ".m-collapsible--content__inner p {font-size: 12px !important;}"
+      ],
+      "settings": {
+        "container": "container",
+        "color_scheme": "",
+        "menu": "",
+        "custom_class": ""
+      }
+    }
+  },
+  "order": [
+    "breadcrumb_RHyjx4",
+    "custom_content_tAfTRN",
+    "main"
+  ]
+}

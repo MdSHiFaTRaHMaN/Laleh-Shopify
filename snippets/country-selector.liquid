@@ -1,0 +1,125 @@
+{% unless form_id %}
+  {% assign random_number = 'now' | date: '%N' | modulo: 10 | plus: 25 %}
+  {% assign form_id = 'country-' | append: random_number %}
+{% endunless %}
+{% assign current_country_code = localization.country.iso_code | default: 'CH' %}
+{% assign current_country_name = localization.country.name | default: 'Switzerland' %}
+
+{% if localization.available_countries.size > 1 %}
+  <div class="m-switcher-dropdown m-country-switcher {{ box_size }}">
+    {% form 'localization', data-localization-form: '', id: form_id %}
+      <input type="hidden" name="country_code" value="{{ current_country_code }}" data-localization-input>
+      <m-select-component>
+        <m-localization-form>
+          <select name="country_code" class="js-selectNative" data-localization-select>
+            {%- for country in localization.available_countries -%}
+              <option
+                value="{{ country.iso_code }}"
+                {% if country.iso_code == current_country_code %}
+                  selected
+                {% endif %}
+              >
+                {{ country.name }}
+              </option>
+            {%- endfor -%}
+          </select>
+        </m-localization-form>
+        <div class="m-select-custom js-selectCustom" aria-hidden="true">
+          <div class="m-select-custom--trigger">
+            <span class="m-country-flag-icon">
+              {% if current_country_code == 'CH' %}
+                <svg viewBox="0 0 512 512" width="16" height="16" style="display: block; border-radius: 50%;">
+                  <circle cx="256" cy="256" r="256" fill="#D52B1E"/>
+                  <path fill="#FFFFFF" d="M216 116h80v100h100v80H296v100h-80V296H116v-80h100V116z"/>
+                </svg>
+              {% else %}
+                <span class="m-country-flags m-country-flags--{{ current_country_code }}"></span>
+              {% endif %}
+            </span>
+            <span class="m-select-custom--trigger-text"></span>
+            <span class="m-select-custom--trigger-icon">
+              <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 1L5 5L9 1"/>
+              </svg>
+            </span>
+          </div>
+          <div class="m-select-custom--options m-select-custom--options-{{ pos }}">
+            {%- for country in localization.available_countries -%}
+              <div class="m-select-custom--option" data-value="{{ country.iso_code }}">
+                {% if country.iso_code == 'CH' %}
+                  <svg viewBox="0 0 512 512" width="14" height="14" style="display: inline-block; vertical-align: middle; border-radius: 50%; margin-right: 6px;">
+                    <circle cx="256" cy="256" r="256" fill="#D52B1E"/>
+                    <path fill="#FFFFFF" d="M216 116h80v100h100v80H296v100h-80V296H116v-80h100V116z"/>
+                  </svg>
+                {% else %}
+                  <span class="m-country-flags m-country-flags--{{ country.iso_code }}"></span>
+                {% endif %}
+                {{ country.name }}
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      </m-select-component>
+    {%- endform -%}
+  </div>
+{% else %}
+  {% assign fallback_countries = "Switzerland:CH:CHF,United States:US:USD,United Kingdom:GB:GBP,Germany:DE:EUR,France:FR:EUR,Canada:CA:CAD,Australia:AU:AUD,Japan:JP:JPY,United Arab Emirates:AE:AED" | split: "," %}
+  <div class="m-switcher-dropdown m-country-switcher {{ box_size }}">
+    {% form 'localization', data-localization-form: '', id: form_id %}
+      <input type="hidden" name="country_code" value="{{ current_country_code }}" data-localization-input>
+      <m-select-component>
+        <m-localization-form>
+          <select name="country_code" class="js-selectNative" data-localization-select>
+            {%- for item in fallback_countries -%}
+              {% assign parts = item | split: ":" %}
+              <option
+                value="{{ parts[1] }}"
+                {% if parts[1] == current_country_code %}
+                  selected
+                {% endif %}
+              >
+                {{ parts[0] }}
+              </option>
+            {%- endfor -%}
+          </select>
+        </m-localization-form>
+        <div class="m-select-custom js-selectCustom" aria-hidden="true">
+          <div class="m-select-custom--trigger">
+            <span class="m-country-flag-icon">
+              {% if current_country_code == 'CH' %}
+                <svg viewBox="0 0 512 512" width="16" height="16" style="display: block; border-radius: 50%;">
+                  <circle cx="256" cy="256" r="256" fill="#D52B1E"/>
+                  <path fill="#FFFFFF" d="M216 116h80v100h100v80H296v100h-80V296H116v-80h100V116z"/>
+                </svg>
+              {% else %}
+                <span class="m-country-flags m-country-flags--{{ current_country_code }}"></span>
+              {% endif %}
+            </span>
+            <span class="m-select-custom--trigger-text"></span>
+            <span class="m-select-custom--trigger-icon">
+              <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 1L5 5L9 1"/>
+              </svg>
+            </span>
+          </div>
+          <div class="m-select-custom--options m-select-custom--options-{{ pos }}">
+            {%- for item in fallback_countries -%}
+              {% assign parts = item | split: ":" %}
+              <div class="m-select-custom--option" data-value="{{ parts[1] }}">
+                {% if parts[1] == 'CH' %}
+                  <svg viewBox="0 0 512 512" width="14" height="14" style="display: inline-block; vertical-align: middle; border-radius: 50%; margin-right: 6px;">
+                    <circle cx="256" cy="256" r="256" fill="#D52B1E"/>
+                    <path fill="#FFFFFF" d="M216 116h80v100h100v80H296v100h-80V296H116v-80h100V116z"/>
+                  </svg>
+                {% else %}
+                  <span class="m-country-flags m-country-flags--{{ parts[1] }}"></span>
+                {% endif %}
+                {{ parts[0] }}
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      </m-select-component>
+    {%- endform -%}
+  </div>
+{% endif %}

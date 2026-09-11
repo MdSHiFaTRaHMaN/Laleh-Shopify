@@ -1,0 +1,311 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "custom_footer_a73gNK": {
+      "type": "custom-footer",
+      "blocks": {
+        "menu_link_1": {
+          "type": "menu_link",
+          "settings": {
+            "title": "Pagedone",
+            "url": "/"
+          }
+        },
+        "menu_link_2": {
+          "type": "menu_link",
+          "settings": {
+            "title": "Products",
+            "url": "/collections/all"
+          }
+        },
+        "menu_link_3": {
+          "type": "menu_link",
+          "settings": {
+            "title": "Resources",
+            "url": "/pages/about-us"
+          }
+        },
+        "menu_link_4": {
+          "type": "menu_link",
+          "settings": {
+            "title": "Blogs",
+            "url": "/blogs/news"
+          }
+        },
+        "menu_link_5": {
+          "type": "menu_link",
+          "settings": {
+            "title": "Support",
+            "url": "/pages/contact"
+          }
+        }
+      },
+      "block_order": [
+        "menu_link_1",
+        "menu_link_2",
+        "menu_link_3",
+        "menu_link_4",
+        "menu_link_5"
+      ],
+      "disabled": true,
+      "name": "Footer (Pagedone Style)",
+      "settings": {
+        "max_width": 1280,
+        "padding_inline": 24,
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "show_top_border": false,
+        "bg_color": "#ffffff",
+        "text_color": "#4b5563",
+        "brand_color": "#111827",
+        "brand_icon_color": "#6366f1",
+        "link_color": "#4b5563",
+        "link_hover_color": "#111827",
+        "divider_color": "#e5e7eb",
+        "social_icon_color": "#1f2937",
+        "social_icon_hover_color": "#4f46e5",
+        "copyright_color": "#6b7280",
+        "show_brand": true,
+        "logo_width": 160,
+        "brand_text": "Pagedone",
+        "brand_text_size": 26,
+        "show_brand_icon": true,
+        "show_menu": true,
+        "menu": "",
+        "show_divider": true,
+        "show_social_icons": true,
+        "always_show_twitter": true,
+        "social_twitter_link": "https://x.com",
+        "always_show_instagram": true,
+        "social_instagram_link": "https://www.instagram.com/mylaleh.co?lgsl=MWdpOHU0NDUYOHBJNQ%3D%3D&utm%20source=gr",
+        "always_show_facebook": true,
+        "social_facebook_link": "https://facebook.com",
+        "always_show_youtube": true,
+        "social_youtube_link": "https://youtube.com",
+        "social_tiktok_link": "https://www.tiktok.com/@mylaleh.co?%20r%20=%2018%20t=ZN-997WeG6c7Jm",
+        "social_pinterest_link": "",
+        "social_whatsapp_link": "",
+        "social_linkedin_link": "",
+        "show_country_selector": true,
+        "selector_bg": "#0f172a",
+        "selector_text": "#ffffff",
+        "selector_border": "#0f172a",
+        "selector_radius": 6,
+        "selector_modal_title": "Select Region / Currency",
+        "search_placeholder": "Search country or currency...",
+        "copyright_text": "©pagedone 2026, All rights reserved.",
+        "legal_links": ""
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "custom_text_NRBU66": {
+          "type": "custom_text",
+          "settings": {
+            "title": "",
+            "heading_size": "h6",
+            "heading_font": "heading",
+            "heading_font_weight": "medium",
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_10_2026_10_20_14_AM.png",
+            "image_max": "150px",
+            "description": "<p>Timeless femininity, thoughtfully design.</p>",
+            "text_size": "text-base",
+            "width": "50%",
+            "order_first": false,
+            "enable_accordion": true,
+            "open_default": false
+          }
+        },
+        "12ba5a79-51a6-413a-9802-6add59615034": {
+          "type": "spacing",
+          "settings": {
+            "width": "20%"
+          }
+        },
+        "7ebc2f78-975b-4a81-b874-103c3355a866": {
+          "type": "menu",
+          "settings": {
+            "menu": "footer-collection",
+            "title": "Shop",
+            "heading_size": "h6",
+            "heading_font": "heading",
+            "heading_font_weight": "medium",
+            "width": "25%",
+            "order_first": false,
+            "enable_accordion": true,
+            "open_default": false
+          }
+        },
+        "menu_HXQ6Mw": {
+          "type": "menu",
+          "settings": {
+            "menu": "other-pages",
+            "title": "Discover LALEH",
+            "heading_size": "h6",
+            "heading_font": "heading",
+            "heading_font_weight": "medium",
+            "width": "25%",
+            "order_first": false,
+            "enable_accordion": true,
+            "open_default": false
+          }
+        },
+        "49e72833-c68f-4a7b-ab64-3ef0cae99bcb": {
+          "type": "menu",
+          "settings": {
+            "menu": "customer-care",
+            "title": "Information",
+            "heading_size": "h6",
+            "heading_font": "heading",
+            "heading_font_weight": "medium",
+            "width": "25%",
+            "order_first": false,
+            "enable_accordion": true,
+            "open_default": false
+          }
+        },
+        "93571032-b171-4c66-8b3e-96cd91946363": {
+          "type": "our_store",
+          "settings": {
+            "title": "Our Community",
+            "heading_size": "h6",
+            "heading_font": "heading",
+            "heading_font_weight": "medium",
+            "description": "",
+            "text_size": "text-base",
+            "show_email": false,
+            "show_phone": false,
+            "show_socials_link": true,
+            "width": "25%",
+            "order_first": false,
+            "enable_accordion": true,
+            "open_default": false
+          }
+        }
+      },
+      "block_order": [
+        "custom_text_NRBU66",
+        "12ba5a79-51a6-413a-9802-6add59615034",
+        "7ebc2f78-975b-4a81-b874-103c3355a866",
+        "menu_HXQ6Mw",
+        "49e72833-c68f-4a7b-ab64-3ef0cae99bcb",
+        "93571032-b171-4c66-8b3e-96cd91946363"
+      ],
+      "custom_css": [
+        ".social-media-links {gap: 12px; margin: 0; padding: 5px 0;}",
+        ".social-media-links a {color: #222; width: 48px; height: 48px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background-color: #e9e9e9; transition: all 0.3s;}",
+        ".social-media-links a:hover {background-color: #222; color: #fff; box-shadow: 0 0 0 0.2rem #222;}",
+        "a.m-link {font-size: 14px;}",
+        "responsive-image.m-image.m-image-loaded {max-width: 150px;}"
+      ],
+      "settings": {
+        "color_scheme": "",
+        "design": "footer-1",
+        "container": "container-fluid",
+        "bordered": false,
+        "copyright": "©[year] LALEH. All rights reserved.",
+        "show_country_selector": true,
+        "show_currency_selector": false,
+        "show_language_selector": true,
+        "show_social_links": false,
+        "enable_follow_on_shop": true,
+        "show_payment_icons": false,
+        "payment_icons_width": 269,
+        "footer_bottom_color_scheme": "",
+        "footer_bottom_menu": "",
+        "show_menu_item_divider": false
+      }
+    },
+    "mobile-sticky-bar": {
+      "type": "mobile-sticky-bar",
+      "disabled": true,
+      "settings": {
+        "show_mobile_sticky": true,
+        "show_home_icon": true,
+        "show_collection_icon": true,
+        "show_cart_icon": true,
+        "show_search_icon": true,
+        "show_account_icon": false,
+        "show_wishlist_icon": false
+      }
+    },
+    "age-verifier-popup": {
+      "type": "age-verifier-popup",
+      "blocks": {
+        "block-1": {
+          "type": "heading",
+          "settings": {
+            "heading": "Confirm your age",
+            "heading_size": "h3"
+          }
+        },
+        "block-2": {
+          "type": "text",
+          "settings": {
+            "text": "<p>Are you 18 years old or older?</p>",
+            "text_size": "text-lg"
+          }
+        },
+        "block-3": {
+          "type": "buttons",
+          "settings": {
+            "decline_button": "No, I'm not",
+            "approve_button": "Yes, I am"
+          }
+        }
+      },
+      "block_order": [
+        "block-1",
+        "block-2",
+        "block-3"
+      ],
+      "settings": {
+        "design_mode": false,
+        "enable": false,
+        "bg_blur": true,
+        "decline_heading": "Come back when you're older",
+        "decline_content": "<p>Sorry, the content of this store can't be seen by a younger audience. Come back when you're older.</p>",
+        "return_button": "Oops, I entered incorrectly"
+      }
+    },
+    "country-region-modal": {
+      "type": "country-region-modal",
+      "settings": {
+        "enable": false,
+        "design_mode": false,
+        "popup_delay": 1,
+        "cookie_days": 30,
+        "show_close_button": true,
+        "heading": "Select your country or region",
+        "field_label": "Country / Region",
+        "search_placeholder": "Change your country",
+        "button_text": "Save",
+        "overlay_color": "#00000073",
+        "card_bg_color": "#ffffff",
+        "card_text_color": "#18181b",
+        "button_bg_color": "#000000",
+        "button_text_color": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "custom_footer_a73gNK",
+    "footer",
+    "mobile-sticky-bar",
+    "age-verifier-popup",
+    "country-region-modal"
+  ]
+}

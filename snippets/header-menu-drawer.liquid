@@ -1,0 +1,145 @@
+{% liquid
+  assign main_menu = section.settings.main_menu | default: 'main-menu'
+  assign instagram_url = section.settings.social_instagram_link | default: settings.social_instagram_link | default: 'https://www.instagram.com/mylaleh.co'
+  assign tiktok_url = section.settings.social_tiktok_link | default: settings.social_tiktok_link | default: 'https://www.tiktok.com/@mylaleh.co'
+%}
+
+<div id="m-menu-drawer" class="m-luxury-drawer">
+  <div class="m-luxury-drawer__backdrop" data-drawer-close></div>
+  <div
+    class="m-luxury-drawer__panel m-gradient m-color-{{ section.settings.color_scheme }}"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Main Navigation"
+  >
+    <!-- Top Header: Elegant Minimal Close Button -->
+    <div class="m-luxury-drawer__top">
+      <button type="button" class="m-luxury-drawer__close-btn" data-drawer-close aria-label="Close navigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Scrollable Navigation Body -->
+    <div class="m-luxury-drawer__body">
+      <div class="m-luxury-drawer__nav active">
+        {% if linklists[main_menu].links.size > 0 %}
+          <ul class="m-luxury-drawer__nav-list">
+            {% for link in linklists[main_menu].links %}
+              <li class="m-luxury-drawer__nav-item">
+                {% if link.links != blank %}
+                  <a
+                    href="{{ link.url }}"
+                    class="m-luxury-drawer__nav-link has-submenu"
+                    data-open-submenu="sub-{{ forloop.index }}"
+                  >
+                    <span>{{ link.title }}</span>
+                    <span class="m-luxury-drawer__chevron" aria-hidden="true">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                      </svg>
+                    </span>
+                  </a>
+
+                  <!-- Submenu Slide Panel -->
+                  <div id="sub-{{ forloop.index }}" class="m-luxury-drawer__submenu-panel">
+                    <button type="button" class="m-luxury-drawer__back-btn" data-close-submenu>
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                      </svg>
+                      <span>{{ link.title }}</span>
+                    </button>
+                    <ul class="m-luxury-drawer__nav-list">
+                      {% for child in link.links %}
+                        <li class="m-luxury-drawer__nav-item">
+                          <a href="{{ child.url }}" class="m-luxury-drawer__nav-link">
+                            <span>{{ child.title }}</span>
+                          </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% else %}
+                  <a href="{{ link.url }}" class="m-luxury-drawer__nav-link">
+                    <span>{{ link.title }}</span>
+                  </a>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <!-- Curated Minimal Menu Hierarchy -->
+          <div class="m-luxury-drawer__nav-section">
+            <ul class="m-luxury-drawer__nav-list">
+              <li class="m-luxury-drawer__nav-item">
+                <a href="/collections/all" class="m-luxury-drawer__nav-link">
+                  <span>New Collection</span>
+                </a>
+              </li>
+              <li class="m-luxury-drawer__nav-item">
+                <a href="/collections/all" class="m-luxury-drawer__nav-link">
+                  <span>Shop All</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="m-luxury-drawer__nav-section">
+            <span class="m-luxury-drawer__section-title">DISCOVER</span>
+            <ul class="m-luxury-drawer__nav-list">
+              <li class="m-luxury-drawer__nav-item">
+                <a href="/pages/about-us" class="m-luxury-drawer__nav-link">
+                  <span>About LALEH</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="m-luxury-drawer__nav-section">
+            <span class="m-luxury-drawer__section-title">CUSTOMER CARE</span>
+            <ul class="m-luxury-drawer__nav-list">
+              <li class="m-luxury-drawer__nav-item">
+                <a href="/pages/faqs" class="m-luxury-drawer__nav-link">
+                  <span>FAQs</span>
+                </a>
+              </li>
+              <li class="m-luxury-drawer__nav-item">
+                <a href="/pages/contact" class="m-luxury-drawer__nav-link">
+                  <span>Contact</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Drawer Footer: Subtle Socials & Country / Language Selectors -->
+    <div class="m-luxury-drawer__footer">
+      <div class="m-luxury-drawer__socials">
+        <a href="{{ instagram_url }}" target="_blank" rel="noopener" class="m-luxury-drawer__social-link">Instagram</a>
+        <span class="m-luxury-drawer__social-divider">/</span>
+        <a href="{{ tiktok_url }}" target="_blank" rel="noopener" class="m-luxury-drawer__social-link">TikTok</a>
+      </div>
+
+      <div class="m-luxury-drawer__localization">
+        {% render 'country-selector', pos: 'top', box_size: 'm-drawer-country' %}
+        {% render 'language-switcher', pos: 'top', box_size: 'm-drawer-language' %}
+      </div>
+    </div>
+  </div>
+</div>

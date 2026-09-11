@@ -1,0 +1,359 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "page-about-us",
+      "disabled": true,
+      "settings": {}
+    },
+    "image_with_text_2_JBUUim": {
+      "type": "image-with-text-2",
+      "custom_css": [
+        "@media (max-width: 786px) {h2.m-hero__title.h2.m\\:text-white.m-scroll-trigger.animate--fade-in-up {font-size: 20px; } span.m-hero__subtitle.h6.m\\:text-white.m-scroll-trigger.animate--fade-in-up {font-size: 12px; }}"
+      ],
+      "name": "Image with text overlay",
+      "settings": {
+        "color_scheme": "",
+        "container": "w-full",
+        "hero_size": "adapt",
+        "show_overlay": false,
+        "image": "shopify://shop_images/about_banner.png",
+        "image_link": "",
+        "parallax": false,
+        "parallax_direction": "vertical",
+        "content_in_container": false,
+        "content_position": "center bottom",
+        "text_alignment": "center",
+        "text_color": "white",
+        "title": "The Story of LALEH",
+        "text_size": "h2",
+        "subtitle": "OUR STORY",
+        "text": "",
+        "desc_size": "text-base",
+        "button_label": "",
+        "button_link": "",
+        "button_style": "m-button--primary",
+        "button_size": "",
+        "mb_image": "shopify://shop_images/C69DD7CB-0A9F-465A-9136-25132954ACE3.png",
+        "text_alignment_mobile": "center",
+        "use_content_above": true,
+        "custom_class": "",
+        "animations": "inherit",
+        "enable_bg_zoom_effect": true,
+        "enable_preload_image": false
+      }
+    },
+    "custom_content_TzEwWB": {
+      "type": "custom-content",
+      "blocks": {
+        "text_hTUrJW": {
+          "type": "text",
+          "settings": {
+            "width": "100%",
+            "alignment": "center",
+            "align_text": "center",
+            "title": "Born from Two Worlds, Shaped by One Vision.",
+            "text_size": "h3",
+            "subheading": "",
+            "text": "",
+            "desc_size": "text-base",
+            "text_color": "inherit",
+            "button_label": "",
+            "button_link": "",
+            "button_style": "sf__btn-primary",
+            "button_size": "",
+            "block_custom_class": "",
+            "animations": "inherit"
+          }
+        },
+        "text_rLpbzX": {
+          "type": "text",
+          "settings": {
+            "width": "100%",
+            "alignment": "center",
+            "align_text": "center",
+            "title": "",
+            "text_size": "h5",
+            "subheading": "",
+            "text": "<p>Founded by a Middle Eastern woman raised in Switzerland, LALEH was born from the meeting of two worlds, bringing together timeless elegance, femininity and a modern perspective.</p><p><br/>We believe true luxury lies in restraint. Each garment is thoughtfully designed with refined proportions, clean seamlines, and lasting quality. Every order is carefully packaged and dispatched from the UAE.</p>",
+            "desc_size": "text-sm",
+            "text_color": "inherit",
+            "button_label": "",
+            "button_link": "",
+            "button_style": "sf__btn-primary",
+            "button_size": "",
+            "block_custom_class": "",
+            "animations": "inherit"
+          }
+        }
+      },
+      "block_order": [
+        "text_hTUrJW",
+        "text_rLpbzX"
+      ],
+      "custom_css": [
+        ".m-custom-content__block-inner {max-width: 1240px; width: 100%; margin: 0 auto;}",
+        "@media screen and (max-width: 767px) {.m-section-py {padding-top: 10px; padding-bottom: 10px; } h3, .h3 {font-size: 20px; line-height: 1.36; }}"
+      ],
+      "settings": {
+        "heading": "",
+        "heading_size": "h3",
+        "subheading": "",
+        "description": "",
+        "header_alignment": "center",
+        "container": "container",
+        "color_scheme": "",
+        "content_color_scheme": "",
+        "enable_parallax": false,
+        "parallax_direction": "vertical",
+        "gap": 30,
+        "row_gap": 30,
+        "use_scroll_mobile": false,
+        "gap_mobile": 16,
+        "row_gap_mobile": 16,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "enable_preload_image": false,
+        "custom_class": ""
+      }
+    },
+    "store_locator_eT9fhi": {
+      "type": "store-locator",
+      "blocks": {
+        "icon_box_zzPpgH": {
+          "type": "icon_box",
+          "settings": {
+            "card_style": "horizontal",
+            "image": "shopify://shop_images/light.png",
+            "image_by_url": "",
+            "image_max_width": "40px",
+            "link": "",
+            "hover_effect": "scaling-up",
+            "title": "Soft Fabric",
+            "heading_size": "h5",
+            "description": "<p>Get complimentary ground shipping on every order.Don’t love it? Send it back, on us.</p>",
+            "text_size": "text-base",
+            "button_label": "",
+            "button_link": "",
+            "button_style": "m-button--link",
+            "button_size": ""
+          }
+        },
+        "icon_box_NMN9RU": {
+          "type": "icon_box",
+          "settings": {
+            "card_style": "horizontal",
+            "image": "shopify://shop_images/quill.png",
+            "image_by_url": "",
+            "image_max_width": "40px",
+            "link": "",
+            "hover_effect": "scaling-up",
+            "title": "Lightweight",
+            "heading_size": "h5",
+            "description": "<p>Join Minimog Rewards to earn gift cards<br/>and enjoy exclusive member benefits.</p>",
+            "text_size": "text-base",
+            "button_label": "",
+            "button_link": "",
+            "button_style": "m-button--link",
+            "button_size": ""
+          }
+        },
+        "icon_box_TxxDaU": {
+          "type": "icon_box",
+          "settings": {
+            "card_style": "horizontal",
+            "image": "shopify://shop_images/soft.png",
+            "image_by_url": "",
+            "image_max_width": "40px",
+            "link": "",
+            "hover_effect": "scaling-up",
+            "title": "All Day Comfort",
+            "heading_size": "h5",
+            "description": "<p>We believe getting dressed should be the<br/>easiest part of your day.</p>",
+            "text_size": "text-base",
+            "button_label": "",
+            "button_link": "",
+            "button_style": "m-button--link",
+            "button_size": ""
+          }
+        }
+      },
+      "block_order": [
+        "icon_box_zzPpgH",
+        "icon_box_NMN9RU",
+        "icon_box_TxxDaU"
+      ],
+      "disabled": true,
+      "custom_css": [
+        ".m-section__header {width: 100%; --m-section-header-spacing-bottom-mobile: 24px;}",
+        ".m-icon-box__heading {font-weight: 500;}",
+        ".m-icon-box__heading.h5 {font-size: 20px;}"
+      ],
+      "name": "Store locator",
+      "settings": {
+        "container": "container",
+        "color_scheme": "",
+        "container_color_scheme": "",
+        "heading": "Founder was raised in Switzerland; brand operates and ships from the UAE.",
+        "heading_size": "h3",
+        "description": "",
+        "image": "shopify://shop_images/65D259F2-5B99-4C27-A0B1-88CF4216C9C9_91470bd0-9b1d-49bc-9b83-ca55cdd2da33.png",
+        "image_width": "medium",
+        "image_position": "left",
+        "item_columns": "1",
+        "item_column_gap": 30,
+        "item_row_gap": 30,
+        "item_columns_mobile": "1",
+        "item_column_gap_mobile": 20,
+        "item_row_gap_mobile": 30,
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "custom_class": "",
+        "animations": "inherit"
+      }
+    },
+    "luxury_brand_pillars_yngrg8": {
+      "type": "luxury-brand-pillars",
+      "blocks": {
+        "pillar_krrDNW": {
+          "type": "pillar",
+          "settings": {
+            "number": "01",
+            "custom_svg": "",
+            "title": "Thoughtful Design",
+            "description": "Considered silhouettes created to transcend seasons.",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "pillar_FFCeeb": {
+          "type": "pillar",
+          "settings": {
+            "number": "02",
+            "custom_svg": "",
+            "title": "Limited Collections",
+            "description": "Produced in carefully considered quantities.",
+            "link_label": "",
+            "link": ""
+          }
+        },
+        "pillar_GYfCGW": {
+          "type": "pillar",
+          "settings": {
+            "number": "03",
+            "custom_svg": "",
+            "title": "Attention to Detail",
+            "description": "Finished with a focus on fit, structure and femininity.",
+            "link_label": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "pillar_krrDNW",
+        "pillar_FFCeeb",
+        "pillar_GYfCGW"
+      ],
+      "disabled": true,
+      "name": "Luxury Brand Pillars",
+      "settings": {
+        "eyebrow": "OUR PROMISE",
+        "heading": "Created With Care",
+        "heading_size": "h3",
+        "subheading": "<p>Timeless pieces, made to be part of your story.</p>",
+        "text_alignment": "center",
+        "container": "container",
+        "columns_desktop": 3,
+        "columns_mobile": "1",
+        "card_style": "minimal",
+        "show_accent_line": true,
+        "show_ambient_glow": true,
+        "color_scheme": "default",
+        "custom_bg_color": "#ffffff",
+        "custom_text_color": "#000000",
+        "accent_color": "#000000",
+        "accent_color_light": "#f7e7c4",
+        "button_label": "Discover Our LALEH",
+        "button_link": "",
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "padding_top_mobile": 8,
+        "padding_bottom_mobile": 8,
+        "animations": "inherit",
+        "custom_class": ""
+      }
+    },
+    "video_carousel_LNHHBf": {
+      "type": "video-carousel",
+      "blocks": {
+        "video_Jnrr9V": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/BEAT Suf-Mys.MP4",
+            "title": ""
+          }
+        },
+        "video_yhpcXL": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/IMG_4575.MOV",
+            "title": ""
+          }
+        },
+        "video_NxyVED": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/IMG_4571.MOV",
+            "title": ""
+          }
+        },
+        "video_8WpRJC": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/IMG_9916.MOV",
+            "title": ""
+          }
+        },
+        "video_qRjTRx": {
+          "type": "video",
+          "settings": {
+            "video": "shopify://files/videos/IMG_4562.MOV",
+            "title": ""
+          }
+        }
+      },
+      "block_order": [
+        "video_Jnrr9V",
+        "video_yhpcXL",
+        "video_NxyVED",
+        "video_8WpRJC",
+        "video_qRjTRx"
+      ],
+      "name": "Video grid carousel",
+      "settings": {
+        "heading": "Crafted with Interaction",
+        "subheading": "",
+        "max_width": 1600,
+        "gap": 8,
+        "radius": 0,
+        "autoplay_interval": 9
+      }
+    }
+  },
+  "order": [
+    "main",
+    "image_with_text_2_JBUUim",
+    "custom_content_TzEwWB",
+    "store_locator_eT9fhi",
+    "luxury_brand_pillars_yngrg8",
+    "video_carousel_LNHHBf"
+  ]
+}

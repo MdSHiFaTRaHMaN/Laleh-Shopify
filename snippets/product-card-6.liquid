@@ -1,0 +1,433 @@
+{% liquid
+  if show_variant_options == null
+    assign show_variant_options = settings.show_swatch_option
+  endif
+  if show_inventory == null
+    assign show_inventory = settings.pcard_show_inventory
+  endif
+
+  assign show_title = true
+  if hide_title == true
+    assign show_title = false
+  endif
+
+  if image_ratio == null or image_ratio == blank
+    assign image_ratio = settings.pcard_image_ratio | default: '3/4'
+  endif
+
+  if image_ratio == 'original'
+    assign image_ratio = product.media[0].aspect_ratio | default: '3/4'
+  endif
+
+  if show_vendor == null
+    assign show_vendor = settings.show_vendor
+  endif
+
+  if show_desc == null
+    assign show_desc = false
+  endif
+
+  assign sold_out = false
+  if product.available == false
+    assign sold_out = true
+  endif
+
+  assign disable_selected_variant_default = false
+  if settings.pcard_show_lowest_prices or settings.pcard_keep_featured_image
+    assign disable_selected_variant_default = true
+  endif
+
+  assign selected_variant = product.selected_or_first_available_variant
+  assign target_product = selected_variant
+  assign price_use_variant = true
+
+  if show_variant_options == false or disable_selected_variant_default
+    assign target_product = product
+    assign price_use_variant = false
+  endif
+
+  assign discount = ''
+  assign discount_amount = ''
+  assign compare_at_price = target_product.compare_at_price
+  assign price = target_product.price
+  assign on_sale = false
+
+  if compare_at_price > price
+    assign on_sale = true
+    assign discount_amount = compare_at_price | minus: price
+    assign discount = discount_amount | times: 100 | divided_by: compare_at_price | round
+  endif
+
+  assign on_sale_badge = settings.on_sale_badge
+  assign sold_number = product.metafields.foxkit.sold_number
+
+  if product.available
+    assign variant_id = product.first_available_variant.id
+  else
+    assign variant_id = product.selected_or_first_available_variant.id
+  endif
+
+  if pcard_alignment == null
+    assign pcard_alignment = settings.pcard_alignment | default: 'left'
+  endif
+
+  assign pcard_default_image = settings.pcard_default_image
+
+  if show_cart_button == null
+    assign show_cart_button = true
+  endif
+  if show_quickview_button == null
+    assign show_quickview_button = settings.show_quickview_button
+  endif
+  if show_wishlist_button == null
+    assign show_wishlist_button = true
+  endif
+  if show_compare_button == null
+    assign show_compare_button = settings.show_compare_button
+  endif
+
+  assign preview_image = product.media[0].preview_image
+  if section.settings.change_product_variant_on_fitlering == true and product.selected_variant.image != null
+    assign preview_image = product.selected_variant.image
+  endif
+
+  assign second_image = ''
+  if settings.show_second_img and product.images.size > 1 and product.images[1] != blank
+    assign second_image = product.images[1]
+  endif
+
+  assign product_card_classes = 'm-product-card m-product-card--style-6'
+  if sold_out
+    assign product_card_classes = product_card_classes | append: ' m-product-card--soldout'
+  endif
+  if on_sale
+    assign product_card_classes = product_card_classes | append: ' m-product-card--onsale'
+  endif
+  if settings.show_second_img and second_image != blank
+    assign product_card_classes = product_card_classes | append: ' m-product-card--show-second-img'
+  endif
+  if show_wishlist_button
+    assign product_card_classes = product_card_classes | append: ' m-product-card--enable-wishlist'
+  endif
+
+  assign product_url = product.url
+  if remove_params
+    assign product_url = product.url | split: '?' | first
+  endif
+
+  assign first_media_type = product.media.first.media_type
+
+  assign show_video = false
+  if settings.pcard_show_video and first_media_type == 'video'
+    assign show_video = true
+  endif
+
+  assign loading = 'lazy'
+  assign fetchpriority = 'low'
+  if index == 1 and section_index <= 2
+    assign loading = 'eager'
+    assign fetchpriority = 'high'
+  endif
+
+  assign size_option = null
+  assign color_option = null
+  assign subtitle_text = ''
+
+  for option in product.options_with_values
+    assign opt_name_lower = option.name | downcase
+    if opt_name_lower contains 'size' or opt_name_lower contains 'taille' or opt_name_lower contains 'größe' or opt_name_lower contains 'talla'
+      assign size_option = option
+    elsif opt_name_lower contains 'color' or opt_name_lower contains 'colour' or opt_name_lower contains 'couleur' or opt_name_lower contains 'farbe' or opt_name_lower contains 'coloris'
+      assign color_option = option
+    endif
+  endfor
+
+  if color_option != null
+    assign subtitle_text = color_option.selected_value | default: color_option.values.first
+  elsif product.vendor != blank and show_vendor
+    assign subtitle_text = product.vendor
+  endif
+%}
+
+{%- if column_wrapper -%}<div class="m:column">{%- endif -%}
+<div
+  class="{{ product_card_classes }}{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}"
+  data-view="card"
+  {% if sold_number != blank %}
+    data-sold-number="{{ sold_number }}"
+  {% endif %}
+  data-product-id="{{ product.id }}"
+  data-sale-badge="{{ on_sale_badge }}"
+  {% if animated %}
+    data-cascade
+    style="--animation-order: {{ index }};"
+  {% endif %}
+>
+  <!-- Media Container -->
+  <div class="m-product-card__media">
+    <a
+      class="m-product-card__link m:block m:w-full"
+      href="{{ product_url }}"
+      aria-label="{{ product.title | default: 'product title' }}"
+    >
+      {% if preview_image != blank or first_media_type == 'video' %}
+        {% unless show_video %}
+          <div class="m-product-card__main-image">
+            {%- liquid
+              assign asp_rat = image_ratio | default: preview_image.aspect_ratio
+              if asp_rat == 'original'
+                assign asp_rat = preview_image.aspect_ratio
+              endif
+              assign alt = alt | default: preview_image.alt | escape
+            -%}
+            {%- capture sizes -%}(min-width: {{ settings.container_width }}px) {{ settings.container_width | minus: 130 | divided_by: 4 }}px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2){%- endcapture -%}
+            <responsive-image class="m-image" style="--aspect-ratio: {{ asp_rat }}">
+              {{
+                preview_image
+                | image_url: width: 1100
+                | image_tag:
+                  loading: loading,
+                  fetchpriority: fetchpriority,
+                  class: 'm:w-full m:h-full',
+                  alt: alt,
+                  sizes: sizes,
+                  widths: '165, 360, 535, 750, 940, 1100'
+              }}
+            </responsive-image>
+          </div>
+
+          {%- if second_image != blank -%}
+            <div class="m-product-card__hover-image">
+              {%- liquid
+                assign asp_rat = image_ratio | default: second_image.aspect_ratio
+                if asp_rat == 'original'
+                  assign asp_rat = second_image.aspect_ratio
+                endif
+                assign alt = alt | default: second_image.alt | escape
+              -%}
+              {%- capture sizes -%}(min-width: {{ settings.container_width }}px) {{ settings.container_width | minus: 130 | divided_by: 4 }}px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2){%- endcapture -%}
+              <responsive-image class="m-image" style="--aspect-ratio: {{ asp_rat }}">
+                {{
+                  second_image
+                  | image_url: width: 1100
+                  | image_tag:
+                    loading: loading,
+                    fetchpriority: fetchpriority,
+                    class: 'm:w-full m:h-full',
+                    alt: alt,
+                    sizes: sizes,
+                    widths: '165, 360, 535, 750, 940, 1100'
+                }}
+              </responsive-image>
+            </div>
+          {%- endif -%}
+        {% else %}
+          <m-video-component
+            class="m:block m-product-card__video"
+            data-type="mp4"
+            style="--aspect-ratio: {{ image_ratio }}"
+          >
+            {{
+              product.media.first
+              | media_tag:
+                image_size: '1500px',
+                autoplay: true,
+                loop: true,
+                controls: false,
+                muted: true,
+                playsinline: true
+            }}
+          </m-video-component>
+        {% endunless %}
+      {% else %}
+        {% if pcard_default_image != blank %}
+          {%- liquid
+            assign asp_rat = image_ratio | default: pcard_default_image.aspect_ratio
+            if asp_rat == 'original'
+              assign asp_rat = pcard_default_image.aspect_ratio
+            endif
+            assign alt = alt | default: pcard_default_image.alt | escape
+          -%}
+          {%- capture sizes -%}(min-width: {{ settings.container_width }}px) {{ settings.container_width | minus: 130 | divided_by: 4 }}px, (min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 3), calc((100vw - 35px) / 2){%- endcapture -%}
+          <responsive-image class="m-image" style="--aspect-ratio: {{ asp_rat }}">
+            {{
+              pcard_default_image
+              | image_url: width: 1100
+              | image_tag:
+                loading: loading,
+                fetchpriority: fetchpriority,
+                class: 'm:w-full m:h-full',
+                alt: alt,
+                sizes: sizes,
+                widths: '165, 360, 535, 750, 940, 1100'
+            }}
+          </responsive-image>
+        {% else %}
+          <div style="--aspect-ratio: {{ image_ratio }}">
+            {{ 'product-1' | placeholder_svg_tag: 'm-placeholder-svg' }}
+          </div>
+        {% endif %}
+      {% endif %}
+    </a>
+
+    <!-- Top Left Badges / Tags -->
+    <div class="m-product-card__tags">
+      {% if settings.show_badge_sale %}
+        {% for tag in product.tags %}
+          {% if tag contains 'tag__' %}
+            {%- liquid
+              assign tag_content = tag | split: '__' | last
+              assign type = tag_content | split: '_' | first
+              assign tag_name = tag_content | split: '_' | last
+              assign color_scheme_class = 'm-gradient m-color-'
+              case type
+                when 'sale'
+                  assign color_scheme_class = color_scheme_class | append: settings.sale_badge_color_scheme
+                when 'new'
+                  assign color_scheme_class = color_scheme_class | append: settings.new_badge_color_scheme
+                when 'hot'
+                  assign color_scheme_class = color_scheme_class | append: settings.hot_badge_color_scheme
+              endcase
+            -%}
+            <span class="m-product-card__tag-name m-product-tag m-product-tag--{{ type }} {{ color_scheme_class }}">
+              {{- tag_name -}}
+            </span>
+          {% elsif tag contains 'Restocked' or tag contains 'restocked' %}
+            <span class="m-product-card__tag-name m-product-tag m-product-tag--restocked"> Restocked </span>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      {% if on_sale_badge != 'hide' and on_sale %}
+        <span class="m-product-card__tag-name m-product-tag m-product-tag--sale">
+          {%- if on_sale_badge == 'show_percentage' -%}
+            {{ discount | append: '%' | prepend: '-' }}
+          {%- else -%}
+            {{ 'products.product.on_sale' | t }}
+          {%- endif -%}
+        </span>
+      {% endif %}
+      {%- if sold_out and settings.show_badge_soldout -%}
+        <span class="m-product-tag m-product-tag--soldout">
+          {{- 'products.product.sold_out' | t -}}
+        </span>
+      {%- endif -%}
+    </div>
+
+    <!-- Requirement 1: Top Right Wishlist Button -->
+    {%- if show_wishlist_button -%}
+      <div class="m-product-card__wishlist-top-right">
+        {% assign wishlist_app = settings.wishlist_app %}
+        {% if wishlist_app == 'growave' %}
+          <div class="m-tooltip m-wishlist-button m-button--icon m-tooltip--style-1 m-tooltip--left">
+            <span class="m-tooltip-icon m:block" style="display: none">
+              {% capture the_snippet_fave_icon %}{% render 'ssw-widget-faveicon' with product.id %}{% endcapture %}
+              {% unless the_snippet_fave_icon contains 'Liquid error' %}
+                {{ the_snippet_fave_icon }}
+              {% else %}
+                {% render 'mm-ssw-widget-faveicon' with product.id %}
+              {% endunless %}
+            </span>
+            <div class="m-tooltip__content" data-revert-text="">
+              {{ 'products.product.add_to_wishlist' | t }}
+            </div>
+          </div>
+        {% else %}
+          {% render 'tooltip', type: 'wishlist', product: product, class_name: 'm-tooltip--left', style: 2 %}
+        {% endif %}
+      </div>
+    {%- endif -%}
+
+    <!-- Hover Effect Quick View Button at Bottom of Image -->
+    <div class="m-product-card__quickview-bar" aria-label="Quick View">
+      <button
+        type="button"
+        class="m-product-quickview-button m-pcard-quickview-btn m-spinner-button"
+        data-product-handle="{{ product.handle }}"
+        data-product-id="{{ product.id }}"
+        aria-label="{{ 'products.product.quick_view' | t | default: 'Quick View' }}"
+      >
+        <span class="m-pcard-quickview-btn__text">{{ 'products.product.quick_view' | t | default: 'Quick View' }}</span>
+        <span class="m-spinner-icon">
+          <svg
+            class="animate-spin"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Content Below Image -->
+  <div class="m-product-card__content">
+    <!-- Line 1: Title (Left) + Price (Right) -->
+    <div class="m-product-card__header-row">
+      {% if show_title == true %}
+        <h3 class="m-product-card__title">
+          <a
+            href="{{ product_url }}"
+            class="m-product-card__name{% if settings.uppercase_prd_name %} m:uppercase{% endif %}"
+          >
+            {{ product.title }}
+          </a>
+        </h3>
+      {% endif %}
+
+      <div class="m-product-card__price">
+        {% render 'product-prices', product: product, is_product_card: true, use_variant: price_use_variant %}
+      </div>
+    </div>
+
+    <!-- Line 2: Subtitle / Color Name -->
+    {% if subtitle_text != blank %}
+      <div class="m-product-card__subtitle-row">
+        <span>{{ subtitle_text }}</span>
+      </div>
+    {% endif %}
+
+    <!-- Line 3: Color Swatches + Count -->
+    {% if color_option != null and show_variant_options %}
+      <div class="m-product-card__swatches-row">
+        <div class="m-product-card__color-dots">
+          {% for val in color_option.values limit: 5 %}
+            {% liquid
+              assign val_downcase = val | downcase | strip
+              assign swatch_bg = val_downcase | split: ' ' | last | handle
+              assign product_colors = settings.product_colors | split: ','
+              for pc in product_colors
+                assign parts = pc | strip | split: ':'
+                assign name = parts.first | downcase | strip
+                assign color = parts.last | strip
+                if name == val_downcase
+                  assign swatch_bg = color
+                endif
+              endfor
+            %}
+            <span
+              class="m-pcard-color-dot"
+              style="background-color: {{ swatch_bg }};"
+              title="{{ val }}"
+            ></span>
+          {% endfor %}
+        </div>
+        <span class="m-product-card__colors-count">
+          {{ color_option.values.size }}
+          {{ 'products.product.colours' | t | default: 'Colours' }}
+        </span>
+      </div>
+    {% endif %}
+
+    {% if settings.show_review_badge %}
+      <div class="m-product-card__reviews m:text-color-body" style="margin-top: 6px;">
+        {% render 'product-reviews-app__badge', product: product %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+{%- if column_wrapper -%}</div>{%- endif -%}

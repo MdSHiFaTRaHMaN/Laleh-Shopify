@@ -1,0 +1,75 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "page-contact",
+      "custom_css": [
+        ".m-page-header {padding-top: 10px; padding-bottom: 0px;}",
+        ".m-breadcrumb--wrapper.m\\:flex.m\\:items-center.m\\:justify-center {display: none;}"
+      ],
+      "settings": {
+        "container": "container"
+      }
+    },
+    "contact-form": {
+      "type": "contact-form",
+      "blocks": {
+        "text-block-1": {
+          "type": "textblock",
+          "disabled": true,
+          "settings": {
+            "title": "Address",
+            "heading_size": "h5",
+            "content": "<p>7895 Piermont Dr NE Albuquerque, <br/>NM 198866, <a href=\"#\">See Our Stores</a></p>"
+          }
+        },
+        "text-block-2": {
+          "type": "textblock",
+          "settings": {
+            "title": "",
+            "heading_size": "h5",
+            "content": "<p>contact@mylaleh.com</p>"
+          }
+        },
+        "text-block-3": {
+          "type": "socialmedia",
+          "settings": {
+            "title": "Social Media"
+          }
+        }
+      },
+      "block_order": [
+        "text-block-1",
+        "text-block-2",
+        "text-block-3"
+      ],
+      "custom_css": [
+        ".m-contact-form__heading,.m-info-box__title {font-weight: 500;}"
+      ],
+      "settings": {
+        "container": "container",
+        "title": "We would love to hear from you.",
+        "heading_size": "h4",
+        "description": "<p>For questions about your order, our collection, sizing or anything else, please send us a message and our team will be happy to assist you.</p>",
+        "show_name": true,
+        "show_phone": false,
+        "show_signup_email": false,
+        "padding_top": 12,
+        "padding_bottom": 0,
+        "animations": "inherit"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "contact-form"
+  ]
+}
