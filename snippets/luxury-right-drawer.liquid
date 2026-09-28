@@ -5,11 +5,20 @@
 
 <div id="m-right-utility-drawer" class="m-luxury-right-drawer" aria-hidden="true">
   <div class="m-luxury-right-drawer__backdrop" data-close-right-drawer></div>
-  <div class="m-luxury-right-drawer__panel m-gradient m-color-{{ section.settings.color_scheme }}" role="dialog" aria-modal="true" aria-label="Utility Navigation">
-    
-    <!-- Top Header: Close Button & 3 Tabs (Search | Wishlist | Bag) -->
+  <div
+    class="m-luxury-right-drawer__panel m-gradient m-color-{{ section.settings.color_scheme }}"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Utility Navigation"
+  >
+    <!-- Top Header: Close Button & Tabs (Wishlist | Bag) -->
     <div class="m-luxury-right-drawer__header">
-      <button type="button" class="m-luxury-right-drawer__close-btn" data-close-right-drawer aria-label="{{ 'general.accessibility.close' | t | default: 'Close drawer' }}">
+      <button
+        type="button"
+        class="m-luxury-right-drawer__close-btn"
+        data-close-right-drawer
+        aria-label="{{ 'general.accessibility.close' | t | default: 'Close drawer' }}"
+      >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -19,21 +28,22 @@
       <div class="m-luxury-right-drawer__tabs" role="tablist">
         <button
           type="button"
-          class="m-luxury-right-drawer__tab active"
+          class="m-luxury-right-drawer__tab"
           id="tab-btn-search"
           data-tab-target="#right-tab-search"
           role="tab"
-          aria-selected="true"
+          aria-selected="false"
+          style="display: none;"
         >
           {{ 'general.search.placeholder_short' | t | default: 'Search' }}
         </button>
         <button
           type="button"
-          class="m-luxury-right-drawer__tab"
+          class="m-luxury-right-drawer__tab active"
           id="tab-btn-wishlist"
           data-tab-target="#right-tab-wishlist"
           role="tab"
-          aria-selected="false"
+          aria-selected="true"
         >
           {{ 'layout.wishlist.title' | t | default: 'Wishlist' }} (<span class="m-right-wishlist-count">0</span>)
         </button>
@@ -52,12 +62,12 @@
 
     <!-- Scrollable Content Body -->
     <div class="m-luxury-right-drawer__body">
-      
-      <!-- ===================================================================
-           TAB 1: SEARCH CONTENT (Real Predictive Search & Store Products)
-           =================================================================== -->
+      <!--
+        ===================================================================
+        TAB 1: SEARCH CONTENT (Real Predictive Search & Store Products)
+        ===================================================================
+      -->
       <div id="right-tab-search" class="m-luxury-right-drawer__pane active" role="tabpanel">
-        
         <!-- Live Predictive Search Input -->
         <form action="{{ routes.search_url }}" method="get" class="m-right-search-form" role="search">
           <div class="m-right-search-input-wrap">
@@ -70,7 +80,11 @@
               autocomplete="off"
               aria-label="{{ 'general.search.title' | t | default: 'Search store' }}"
             >
-            <button type="submit" class="m-right-search-btn" aria-label="{{ 'general.search.placeholder_short' | t | default: 'Search' }}">
+            <button
+              type="submit"
+              class="m-right-search-btn"
+              aria-label="{{ 'general.search.placeholder_short' | t | default: 'Search' }}"
+            >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -88,7 +102,9 @@
         <!-- Default State: Real Recently Viewed / Featured Store Products -->
         <div id="m-right-search-default-view" class="m-right-drawer__section">
           <div class="m-right-drawer__section-header">
-            <h4 class="m-right-drawer__section-title">{{ 'products.product.recently_viewed_products' | t | default: 'Recently viewed' }}</h4>
+            <h4 class="m-right-drawer__section-title">
+              {{ 'products.product.recently_viewed_products' | t | default: 'Recently viewed' }}
+            </h4>
           </div>
 
           <!-- Dynamic Products Grid (Populated with real visited products or store products) -->
@@ -111,40 +127,64 @@
                     {%- endif -%}
                   </a>
                   <div class="m-right-product-card__info" style="margin-top: 6px;">
-                    <a href="{{ product.url }}" class="m-right-item-card__title" style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-decoration: none;">
+                    <a
+                      href="{{ product.url }}"
+                      class="m-right-item-card__title"
+                      style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-decoration: none;"
+                    >
                       {{ product.title | escape }}
                     </a>
                     <div class="m-right-item-card__price-row" style="margin-top: 2px;">
                       {%- if product.compare_at_price > product.price -%}
-                        <span class="m-right-price-compare">{{ product.compare_at_price | money }}</span>
+                        <span class="m-right-price-compare">{{ product.compare_at_price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
                       {%- endif -%}
-                      <span class="m-right-price-regular">{{ product.price | money }}</span>
+                      <span class="m-right-price-regular" data-base-price="{{ product.price }}">{{ product.price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
                     </div>
                   </div>
                 </div>
               {%- endfor -%}
             {%- endif -%}
           </div>
-
         </div>
-
       </div>
 
-      <!-- ===================================================================
-           TAB 2: WISHLIST CONTENT (Real Dynamic Saved Products)
-           =================================================================== -->
-      <div id="right-tab-wishlist" class="m-luxury-right-drawer__pane" role="tabpanel">
-        <div class="m-right-items-list" id="m-wishlist-items-container">
-          <!-- Dynamically populated from localStorage['m-wishlist-products'] with real Shopify product data -->
-          <div class="m-right-wishlist-loading" style="text-align: center; padding: 40px 0; color: rgba(var(--color-foreground), 0.6); font-size: 13.5px;">
-            {{ 'layout.wishlist.loading' | t | default: 'Loading your wishlist...' }}
+      <!--
+        ===================================================================
+        TAB 2: WISHLIST CONTENT (Real Dynamic Saved Products)
+        ===================================================================
+      -->
+      <div id="right-tab-wishlist" class="m-luxury-right-drawer__pane active" role="tabpanel">
+        <div class="m-right-wishlist-pane-inner">
+          <div class="m-right-wishlist-items-list" id="m-wishlist-items-container">
+            <!-- Dynamically populated from localStorage['m-wishlist-products'] with real Shopify product data -->
+            <div
+              class="m-right-wishlist-loading"
+              style="text-align: center; padding: 40px 0; color: rgba(var(--color-foreground), 0.6); font-size: 13.5px;"
+            >
+              {%- assign wishlist_loading = 'layout.wishlist.loading' | t -%}
+              {%- if wishlist_loading contains 'Translation missing' or wishlist_loading == blank -%}
+                {%- assign wishlist_loading = 'Loading your wishlist...' -%}
+              {%- endif -%}
+              {{ wishlist_loading }}
+            </div>
+          </div>
+          <div class="m-right-wishlist-footer" id="m-right-wishlist-footer" style="display: none;">
+            <a href="/pages/wishlist" class="m-right-view-wishlist-link">
+              {%- assign wishlist_view_all = 'layout.wishlist.view_all' | t -%}
+              {%- if wishlist_view_all contains 'Translation missing' or wishlist_view_all == blank -%}
+                {%- assign wishlist_view_all = 'View your wishlist' -%}
+              {%- endif -%}
+              {{ wishlist_view_all }}
+            </a>
           </div>
         </div>
       </div>
 
-      <!-- ===================================================================
-           TAB 3: BAG / CART CONTENT (Real Shopify Cart Line Items & Ajax)
-           =================================================================== -->
+      <!--
+        ===================================================================
+        TAB 3: BAG / CART CONTENT (Real Shopify Cart Line Items & Ajax)
+        ===================================================================
+      -->
       <div id="right-tab-cart" class="m-luxury-right-drawer__pane" role="tabpanel">
         <div class="m-right-items-list" id="m-cart-items-container">
           {%- if cart.items.size > 0 -%}
@@ -168,24 +208,43 @@
                     {{ item.product.title | escape }}
                   </a>
                   {%- unless item.product.has_only_default_variant -%}
-                    <div class="m-right-variant-text" style="font-size: 12px; color: rgba(var(--color-foreground), 0.65); margin-top: 2px;">
+                    <div
+                      class="m-right-variant-text"
+                      style="font-size: 12px; color: rgba(var(--color-foreground), 0.65); margin-top: 2px;"
+                    >
                       {{ item.variant.title }}
                     </div>
                   {%- endunless -%}
 
                   <!-- Dynamic Quantity Stepper -->
                   <div class="m-right-qty-stepper" data-line-key="{{ item.key }}">
-                    <button type="button" class="m-right-qty-btn minus" data-ajax-qty-change="-1" data-key="{{ item.key }}" aria-label="{{ 'products.product.decrease_quantity' | t: title: item.title | default: 'Decrease quantity' }}">-</button>
+                    <button
+                      type="button"
+                      class="m-right-qty-btn minus"
+                      data-ajax-qty-change="-1"
+                      data-key="{{ item.key }}"
+                      aria-label="{{ 'products.product.decrease_quantity' | t: title: item.title | default: 'Decrease quantity' }}"
+                    >
+                      -
+                    </button>
                     <span class="m-right-qty-val" data-qty-display>{{ item.quantity }}</span>
-                    <button type="button" class="m-right-qty-btn plus" data-ajax-qty-change="1" data-key="{{ item.key }}" aria-label="{{ 'products.product.increase_quantity' | t: title: item.title | default: 'Increase quantity' }}">+</button>
+                    <button
+                      type="button"
+                      class="m-right-qty-btn plus"
+                      data-ajax-qty-change="1"
+                      data-key="{{ item.key }}"
+                      aria-label="{{ 'products.product.increase_quantity' | t: title: item.title | default: 'Increase quantity' }}"
+                    >
+                      +
+                    </button>
                   </div>
 
                   <!-- Real Line Price -->
                   <div class="m-right-item-card__price-row" style="margin-top: 8px;">
                     {%- if item.original_line_price > item.final_line_price -%}
-                      <span class="m-right-price-compare">{{ item.original_line_price | money }}</span>
+                      <span class="m-right-price-compare">{{ item.original_line_price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
                     {%- endif -%}
-                    <span class="m-right-price-regular" data-line-price>{{ item.final_line_price | money }}</span>
+                    <span class="m-right-price-regular" data-line-price data-base-price="{{ item.final_line_price }}">{{ item.final_line_price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
                   </div>
 
                   <!-- Real Remove Button -->
@@ -200,34 +259,215 @@
               <p style="color: rgba(var(--color-foreground), 0.6); font-size: 13.5px; margin-bottom: 16px;">
                 {{ 'cart.general.empty' | t | default: 'Your bag is currently empty.' }}
               </p>
-              <a href="{{ routes.all_products_collection_url }}" class="m-right-checkout-btn" style="text-decoration: none;">
+              <a
+                href="{{ routes.all_products_collection_url }}"
+                class="m-right-checkout-btn"
+                style="text-decoration: none;"
+              >
                 {{ 'cart.general.start_shopping' | t | default: 'Start Shopping' }}
               </a>
             </div>
           {%- endif -%}
         </div>
-      </div>
 
+        <!--
+          ===================================================================
+          COMPLETE YOUR COLLECTION (Grid Slider for Other Store Products)
+          ===================================================================
+        -->
+        {% liquid
+          assign cart_product_ids = cart.items | map: 'product_id'
+          assign rec_collection = collections['favorite-laleh']
+          if rec_collection == blank or rec_collection.products_count == 0
+            assign rec_collection = collections.all
+          endif
+          if rec_collection == blank or rec_collection.products_count == 0
+            assign rec_collection = collections.first
+          endif
+        %}
+
+        <div
+          class="m-right-collection-slider-section{% if cart.item_count == 0 %} m:hidden{% endif %}"
+          id="m-right-complete-collection"
+        >
+          <div class="m-right-collection-slider-header">
+            <h4 class="m-right-collection-slider-title">
+              {{ 'cart.general.complete_collection' | t | default: 'Complete Your Collection' }}
+            </h4>
+            <div class="m-right-slider-nav">
+              <button
+                type="button"
+                class="m-right-slider-nav-btn prev"
+                data-coll-slider-prev
+                aria-label="Previous products"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="m-right-slider-nav-btn next"
+                data-coll-slider-next
+                aria-label="Next products"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="m-right-collection-slider-track" id="m-right-coll-slider-track">
+            {%- assign shown_count = 0 -%}
+            {%- for product in rec_collection.products -%}
+              {%- unless cart_product_ids contains product.id -%}
+                {%- assign shown_count = shown_count | plus: 1 -%}
+                {%- assign default_variant = product.selected_or_first_available_variant -%}
+                <div class="m-right-coll-card" data-product-id="{{ product.id }}">
+                  <div class="m-right-coll-card__media">
+                    <a href="{{ product.url }}" class="m-right-coll-card__image-link">
+                      {%- if product.featured_image -%}
+                        <img
+                          src="{{ product.featured_image | image_url: width: 350 }}"
+                          alt="{{ product.title | escape }}"
+                          loading="lazy"
+                          width="{{ product.featured_image.width }}"
+                          height="{{ product.featured_image.height }}"
+                          class="m-right-coll-card__img"
+                        >
+                      {%- else -%}
+                        {{ 'product-1' | placeholder_svg_tag: 'm-placeholder-svg' }}
+                      {%- endif -%}
+                    </a>
+                  </div>
+
+                  <div class="m-right-coll-card__info">
+                    <a href="{{ product.url }}" class="m-right-coll-card__title">
+                      {{ product.title | escape }}
+                    </a>
+                    <div class="m-right-coll-card__price-row">
+                      {%- if product.compare_at_price > product.price -%}
+                        <span class="m-right-price-compare">{{ product.compare_at_price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
+                      {%- endif -%}
+                      <span class="m-right-price-regular" data-base-price="{{ product.price }}">{{ product.price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      class="m-right-coll-add-btn"
+                      data-coll-quick-add="{{ default_variant.id }}"
+                      {% unless product.available %}
+                        disabled
+                      {% endunless %}
+                    >
+                      {%- if product.available -%}
+                        + Add to Bag
+                      {%- else -%}
+                        Sold Out
+                      {%- endif -%}
+                    </button>
+                  </div>
+                </div>
+                {%- if shown_count >= 12 -%}{%- break -%}{%- endif -%}
+              {%- endunless -%}
+            {%- endfor -%}
+            {%- if shown_count == 0 -%}
+              {%- for product in rec_collection.products limit: 6 -%}
+                {%- assign default_variant = product.selected_or_first_available_variant -%}
+                <div class="m-right-coll-card" data-product-id="{{ product.id }}">
+                  <div class="m-right-coll-card__media">
+                    <a href="{{ product.url }}" class="m-right-coll-card__image-link">
+                      {%- if product.featured_image -%}
+                        <img
+                          src="{{ product.featured_image | image_url: width: 350 }}"
+                          alt="{{ product.title | escape }}"
+                          loading="lazy"
+                          width="{{ product.featured_image.width }}"
+                          height="{{ product.featured_image.height }}"
+                          class="m-right-coll-card__img"
+                        >
+                      {%- else -%}
+                        {{ 'product-1' | placeholder_svg_tag: 'm-placeholder-svg' }}
+                      {%- endif -%}
+                    </a>
+                  </div>
+
+                  <div class="m-right-coll-card__info">
+                    <a href="{{ product.url }}" class="m-right-coll-card__title">
+                      {{ product.title | escape }}
+                    </a>
+                    <div class="m-right-coll-card__price-row">
+                      {%- if product.compare_at_price > product.price -%}
+                        <span class="m-right-price-compare">{{ product.compare_at_price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
+                      {%- endif -%}
+                      <span class="m-right-price-regular" data-base-price="{{ product.price }}">{{ product.price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      class="m-button m-button--primary "
+                      data-coll-quick-add="{{ default_variant.id }}"
+                      {% unless product.available %}
+                        disabled
+                      {% endunless %}
+                    >
+                      {%- if product.available -%}
+                        + Add to Cart
+                      {%- else -%}
+                        Sold Out
+                      {%- endif -%}
+                    </button>
+                  </div>
+                </div>
+              {%- endfor -%}
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- ===================================================================
-         CART FOOTER (Pinned at Bottom for Bag Tab)
-         =================================================================== -->
-    <div class="m-luxury-right-drawer__footer{% if cart.item_count == 0 %} m:hidden{% endif %}" id="m-right-cart-footer">
-      <p class="m-right-shipping-note">{{ 'cart.general.free_shipping_note' | t | default: 'Free shipping will be applied at checkout.' }}</p>
-      
-      <div class="m-right-subtotal-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 13.5px; font-weight: 500;">
+    <!--
+      ===================================================================
+      CART FOOTER (Pinned at Bottom for Bag Tab)
+      ===================================================================
+    -->
+    <div
+      class="m-luxury-right-drawer__footer{% if cart.item_count == 0 %} m:hidden{% endif %}"
+      id="m-right-cart-footer"
+    >
+      <p class="m-right-shipping-note">
+        {{ 'cart.general.free_shipping_note' | t | default: 'Free shipping will be applied at checkout.' }}
+      </p>
+
+      <div
+        class="m-right-subtotal-row"
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 13.5px; font-weight: 500;"
+      >
         <span>{{ 'cart.general.subtotal' | t | default: 'Subtotal' }}</span>
-        <span id="m-right-cart-subtotal">{{ cart.total_price | money }}</span>
+        <span id="m-right-cart-subtotal" data-base-price="{{ cart.total_price }}">{{ cart.total_price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
       </div>
 
       <a href="/checkout" class="m-right-checkout-btn">
         {{ 'cart.general.checkout' | t | default: 'Proceed to checkout' }}
       </a>
-      <a href="{{ routes.cart_url }}" class="m-right-view-cart-link">
-        {{ 'cart.general.viewcart' | t | default: 'View Cart' }}
+      <a href="{{ routes.all_products_collection_url }}" class="m-right-view-cart-link">
+        {{ 'cart.general.explore_more' | t | default: 'Explore More' }}
       </a>
     </div>
-
   </div>
 </div>

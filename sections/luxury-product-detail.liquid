@@ -93,7 +93,9 @@
                       >
                       {% if media.media_type contains 'video' %}
                         <span class="m-luxury-thumb-badge" aria-label="Video">
-                          <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                          <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
                         </span>
                       {% endif %}
                     </div>
@@ -163,7 +165,18 @@
                         >
                       {% when 'video' %}
                         <div class="m-luxury-video-wrapper" data-media-type="video">
-                          {{ media | video_tag: controls: true, autoplay: false, loop: true, muted: true, playsinline: true, preload: 'auto', image_size: '1400x', class: 'm-luxury-main-video' }}
+                          {{
+                            media
+                            | video_tag:
+                              controls: false,
+                              autoplay: false,
+                              loop: true,
+                              muted: true,
+                              playsinline: true,
+                              preload: 'auto',
+                              image_size: '1400x',
+                              class: 'm-luxury-main-video'
+                          }}
                         </div>
                       {% when 'external_video' %}
                         <div class="m-luxury-video-wrapper" data-media-type="external_video">
@@ -257,16 +270,43 @@
 
         <!-- Product Price -->
         <div class="m-luxury-product-price-row" id="Price-{{ section.id }}">
+          {% liquid
+            if settings.currency_code_enabled
+              assign raw_price = current_variant.price | money_with_currency
+              assign raw_compare = current_variant.compare_at_price | money_with_currency
+            else
+              assign raw_price = current_variant.price | money
+              assign raw_compare = current_variant.compare_at_price | money
+            endif
+            assign v_price = raw_price | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip
+            assign v_compare = raw_compare | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip
+          %}
           {% if current_variant.compare_at_price > current_variant.price %}
-            <span class="m-luxury-product-price m-luxury-product-price--sale">
-              {{ current_variant.price | money }}
+            <span
+              class="m-luxury-product-price m-luxury-product-price--sale"
+              data-base-price="{{ current_variant.price }}"
+              data-price="{{ current_variant.price }}"
+              data-amount="{{ current_variant.price }}"
+            >
+              {{ v_price }}
             </span>
-            <s class="m-luxury-product-price--compare" style="margin-left: 8px; color: #a1a1aa; font-size: 14px;">
-              {{ current_variant.compare_at_price | money }}
+            <s
+              class="m-luxury-product-price--compare"
+              data-base-price="{{ current_variant.compare_at_price }}"
+              data-compare-price="{{ current_variant.compare_at_price }}"
+              data-amount="{{ current_variant.compare_at_price }}"
+              style="margin-left: 8px; color: #a1a1aa; font-size: 14px;"
+            >
+              {{ v_compare }}
             </s>
           {% else %}
-            <span class="m-luxury-product-price">
-              {{ current_variant.price | money }}
+            <span
+              class="m-luxury-product-price"
+              data-base-price="{{ current_variant.price }}"
+              data-price="{{ current_variant.price }}"
+              data-amount="{{ current_variant.price }}"
+            >
+              {{ v_price }}
             </span>
           {% endif %}
         </div>
@@ -316,83 +356,57 @@
           </div>
         {% endif %}
 
-        <!-- Size Sizing Standard Row & Dropdown (Right-aligned AU/FR/US/UK/IT) -->
+        <!-- Size Option -->
         {% if size_option_index >= 0 %}
           {% assign size_option = product.options_with_values[size_option_index] %}
-
-
-          <div>
-            <h3 class="size-v-title">{{ 'products.product.select_size' | t | default: 'Select Size:' }}</h3>
-          </div>
-          <!-- Size Buttons Grid -->
-          <div
-            class="m-luxury-sizes-grid"
-            id="m-luxury-sizes-grid-{{ section.id }}"
-            data-option-index="{{ size_option_index }}"
-          >
-            {% for value in size_option.values %}
-              {% liquid
-                assign is_available = false
-                assign variant_for_size = null
-                for var in product.variants
-                  if var.options[size_option_index] == value
-                    assign variant_for_size = var
-                    if var.available
-                      assign is_available = true
-                    endif
-                    break
-                  endif
-                endfor
-              %}
-              <button
-                type="button"
-                class="m-luxury-size-box{% if size_option.selected_value == value %} active{% endif %}{% unless is_available %} is-unavailable{% endunless %}"
-                data-value="{{ value | escape }}"
-                data-original-value="{{ value | escape }}"
-                data-variant-id="{{ variant_for_size.id }}"
-                {% unless is_available %}
-                  title="{{ 'products.product.sold_out' | t | default: 'Out of Stock' }}"
-                {% endunless %}
-                aria-label="{{ value }}"
-              >
-                {{ value }}
+          <div class="m-luxury-size-section">
+            <div class="m-luxury-size-header-row">
+              <span class="size-v-title">{{ 'products.product.select_size' | t | default: 'Select Size' }}</span>
+              <button type="button" class="m-luxury-size-guide-trigger-btn" data-open-sizeguide>
+                {{ 'products.product.size_guide' | t | default: 'Size guide' }}
               </button>
-            {% endfor %}
-          </div>
-
-          <!-- Size Guide Trigger Link -->
-          <div class="m-luxury-size-guide-trigger-row">
-            <button type="button" class="m-luxury-size-guide-trigger-btn" data-open-sizeguide>
-              {{ 'products.product.size_guide' | t | default: 'Size Guide' }}
-            </button>
+            </div>
+            <!-- Size Buttons Grid -->
+            <div
+              class="m-luxury-sizes-grid"
+              id="m-luxury-sizes-grid-{{ section.id }}"
+              data-option-index="{{ size_option_index }}"
+            >
+              {% for value in size_option.values %}
+                {% liquid
+                  assign is_available = false
+                  assign variant_for_size = null
+                  for var in product.variants
+                    if var.options[size_option_index] == value
+                      assign variant_for_size = var
+                      if var.available
+                        assign is_available = true
+                      endif
+                      break
+                    endif
+                  endfor
+                %}
+                <button
+                  type="button"
+                  class="m-luxury-size-box{% if size_option.selected_value == value %} active{% endif %}{% unless is_available %} is-unavailable{% endunless %}"
+                  data-value="{{ value | escape }}"
+                  data-original-value="{{ value | escape }}"
+                  data-variant-id="{{ variant_for_size.id }}"
+                  {% unless is_available %}
+                    title="{{ 'products.product.sold_out' | t | default: 'Out of Stock' }}"
+                  {% endunless %}
+                  aria-label="{{ value }}"
+                >
+                  {{ value }}
+                </button>
+              {% endfor %}
+            </div>
           </div>
         {% else %}
           {% comment %} Fallback Size Grid if product has custom size options {% endcomment %}
           {% if product.options.size > 0 and product.has_only_default_variant == false %}
             {% for option in product.options_with_values %}
               {% unless forloop.index0 == color_option_index %}
-                {% comment %} <div class="m-luxury-size-header-row">
-                  <div class="m-luxury-size-system-dropdown">
-                    <select class="m-luxury-size-system-select" aria-label="{{ 'products.product.select_size' | t | default: 'Select Sizing standard' }}">
-                      <option value="AU" selected>{{ 'products.product.size_au' | t | default: 'Size AU' }}</option>
-                      <option value="FR">{{ 'products.product.size_fr' | t | default: 'Size FR' }}</option>
-                      <option value="US">{{ 'products.product.size_us' | t | default: 'Size US' }}</option>
-                      <option value="UK">{{ 'products.product.size_uk' | t | default: 'Size UK' }}</option>
-                      <option value="IT">{{ 'products.product.size_it' | t | default: 'Size IT' }}</option>
-                    </select>
-                    <svg
-                      class="m-luxury-size-system-chevron"
-                      viewBox="0 0 10 6"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.8"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      <polyline points="1 1 5 5 9 1"></polyline>
-                    </svg>
-                  </div>
-                </div> {% endcomment %}
                 <div class="m-luxury-sizes-grid" data-option-index="{{ forloop.index0 }}">
                   {% for value in option.values %}
                     <button
@@ -436,7 +450,7 @@
                 name="add"
                 id="ProductSubmitButton-{{ section.id }}"
                 class="m-add-to-cart m-luxury-add-to-bag-btn"
-                data-atc-text="{{ 'products.product.add_to_cart' | t | default: 'Add to Bag' }}"
+                data-atc-text="{{ 'products.product.add_to_cart' | t | default: 'Add to Cart' }}"
                 data-soldout-text="{{ 'products.product.sold_out' | t | default: 'Out of Stock' }}"
                 {% unless current_variant.available %}
                   disabled
@@ -444,7 +458,7 @@
               >
                 <span class="m-add-to-cart--text">
                   {%- if current_variant.available -%}
-                    {{ 'products.product.add_to_cart' | t | default: 'Add to Bag' }}
+                    {{ 'products.product.add_to_cart' | t | default: 'Add to Cart' }}
                   {%- else -%}
                     {{ 'products.product.sold_out' | t | default: 'Out of Stock' }}
                   {%- endif -%}
@@ -489,8 +503,9 @@
                 <span
                   class="m-wishlist-button-text"
                   data-revert-text="{{ 'products.product.remove_from_wishlist' | t | default: 'Remove from Wishlist' }}"
-                  >{{ 'products.product.add_to_wishlist' | t | default: 'Add to Wishlist' }}</span
                 >
+                  {{- 'products.product.add_to_wishlist' | t | default: 'Add to Wishlist' -}}
+                </span>
               </button>
             </div>
           {%- endform -%}
@@ -648,10 +663,12 @@
                       <strong>{{ product.title }}</strong>
                     </p>
                     <p>
-                      {{ product.description | strip_html | truncatewords: 30, "" }}
+                      {{ product.description | strip_html | truncatewords: 30, '' }}
                     </p>
                   </div>
-                  <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="desc">{{ 'general.accessibility.view_more' | t | default: 'View more' }}</button>
+                  <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="desc">
+                    {{ 'general.accessibility.view_more' | t | default: 'View more' }}
+                  </button>
                 </div>
               </div>
             </div>
@@ -675,7 +692,11 @@
                 <div class="m-luxury-accordion-content rte">
                   <div class="m-luxury-accordion-truncated">
                     <p>
-                      {{ 'cart.general.free_shipping_note' | t | default: 'We offer complimentary shipping on all orders.' }}
+                      {{
+                        'cart.general.free_shipping_note'
+                        | t
+                        | default: 'We offer complimentary shipping on all orders.'
+                      }}
                     </p>
                   </div>
                   <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="delivery">
@@ -819,18 +840,9 @@
                     responsibility of the customer.
                   </p>
                   <p>
-                    We accept returns within 30 days of delivery. To request an exchange, please complete the Return
-                    Form using your order number. Items must be returned in their original condition—unworn, unwashed,
-                    with all tags and packaging intact. You may also exchange items at any ELIE SAAB boutique by
-                    presenting your airway bill and invoice.
-                  </p>
-                  <p>
-                    If the new item is of higher value, you will be charged the difference. If it is of lesser value,
-                    the difference will be refunded.
-                  </p>
-                  <p>
-                    Please note that discounted items are not eligible for refunds in the U.S. They may be returned for
-                    an exchange or store credit.
+                    We accept returns within 14 days of delivery. To request a return, please complete the Return Form
+                    using your order number. Items must be returned in their original condition—unworn, unwashed, with
+                    all tags and packaging intact.
                   </p>
                 </div>
               </div>

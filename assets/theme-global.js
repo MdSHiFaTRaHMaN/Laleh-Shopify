@@ -734,10 +734,19 @@ function formatMoney(cents, format) {
         value = formatWithDelimiters(cents, 2);
         break;
     }
-    return formatString.replace(placeholderRegex, value);
+    const res = formatString.replace(placeholderRegex, value);
+    return res
+      .replace(/^([^\d\s]+)(\d)/, '$1 $2')
+      .replace(/(\d)([^\d\s.,]+)$/, '$1 $2')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
-  return formatString;
+  return formatString
+    .replace(/^([^\d\s]+)(\d)/, '$1 $2')
+    .replace(/(\d)([^\d\s.,]+)$/, '$1 $2')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 function validateForm(form) {
@@ -2149,8 +2158,24 @@ if (!customElements.get("m-select-component")) {
 
     setDefaultValue() {
       const { elSelectNative } = this.domNodes;
-      const value = elSelectNative.options[elSelectNative.selectedIndex].value;
-      const text = elSelectNative.options[elSelectNative.selectedIndex].text;
+      if (!elSelectNative || !elSelectNative.options || elSelectNative.options.length === 0) return;
+
+      const isCountrySelector = this.querySelector('.m-country-flag-icon') || (elSelectNative.name === 'country_code');
+      if (isCountrySelector) {
+        try {
+          const savedCountry = localStorage.getItem('m_active_country');
+          if (savedCountry) {
+            const matchingOpt = Array.from(elSelectNative.options).find(o => o.value.toUpperCase() === savedCountry.toUpperCase());
+            if (matchingOpt) {
+              elSelectNative.value = matchingOpt.value;
+            }
+          }
+        } catch (e) {}
+      }
+
+      const selectedIndex = elSelectNative.selectedIndex >= 0 ? elSelectNative.selectedIndex : 0;
+      const value = elSelectNative.options[selectedIndex].value;
+      const text = elSelectNative.options[selectedIndex].text;
       this.updateCustomSelectChecked(value, text);
     }
 
@@ -2169,12 +2194,23 @@ if (!customElements.get("m-select-component")) {
 
       this.domNodes.customOptionList.forEach((option) => {
         option.addEventListener("click", (e) => {
-          const value = e.target.getAttribute("data-value");
+          const targetOpt = e.target.closest('.m-select-custom--option') || option;
+          const value = targetOpt.getAttribute("data-value");
+          const currency = targetOpt.getAttribute("data-currency");
           elSelectNative.value = value;
           this.closeSelect();
-          this.updateCustomSelectChecked(value, e.target.textContent);
-          elSelectNative.dispatchEvent(new Event("change"));
-          elSelectNative.dispatchEvent(new Event("click"));
+          this.updateCustomSelectChecked(value, targetOpt.textContent.trim());
+
+          const isCountrySelector = this.querySelector('.m-country-flag-icon') || (elSelectNative.name === 'country_code');
+          if (isCountrySelector && window.CurrencyEngine && typeof window.CurrencyEngine.setCurrency === 'function') {
+            const valUpper = (value || '').toUpperCase();
+            const marketData = window.MinimogSettings && window.MinimogSettings.market_countries && window.MinimogSettings.market_countries[valUpper];
+            const finalCurr = (marketData && marketData.currency) || currency || (window.CurrencyEngine.countryMap && window.CurrencyEngine.countryMap[valUpper]) || 'USD';
+            window.CurrencyEngine.setCurrency(finalCurr, value);
+          }
+
+          elSelectNative.dispatchEvent(new Event("change", { bubbles: true }));
+          elSelectNative.dispatchEvent(new Event("click", { bubbles: true }));
         });
       });
     }
@@ -2211,6 +2247,23 @@ if (!customElements.get("m-select-component")) {
 
       elSelectCustomTriggerText.textContent = text;
       this.optionChecked = value;
+
+      const flagContainer = this.querySelector('.m-country-flag-icon');
+      if (flagContainer) {
+        const valUpper = (value || '').toUpperCase();
+        if (valUpper === 'CH') {
+          flagContainer.innerHTML = '<svg viewBox="0 0 512 512" width="16" height="16" style="display: block; border-radius: 50%;"><circle cx="256" cy="256" r="256" fill="#D52B1E"/><path fill="#FFFFFF" d="M216 116h80v100h100v80H296v100h-80V296H116v-80h100V116z"/></svg>';
+        } else if (elOption) {
+          const optFlag = elOption.querySelector('svg, .m-country-flags, img');
+          if (optFlag) {
+            flagContainer.innerHTML = optFlag.outerHTML;
+          } else {
+            flagContainer.innerHTML = `<span class="m-country-flags m-country-flags--${valUpper}"></span>`;
+          }
+        } else {
+          flagContainer.innerHTML = `<span class="m-country-flags m-country-flags--${valUpper}"></span>`;
+        }
+      }
     }
 
     handleClickOutside(e) {

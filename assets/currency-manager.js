@@ -25,6 +25,8 @@
     SAR: { code: 'SAR', name: 'Saudi Riyal', symbol: 'SAR', format: 'SAR {{amount}}', rate: 3.75, precision: 2 },
     QAR: { code: 'QAR', name: 'Qatari Riyal', symbol: 'QAR', format: 'QAR {{amount}}', rate: 3.64, precision: 2 },
     KWD: { code: 'KWD', name: 'Kuwaiti Dinar', symbol: 'KWD', format: 'KWD {{amount}}', rate: 0.31, precision: 2 },
+    BHD: { code: 'BHD', name: 'Bahraini Dinar', symbol: 'BHD', format: 'BHD {{amount}}', rate: 0.38, precision: 2 },
+    OMR: { code: 'OMR', name: 'Omani Rial', symbol: 'OMR', format: 'OMR {{amount}}', rate: 0.38, precision: 2 },
     SGD: { code: 'SGD', name: 'Singapore Dollar', symbol: 'S$', format: 'S$ {{amount}}', rate: 1.35, precision: 2 },
     NZD: { code: 'NZD', name: 'New Zealand Dollar', symbol: 'NZ$', format: 'NZ$ {{amount}}', rate: 1.65, precision: 2 },
     HKD: { code: 'HKD', name: 'Hong Kong Dollar', symbol: 'HK$', format: 'HK$ {{amount}}', rate: 7.82, precision: 2 },
@@ -40,9 +42,13 @@
     PLN: { code: 'PLN', name: 'Polish Zloty', symbol: 'zł', format: 'zł {{amount}}', rate: 3.95, precision: 2 }
   };
 
-  // Map Country Code to Default Currency
+  // Comprehensive Country Code to Default Currency Mapping
   const COUNTRY_CURRENCY_MAP = {
+    // North America
     US: 'USD',
+    CA: 'CAD',
+    MX: 'MXN',
+    // Europe
     CH: 'CHF',
     GB: 'GBP',
     DE: 'EUR',
@@ -68,28 +74,89 @@
     AD: 'EUR',
     MC: 'EUR',
     ME: 'EUR',
-    JP: 'JPY',
-    BD: 'BDT',
-    IN: 'INR',
+    VA: 'EUR',
+    SM: 'EUR',
+    XK: 'EUR',
+    BA: 'EUR',
+    MK: 'EUR',
+    RS: 'EUR',
+    BG: 'EUR',
+    RO: 'EUR',
+    HR: 'EUR',
+    PL: 'PLN',
+    SE: 'SEK',
+    NO: 'NOK',
+    DK: 'DKK',
+    IS: 'EUR',
+    CZ: 'EUR',
+    HU: 'EUR',
+    UA: 'USD',
+    TR: 'TRY',
+    // Middle East
     AE: 'AED',
     SA: 'SAR',
     QA: 'QAR',
     KW: 'KWD',
-    CA: 'CAD',
+    BH: 'BHD',
+    OM: 'OMR',
+    JO: 'USD',
+    LB: 'USD',
+    EG: 'USD',
+    IQ: 'USD',
+    IL: 'USD',
+    // Asia-Pacific
     AU: 'AUD',
     NZ: 'NZD',
+    JP: 'JPY',
     SG: 'SGD',
     HK: 'HKD',
-    SE: 'SEK',
-    NO: 'NOK',
-    DK: 'DKK',
     KR: 'KRW',
     CN: 'CNY',
+    TW: 'USD',
+    MY: 'USD',
+    TH: 'USD',
+    ID: 'USD',
+    PH: 'USD',
+    VN: 'USD',
+    BD: 'BDT',
+    IN: 'INR',
+    PK: 'USD',
+    LK: 'USD',
+    NP: 'USD',
+    KH: 'USD',
+    MV: 'USD',
+    // Americas
     BR: 'BRL',
-    MX: 'MXN',
-    TR: 'TRY',
+    AR: 'USD',
+    CL: 'USD',
+    CO: 'USD',
+    PE: 'USD',
+    EC: 'USD',
+    UY: 'USD',
+    CR: 'USD',
+    PA: 'USD',
+    DO: 'USD',
+    JM: 'USD',
+    BS: 'USD',
+    BB: 'USD',
+    TT: 'USD',
+    AI: 'USD',
+    AG: 'USD',
+    BO: 'USD',
+    // Africa
     ZA: 'ZAR',
-    PL: 'PLN'
+    MA: 'USD',
+    DZ: 'USD',
+    TN: 'USD',
+    NG: 'USD',
+    KE: 'USD',
+    GH: 'USD',
+    ET: 'USD',
+    TZ: 'USD',
+    UG: 'USD',
+    AO: 'USD',
+    CM: 'USD',
+    CV: 'USD'
   };
 
   // Country Names
@@ -113,6 +180,7 @@
     DK: 'Denmark',
     LU: 'Luxembourg',
     PL: 'Poland',
+    CY: 'Cyprus',
     CA: 'Canada',
     AU: 'Australia',
     NZ: 'New Zealand',
@@ -121,6 +189,10 @@
     HK: 'Hong Kong',
     KR: 'South Korea',
     CN: 'China',
+    MY: 'Malaysia',
+    ID: 'Indonesia',
+    MV: 'Maldives',
+    NP: 'Nepal',
     BD: 'Bangladesh',
     IN: 'India',
     AE: 'United Arab Emirates',
@@ -129,10 +201,29 @@
     KW: 'Kuwait',
     OM: 'Oman',
     BH: 'Bahrain',
+    JO: 'Jordan',
+    EG: 'Egypt',
     TR: 'Turkey',
     BR: 'Brazil',
     MX: 'Mexico',
-    ZA: 'South Africa'
+    CL: 'Chile',
+    CO: 'Colombia',
+    PE: 'Peru',
+    EC: 'Ecuador',
+    CR: 'Costa Rica',
+    BO: 'Bolivia',
+    AR: 'Argentina',
+    ZA: 'South Africa',
+    MA: 'Morocco',
+    CM: 'Cameroon',
+    CV: 'Cape Verde',
+    AL: 'Albania',
+    AD: 'Andorra',
+    AO: 'Angola',
+    AI: 'Anguilla',
+    AG: 'Antigua & Barbuda',
+    AM: 'Armenia',
+    KH: 'Cambodia'
   };
 
   function getCountryName(countryCode) {
@@ -151,93 +242,140 @@
     return code;
   }
 
-  function getBaseCurrency() {
-    return (window.MinimogSettings && window.MinimogSettings.currency_code) || 'USD';
-  }
+  const STORE_BASE_CURRENCY = 'AED';
 
-  function getActiveCurrency() {
-    try {
-      const saved = localStorage.getItem(CURRENCY_STORAGE_KEY);
-      if (saved && CURRENCIES[saved]) return saved;
-    } catch (e) {}
-    return getBaseCurrency();
+  function getBaseCurrency() {
+    return STORE_BASE_CURRENCY;
   }
 
   function getActiveCountry() {
-    try {
-      const saved = localStorage.getItem(COUNTRY_STORAGE_KEY);
-      if (saved) return saved.toUpperCase();
-    } catch (e) {}
     if (window.MinimogSettings && window.MinimogSettings.country_code) {
       return window.MinimogSettings.country_code.toUpperCase();
     }
     if (window.Shopify && window.Shopify.country) {
       return window.Shopify.country.toUpperCase();
     }
+    try {
+      const saved = localStorage.getItem(COUNTRY_STORAGE_KEY);
+      if (saved) return saved.toUpperCase();
+    } catch (e) {}
     return 'CH';
   }
 
+  function getActiveCurrency() {
+    if (window.MinimogSettings && window.MinimogSettings.currency_code) {
+      return window.MinimogSettings.currency_code.toUpperCase();
+    }
+    if (window.Shopify && window.Shopify.currency && window.Shopify.currency.active) {
+      return window.Shopify.currency.active.toUpperCase();
+    }
+    const activeCountry = getActiveCountry();
+    const marketData = window.MinimogSettings && window.MinimogSettings.market_countries && window.MinimogSettings.market_countries[activeCountry];
+    if (marketData && marketData.currency) {
+      return marketData.currency.toUpperCase();
+    }
+    try {
+      const saved = localStorage.getItem(CURRENCY_STORAGE_KEY);
+      if (saved && CURRENCIES[saved.toUpperCase()]) {
+        return saved.toUpperCase();
+      }
+    } catch (e) {}
+    if (activeCountry && COUNTRY_CURRENCY_MAP[activeCountry]) {
+      return COUNTRY_CURRENCY_MAP[activeCountry];
+    }
+    return getBaseCurrency();
+  }
+
   function formatMoneyValue(cents, targetCurrencyCode) {
-    const curr = CURRENCIES[targetCurrencyCode] || CURRENCIES.USD;
-    const baseCode = getBaseCurrency();
-    const baseRate = (CURRENCIES[baseCode] && CURRENCIES[baseCode].rate) || 1.0;
-    const targetRate = curr.rate || 1.0;
+    if (typeof cents === 'string') {
+      cents = parseFloat(cents.replace(/[^0-9.-]/g, ''));
+    }
+    if (isNaN(cents) || cents == null) cents = 0;
 
-    // Convert from base currency to target currency
-    const rateMultiplier = targetRate / baseRate;
-    const convertedCents = Math.round(cents * rateMultiplier);
+    const currCode = (targetCurrencyCode || getActiveCurrency()).toUpperCase();
+    const curr = CURRENCIES[currCode] || {
+      code: currCode,
+      symbol: (window.MinimogSettings && window.MinimogSettings.currency_symbol) || currCode,
+      format: (window.MinimogSettings && window.MinimogSettings.money_format) || `${currCode} {{amount}}`,
+      precision: 2
+    };
+
     const precision = curr.precision !== undefined ? curr.precision : 2;
-
-    const val = (convertedCents / 100.0).toFixed(precision);
+    const val = (cents / 100.0).toFixed(precision);
     const parts = val.split('.');
     const integerPart = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
     const decimalPart = parts[1] ? '.' + parts[1] : '';
     const formattedAmount = integerPart + (precision > 0 ? decimalPart : '');
 
-    let formatStr = curr.format;
+    let formatStr = curr.format || `${curr.symbol || curr.code} {{amount}}`;
     if (precision === 0) {
       formatStr = formatStr.replace(/\{\{\s*amount\s*\}\}/g, '{{amount_no_decimals}}');
     }
 
-    return formatStr
+    let result = formatStr
       .replace(/\{\{\s*amount\s*\}\}/g, formattedAmount)
       .replace(/\{\{\s*amount_no_decimals\s*\}\}/g, integerPart);
+
+    return result
+      .replace(/^([^\d\s]+)(\d)/, '$1 $2')
+      .replace(/(\d)([^\d\s.,]+)$/, '$1 $2')
+      .replace(/Dhs(\d)/gi, 'Dhs $1')
+      .replace(/AED(\d)/gi, 'Dhs $1')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
   function parsePriceToCents(el) {
-    // 1. Check data-base-price or data-amount or data-price attribute
+    // 1. Check data-base-price or data-amount or data-price attribute on el
     if (el.hasAttribute('data-base-price')) {
       const val = parseFloat(el.getAttribute('data-base-price'));
-      if (!isNaN(val)) return val;
+      if (!isNaN(val) && val > 0) return val;
     }
     if (el.hasAttribute('data-amount')) {
       const val = parseFloat(el.getAttribute('data-amount'));
-      if (!isNaN(val)) {
+      if (!isNaN(val) && val > 0) {
         el.setAttribute('data-base-price', val);
         return val;
       }
     }
     if (el.hasAttribute('data-price')) {
       const val = parseFloat(el.getAttribute('data-price'));
-      if (!isNaN(val)) {
+      if (!isNaN(val) && val > 0) {
         el.setAttribute('data-base-price', val);
         return val;
       }
     }
 
-    // 2. Parse numbers from textContent
+    // 2. Check parent container (like .m-price) for data-price
+    const priceParent = el.closest ? el.closest('.m-price, [data-price]') : null;
+    if (priceParent) {
+      if (priceParent.hasAttribute('data-base-price')) {
+        const val = parseFloat(priceParent.getAttribute('data-base-price'));
+        if (!isNaN(val) && val > 0) {
+          el.setAttribute('data-base-price', val);
+          return val;
+        }
+      }
+      if (priceParent.hasAttribute('data-price')) {
+        const val = parseFloat(priceParent.getAttribute('data-price'));
+        if (!isNaN(val) && val > 0) {
+          el.setAttribute('data-base-price', val);
+          return val;
+        }
+      }
+    }
+
+    // 3. Parse numbers from textContent
     const text = el.textContent.replace(/[^0-9.,]/g, '').trim();
     if (!text) return null;
 
     let num = parseFloat(text.replace(/,/g, ''));
-    if (!isNaN(num)) {
-      // If it looks like raw dollars e.g. 19.99
+    if (!isNaN(num) && num > 0) {
       if (text.includes('.') && num < 100000) {
         const cents = Math.round(num * 100);
         el.setAttribute('data-base-price', cents);
         return cents;
       } else {
-        // If it was already in cents or large amount
         const cents = Math.round(num);
         el.setAttribute('data-base-price', cents);
         return cents;
@@ -246,59 +384,158 @@
     return null;
   }
 
+  function ensurePriceSpacing(root) {
+    const scope = root || document;
+    const selectors = [
+      '.m-luxury-product-price',
+      '.m-luxury-product-price--sale',
+      '.m-luxury-product-price--compare',
+      '.m-price-item',
+      '.m-cart-item__price',
+      '[data-cart-subtotal-price]',
+      '.m-right-price',
+      '.m-right-price-regular',
+      '.m-right-price-compare',
+      '#m-right-cart-subtotal',
+      '[data-line-price]',
+      '.m-right-wishlist-price-regular',
+      '.m-right-wishlist-price-compare',
+      '.m-right-coll-card__price-row span',
+      '.m-stl-product__price'
+    ];
+    scope.querySelectorAll(selectors.join(', ')).forEach(function (el) {
+      if (el.children.length === 0 && el.textContent) {
+        el.textContent = el.textContent
+          .replace(/^([^\d\s]+)(\d)/, '$1 $2')
+          .replace(/(\d)([^\d\s.,]+)$/, '$1 $2')
+          .replace(/Dhs(\d)/gi, 'Dhs $1')
+          .replace(/AED(\d)/gi, 'Dhs $1')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+    });
+  }
+
   function updateProductCardPrices(targetCurrency) {
+    if (!targetCurrency || !CURRENCIES[targetCurrency]) {
+      targetCurrency = getActiveCurrency();
+    }
     const targetCurr = CURRENCIES[targetCurrency] || CURRENCIES.USD;
 
-    // 1. Update all .m-price containers and their child price items
-    const priceElements = document.querySelectorAll('.m-price, .m-product-card__price, .m-cascading-product-card__price, .m-right-drawer-item__price');
-    priceElements.forEach(function (container) {
-      // Find regular, sale, and compare prices
-      const regItems = container.querySelectorAll('.m-price-item--regular:not(s), .m-price-item--sale, [data-price]');
-      regItems.forEach(function (item) {
-        const cents = parsePriceToCents(item);
-        if (cents != null && cents > 0) {
-          item.textContent = formatMoneyValue(cents, targetCurrency);
-        }
-      });
+    // Specific price text elements only - NEVER query container elements like .m-price!
+    const leafSelectors = [
+      '.m-price-item--regular:not(s)',
+      '.m-price-item--sale',
+      's.m-price-item--regular',
+      '.m-luxury-product-price',
+      '.m-luxury-product-price--sale',
+      '.m-luxury-product-price--compare',
+      '.m-cart-item__price',
+      '.m-right-price',
+      '.m-right-price-regular',
+      '.m-right-price-compare',
+      '#m-right-cart-subtotal',
+      '[data-line-price]',
+      '.m-right-wishlist-price-regular',
+      '.m-right-wishlist-price-compare',
+      '.m-right-coll-card__price-row span',
+      '.m-stl-product__price',
+      '[data-cart-subtotal-price]'
+    ];
 
-      const compareItems = container.querySelectorAll('s.m-price-item--regular, .m-right-price-compare, [data-compare-price]');
-      compareItems.forEach(function (item) {
-        const cents = parsePriceToCents(item);
-        if (cents != null && cents > 0) {
-          item.textContent = formatMoneyValue(cents, targetCurrency);
-        }
-      });
+    const leafElements = document.querySelectorAll(leafSelectors.join(', '));
+    leafElements.forEach(function (item) {
+      // Safety check: ensure element doesn't contain other price items
+      if (item.querySelector && item.querySelector('.m-price-item, .m-price')) return;
+
+      const cents = parsePriceToCents(item);
+      if (cents != null && cents > 0) {
+        item.textContent = formatMoneyValue(cents, targetCurrency);
+      }
     });
 
-    // 2. Update standalone .m-price-item
-    const standaloneItems = document.querySelectorAll('.m-price-item, .m-right-price, [data-amount]');
-    standaloneItems.forEach(function (item) {
-      if (!item.closest('.m-price')) {
-        const cents = parsePriceToCents(item);
+    // Standalone .m-price without price-item children
+    document.querySelectorAll('.m-price').forEach(function (p) {
+      if (p.children.length === 0 && p.textContent.trim()) {
+        const cents = parsePriceToCents(p);
         if (cents != null && cents > 0) {
-          item.textContent = formatMoneyValue(cents, targetCurrency);
+          p.textContent = formatMoneyValue(cents, targetCurrency);
         }
       }
     });
 
-    // 3. Update MinimogSettings for theme JS compatibility
+    // Update MinimogSettings for theme JS compatibility
     if (window.MinimogSettings) {
       window.MinimogSettings.currency_code = targetCurr.code;
       window.MinimogSettings.money_format = targetCurr.format;
     }
+
+    ensurePriceSpacing();
+  }
+
+  function updateComponentFlag(component, countryCode) {
+    const flagContainer = component.querySelector('.m-country-flag-icon');
+    if (!flagContainer) return;
+    const code = (countryCode || '').toUpperCase();
+    if (code === 'CH') {
+      flagContainer.innerHTML = '<svg viewBox="0 0 512 512" width="16" height="16" style="display: block; border-radius: 50%;"><circle cx="256" cy="256" r="256" fill="#D52B1E"/><path fill="#FFFFFF" d="M216 116h80v100h100v80H296v100h-80V296H116v-80h100V116z"/></svg>';
+      return;
+    }
+    const matchingCustomOpt = component.querySelector(`.m-select-custom--option[data-value="${code}"]`);
+    if (matchingCustomOpt) {
+      const optFlag = matchingCustomOpt.querySelector('svg, .m-country-flags, img');
+      if (optFlag) {
+        flagContainer.innerHTML = optFlag.outerHTML;
+        return;
+      }
+    }
+    flagContainer.innerHTML = `<span class="m-country-flags m-country-flags--${code}"></span>`;
+  }
+
+  function sanitizeCurrencyAttributes() {
+    // Ensure all custom options, native options, and footer items have the real country currency
+    const marketCountries = window.MinimogSettings && window.MinimogSettings.market_countries;
+    const elements = document.querySelectorAll(
+      '.m-select-custom--option[data-value], option[data-value], select[name="country_code"] option, .m-crm-item[data-value], [class*="country-item"][data-value]'
+    );
+    elements.forEach(function (opt) {
+      const code = (opt.getAttribute('data-value') || opt.value || '').toUpperCase();
+      if (code && code.length === 2) {
+        const mapped = (marketCountries && marketCountries[code] && marketCountries[code].currency) || COUNTRY_CURRENCY_MAP[code];
+        if (mapped) {
+          opt.setAttribute('data-currency', mapped);
+          const currSpan = opt.querySelector('[class*="__currency-code"], .m-currency-code');
+          if (currSpan) {
+            currSpan.textContent = '(' + mapped + ')';
+          }
+        }
+      }
+    });
   }
 
   function syncAllSelectors(currencyCode, countryCode) {
+    const marketCountries = window.MinimogSettings && window.MinimogSettings.market_countries;
+    const marketCountry = marketCountries && marketCountries[countryCode];
+    if (marketCountry && marketCountry.currency) {
+      currencyCode = marketCountry.currency;
+    }
+    const cName = (marketCountry && marketCountry.name) || getCountryName(countryCode);
+    sanitizeCurrencyAttributes();
+
     // 1. Update Megamenu / Mobile Menu Selectors
     const customSelects = document.querySelectorAll('m-select-component');
     customSelects.forEach(function (component) {
       const nativeSelect = component.querySelector('.js-selectNative');
       if (nativeSelect) {
-        const matchingOption = nativeSelect.querySelector(`option[value="${currencyCode}"], option[value="${countryCode}"]`);
+        const isCountrySelector = component.querySelector('.m-country-flag-icon') || nativeSelect.name === 'country_code';
+        const targetVal = isCountrySelector ? countryCode : currencyCode;
+        const matchingOption = nativeSelect.querySelector(`option[value="${targetVal}"]`) || nativeSelect.querySelector(`option[value="${currencyCode}"], option[value="${countryCode}"]`);
         if (matchingOption) {
           nativeSelect.value = matchingOption.value;
           const triggerText = component.querySelector('.m-select-custom--trigger-text');
-          if (triggerText) triggerText.textContent = matchingOption.text || matchingOption.value;
+          if (triggerText) {
+            triggerText.textContent = isCountrySelector ? cName : (matchingOption.text || matchingOption.value);
+          }
           const optList = component.querySelectorAll('.m-select-custom--option');
           optList.forEach(function (opt) {
             if (opt.getAttribute('data-value') === matchingOption.value) {
@@ -307,6 +544,9 @@
               opt.classList.remove('isActive');
             }
           });
+          if (isCountrySelector) {
+            updateComponentFlag(component, matchingOption.value);
+          }
         }
       }
     });
@@ -314,9 +554,9 @@
     // 2. Update Custom Footer Country/Currency Trigger
     const footerTriggerLabel = document.querySelector('[id^="FooterCleanCountryLabel-"], [id^="CountryTriggerLabel-"]');
     const footerTriggerFlag = document.querySelector('[id^="CountryTriggerFlag-"]');
-    const footerInput = document.querySelector('[id^="FooterCountryInput-"]');
+    const footerInput = document.querySelector('[id^="FooterCountryInput-"], [id^="FooterCleanCountryInput-"]');
     if (footerInput) footerInput.value = countryCode;
-    if (footerTriggerLabel) footerTriggerLabel.textContent = `${getCountryName(countryCode)} (${currencyCode})`;
+    if (footerTriggerLabel) footerTriggerLabel.textContent = `${cName} (${currencyCode})`;
     if (footerTriggerFlag) {
       footerTriggerFlag.src = 'https://flagcdn.com/w40/' + countryCode.toLowerCase() + '.png';
       footerTriggerFlag.srcset = 'https://flagcdn.com/w80/' + countryCode.toLowerCase() + '.png 2x';
@@ -327,13 +567,13 @@
     const popupTriggerFlag = document.querySelector('[id^="CountryModalTriggerFlag-"]');
     const popupHiddenInput = document.querySelector('[id^="CountryModalHiddenInput-"]');
     if (popupHiddenInput) popupHiddenInput.value = countryCode;
-    if (popupTriggerName) popupTriggerName.textContent = getCountryName(countryCode);
+    if (popupTriggerName) popupTriggerName.textContent = cName;
     if (popupTriggerFlag) {
       popupTriggerFlag.src = 'https://flagcdn.com/w40/' + countryCode.toLowerCase() + '.png';
       popupTriggerFlag.srcset = 'https://flagcdn.com/w80/' + countryCode.toLowerCase() + '.png 2x';
     }
 
-    // 4. Update Announcement Bar (e.g., "We ship to Switzerland" -> "We ship to [Visitor's Country]")
+    // 4. Update Announcement Bar
     updateAnnouncementShippingCountry(countryCode);
   }
 
@@ -341,13 +581,11 @@
     const cName = getCountryName(countryCode);
     if (!cName) return;
 
-    // 1. Direct span update (rendered via sections/annoucement.liquid)
     const countrySpans = document.querySelectorAll('[data-announcement-country], .m-announcement-country');
     countrySpans.forEach(function (span) {
       span.textContent = cName;
     });
 
-    // 2. Full text update for any element containing "We ship to"
     const announcementContainers = document.querySelectorAll(
       '.m-announcement-bar, .m-announcement-bar__custom, .m-topbar, .top-announcement'
     );
@@ -369,13 +607,12 @@
       savedCountry = localStorage.getItem(COUNTRY_STORAGE_KEY);
     } catch (e) {}
 
-    // If customer already has a chosen preference in localStorage, keep it
     if (savedCountry) {
       updateAnnouncementShippingCountry(savedCountry);
+      syncAllSelectors(getActiveCurrency(), savedCountry);
       return;
     }
 
-    // Call Shopify's native edge geolocation API
     fetch('/browsing_context_suggestions.json')
       .then(function (res) {
         return res.ok ? res.json() : null;
@@ -395,6 +632,13 @@
             } catch (e) {}
 
             const targetCurrency = COUNTRY_CURRENCY_MAP[countryCode] || getActiveCurrency();
+            try {
+              if (!localStorage.getItem(CURRENCY_STORAGE_KEY)) {
+                localStorage.setItem(CURRENCY_STORAGE_KEY, targetCurrency);
+              }
+            } catch (e) {}
+
+            updateProductCardPrices(targetCurrency);
             syncAllSelectors(targetCurrency, countryCode);
 
             if (detectedCountryName) {
@@ -410,33 +654,29 @@
         const fallbackCode = (window.MinimogSettings && window.MinimogSettings.country_code) || getActiveCountry();
         if (fallbackCode) {
           updateAnnouncementShippingCountry(fallbackCode);
+          syncAllSelectors(getActiveCurrency(), fallbackCode);
         }
       });
   }
 
   function setCurrency(currencyCode, countryCode) {
-    if (!currencyCode && countryCode) {
-      currencyCode = COUNTRY_CURRENCY_MAP[countryCode.toUpperCase()] || 'USD';
+    countryCode = (countryCode || getActiveCountry() || 'CH').toUpperCase();
+    const marketCountries = window.MinimogSettings && window.MinimogSettings.market_countries;
+    const marketData = marketCountries && marketCountries[countryCode];
+    if (marketData && marketData.currency) {
+      currencyCode = marketData.currency.toUpperCase();
+    } else if (!currencyCode || !CURRENCIES[currencyCode.toUpperCase()]) {
+      currencyCode = COUNTRY_CURRENCY_MAP[countryCode] || 'USD';
     }
-    if (!countryCode && currencyCode) {
-      // Find first country mapped to this currency
-      for (const [c, cur] of Object.entries(COUNTRY_CURRENCY_MAP)) {
-        if (cur === currencyCode) {
-          countryCode = c;
-          break;
-        }
-      }
-    }
-    currencyCode = currencyCode || 'USD';
-    countryCode = countryCode || 'CH';
+    currencyCode = currencyCode.toUpperCase();
 
     try {
       localStorage.setItem(CURRENCY_STORAGE_KEY, currencyCode);
       localStorage.setItem(COUNTRY_STORAGE_KEY, countryCode);
     } catch (e) {}
 
-    updateProductCardPrices(currencyCode);
     syncAllSelectors(currencyCode, countryCode);
+    ensurePriceSpacing();
 
     window.dispatchEvent(
       new CustomEvent('currency:changed', {
@@ -445,24 +685,55 @@
     );
   }
 
-  // Intercept localization form changes and submissions sitewide
   function setupFormListeners() {
+    // 1. Native change event listener on document (capture phase)
     document.addEventListener('change', function (e) {
       const select = e.target.closest('[data-localization-select], .js-selectNative');
       if (select) {
-        const val = select.value;
+        const val = (select.value || '').toUpperCase();
+        const selectedOpt = select.options && select.options[select.selectedIndex];
+        const currencyAttr = selectedOpt ? selectedOpt.getAttribute('data-currency') : null;
         if (val) {
-          if (CURRENCIES[val]) {
-            setCurrency(val, null);
-          } else if (COUNTRY_CURRENCY_MAP[val.toUpperCase()]) {
-            setCurrency(COUNTRY_CURRENCY_MAP[val.toUpperCase()], val);
+          const marketCountries = window.MinimogSettings && window.MinimogSettings.market_countries;
+          const marketData = marketCountries && marketCountries[val];
+          const curr = (marketData && marketData.currency) || currencyAttr || COUNTRY_CURRENCY_MAP[val] || 'USD';
+          setCurrency(curr, val);
+        }
+      }
+    }, true);
+
+    // 2. Custom select option click listener
+    document.addEventListener('click', function (e) {
+      const opt = e.target.closest('.m-select-custom--option');
+      if (opt) {
+        const selectComponent = opt.closest('m-select-component');
+        const isCountry = selectComponent && (selectComponent.querySelector('.m-country-flag-icon') || selectComponent.querySelector('[name="country_code"]'));
+        if (isCountry) {
+          const val = (opt.getAttribute('data-value') || '').toUpperCase();
+          const currAttr = opt.getAttribute('data-currency');
+          const marketCountries = window.MinimogSettings && window.MinimogSettings.market_countries;
+          const marketData = marketCountries && marketCountries[val];
+          const curr = (marketData && marketData.currency) || currAttr || COUNTRY_CURRENCY_MAP[val] || 'USD';
+          if (val) {
+            setCurrency(curr, val);
           }
         }
       }
-    });
+
+      const footerItem = e.target.closest('.m-crm-item, [class*="country-item"]');
+      if (footerItem) {
+        const val = (footerItem.getAttribute('data-value') || '').toUpperCase();
+        const currAttr = footerItem.getAttribute('data-currency');
+        const marketCountries = window.MinimogSettings && window.MinimogSettings.market_countries;
+        const marketData = marketCountries && marketCountries[val];
+        const curr = (marketData && marketData.currency) || currAttr || COUNTRY_CURRENCY_MAP[val] || 'USD';
+        if (val) {
+          setCurrency(curr, val);
+        }
+      }
+    }, true);
   }
 
-  // Observe dynamically added product cards (AJAX tabs, pagination, search results)
   function observeDynamicContent() {
     if (!window.MutationObserver) return;
     const observer = new MutationObserver(function (mutations) {
@@ -471,7 +742,7 @@
         const addedNodes = mutations[i].addedNodes;
         for (let j = 0; j < addedNodes.length; j++) {
           const node = addedNodes[j];
-          if (node.nodeType === 1 && (node.classList?.contains('m-product-card') || node.querySelector?.('.m-price, .m-price-item'))) {
+          if (node.nodeType === 1 && (node.classList?.contains('m-product-card') || node.querySelector?.('.m-price, .m-price-item, .m-luxury-product-price, .m-right-price'))) {
             shouldUpdate = true;
             break;
           }
@@ -479,7 +750,7 @@
         if (shouldUpdate) break;
       }
       if (shouldUpdate) {
-        updateProductCardPrices(getActiveCurrency());
+        ensurePriceSpacing();
       }
     });
 
@@ -493,25 +764,45 @@
     getActiveCountry: getActiveCountry,
     getCountryName: getCountryName,
     updateAnnouncementShippingCountry: updateAnnouncementShippingCountry,
+    ensurePriceSpacing: ensurePriceSpacing,
     formatMoney: formatMoneyValue,
     currencies: CURRENCIES,
     countryMap: COUNTRY_CURRENCY_MAP
   };
 
-  // Initialize on load
   function init() {
-    const activeCurr = getActiveCurrency();
+    // Intercept Shopify.formatMoney so space is ALWAYS enforced for all currencies
+    if (typeof window.Shopify === 'undefined') window.Shopify = {};
+    const origShopifyFormatMoney = window.Shopify.formatMoney;
+    window.Shopify.formatMoney = function (cents, format) {
+      let output = '';
+      if (typeof origShopifyFormatMoney === 'function') {
+        output = origShopifyFormatMoney(cents, format);
+      } else {
+        const activeCurr = getActiveCurrency();
+        output = formatMoneyValue(cents, activeCurr);
+      }
+      return output
+        .replace(/^([^\d\s]+)(\d)/, '$1 $2')
+        .replace(/(\d)([^\d\s.,]+)$/, '$1 $2')
+        .replace(/Dhs(\d)/gi, 'Dhs $1')
+        .replace(/AED(\d)/gi, 'Dhs $1')
+        .replace(/\s+/g, ' ')
+        .trim();
+    };
+
+    sanitizeCurrencyAttributes();
+
     const activeCountry = getActiveCountry();
+    const activeCurr = getActiveCurrency();
 
-    // Cache initial base prices on all existing price elements
-    document.querySelectorAll('.m-price-item, .m-price, [data-amount]').forEach(function (el) {
-      parsePriceToCents(el);
-    });
+    try {
+      localStorage.setItem(COUNTRY_STORAGE_KEY, activeCountry);
+      localStorage.setItem(CURRENCY_STORAGE_KEY, activeCurr);
+    } catch (e) {}
 
-    if (activeCurr) {
-      updateProductCardPrices(activeCurr);
-      syncAllSelectors(activeCurr, activeCountry);
-    }
+    syncAllSelectors(activeCurr, activeCountry);
+    ensurePriceSpacing();
 
     // Auto-detect visitor's country on first visit via Shopify edge geolocation
     detectVisitorCountry();

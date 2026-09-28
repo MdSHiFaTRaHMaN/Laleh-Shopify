@@ -43,6 +43,8 @@
     touch-action: pan-y;
     will-change: transform;
     -webkit-overflow-scrolling: touch;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
   .vgc-track.is-dragging {
@@ -58,6 +60,8 @@
     flex: 0 0 auto;
     width: calc((100% - (var(--vgc-gap, 20px) * 3)) / 4);
     aspect-ratio: 3 / 5;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
   .vgc-video-wrap {
@@ -66,12 +70,12 @@
     height: 100%;
     border-radius: var(--vgc-radius, 12px);
     overflow: hidden;
-    background-color: #121212;
-    -webkit-mask-image: -webkit-radial-gradient(white, black);
-    mask-image: -webkit-radial-gradient(white, black);
+    background-color: #f4f4f4;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
     isolation: isolate;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
   .vgc-poster-img,
@@ -85,7 +89,9 @@
     display: block;
     z-index: 1;
     pointer-events: none;
-    background-color: #121212;
+    background-color: #f4f4f4;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
   .vgc-video {
@@ -97,7 +103,14 @@
     display: block;
     z-index: 2;
     background: transparent;
-    transition: transform 0.6s ease;
+    opacity: 0;
+    transition: opacity 0.35s ease, transform 0.6s ease;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  .vgc-item.is-playing .vgc-video {
+    opacity: 1;
   }
 
   .vgc-placeholder-svg {
@@ -201,14 +214,14 @@
     }
 
     .vgc-item {
-      width: calc((100% - var(--vgc-gap, 20px)) / 2);
+      width: calc((100% - (var(--vgc-gap, 20px) * (var(--vgc-mobile-cols, 2) - 1))) / var(--vgc-mobile-cols, 2));
       aspect-ratio: 3 / 4;
     }
   }
 
   @media screen and (max-width: 480px) {
     .vgc-item {
-      width: calc(100% - (var(--vgc-gap, 20px) * 0.4));
+      width: calc((100% - (var(--vgc-gap, 20px) * (var(--vgc-mobile-cols, 2) - 1))) / var(--vgc-mobile-cols, 2));
     }
   }
 </style>
@@ -216,7 +229,7 @@
 <div
   class="vgc-section"
   id="vgc-{{ section.id }}"
-  style="--vgc-max-width: {{ section.settings.max_width }}px; --vgc-gap: {{ section.settings.gap }}px; --vgc-radius: {{ section.settings.radius }}px;"
+  style="--vgc-max-width: {{ section.settings.max_width }}px; --vgc-gap: {{ section.settings.gap }}px; --vgc-radius: {{ section.settings.radius }}px; --vgc-mobile-cols: {{ section.settings.columns_mobile | default: '2' }};"
   data-autoplay-interval="{{ section.settings.autoplay_interval | times: 1000 }}"
 >
   <div class="vgc-inner">
@@ -248,7 +261,9 @@
                     class="vgc-poster-img"
                     src="{{ poster_image | image_url: width: 900 }}"
                     alt="{{ block.settings.title | default: 'Video thumbnail' | escape }}"
-                    loading="lazy"
+                    loading="eager"
+                    fetchpriority="high"
+                    decoding="async"
                     width="900"
                     height="1200"
                   >
@@ -315,10 +330,12 @@
 <script>
   /**
    * Video Grid Carousel
-   * - Infinite cursor-drag carousel with momentum + smooth snap-to-card
-   * - Default behaviour: videos auto-play one by one in sequence (muted, required for autoplay)
-   * - On hover or click: that specific video plays instead, auto-cycle pauses, resumes after
-   * - Bulletproof for iOS Safari & Mobile Power-Saving / Autoplay restrictions
+   * - Seamless Infinite Loop with deterministic offsetLeft mapping
+   * - Zero-glitch wrapping: user cannot perceive loop transitions
+   * - Smooth single-card advance with navigation queueing
+   * - Touch & cursor drag with live boundary shift and momentum snap
+   * - Synchronized video playback across clone sets
+   * - Bulletproof for iOS Safari, mobile web & power-saving modes
    */
   class VideoGridCarousel {
     constructor(root) {
@@ -333,40 +350,58 @@
       this.autoplayInterval = parseInt(root.dataset.autoplayInterval, 10) || 5000;
       this.autoplayTimer = null;
       this.resumeTimer = null;
-      this.currentBlockIndex = 0;
+      this.isAnimating = false;
+      this.queuedNav = 0;
 
       this.isDragging = false;
       this.startX = 0;
-      this.currentTranslate = 0;
       this.startTranslate = 0;
+      this.currentTranslate = 0;
       this.hasMoved = false;
 
-      // velocity tracking for momentum
+      // Velocity tracking for momentum fling
       this.lastX = 0;
       this.lastT = 0;
       this.velocity = 0;
 
-      // easing used for every "snap"/programmatic move — smooth ease-out
-      this.easeSnap = 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)';
+      // Luxury easing curve for buttery smooth transitions
+      this.easeSnap = 'transform 0.65s cubic-bezier(0.16, 1, 0.3, 1)';
 
       this.setupInfiniteClones();
       this.blockIds = this.getUniqueBlockIds();
+
       this.bindDrag();
       this.bindNav();
+      this.bindTransition();
       this.bindVideoInteractions();
       this.bindResize();
 
+      // Double rAF ensures styles and layout are fully computed by browser
       requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          this.measure();
+          // Start in the center set (Set 2: Originals)
+          this.currentIndex = 2 * this.originalCount;
+          this.goTo(this.currentIndex, false);
+          this.playVisibleVideo();
+          this.startAutoplay();
+        });
+      });
+
+      window.addEventListener('load', () => {
         this.measure();
-        this.setTranslate(-2 * this.setWidth, false);
-        this.startAutoplay();
+        if (this.currentIndex !== undefined && this.itemOffsets && this.itemOffsets[this.currentIndex] !== undefined) {
+          this.goTo(this.currentIndex, false);
+        }
       });
     }
 
-    /* ---------- Infinite loop setup (5 sets: -2, -1, 0, +1, +2) ---------- */
+    /* ---------- 5 Sets: [Set 0: -2, Set 1: -1, Set 2: 0 (Originals), Set 3: +1, Set 4: +2] ---------- */
     setupInfiniteClones() {
       const originals = Array.from(this.track.children);
       if (originals.length === 0) return;
+
+      this.originalCount = originals.length;
 
       const cloneSet = () =>
         originals.map((item) => {
@@ -387,10 +422,15 @@
       after1.forEach((node) => this.track.appendChild(node));
       after2.forEach((node) => this.track.appendChild(node));
 
-      this.originalCount = originals.length;
+      // Ensure all images are eagerly cached to eliminate white flash
+      this.track.querySelectorAll('img').forEach((img) => {
+        img.loading = 'eager';
+        img.setAttribute('loading', 'eager');
+        img.setAttribute('fetchpriority', 'high');
+        img.decoding = 'async';
+      });
 
-      // CRITICAL FOR IOS SAFARI & MOBILE WEB:
-      // Re-initialize media properties and load video pipelines on all cloned & remounted elements
+      // Re-initialize media attributes on all elements for cross-browser autoplay compliance
       this.track.querySelectorAll('video').forEach((v) => {
         v.muted = true;
         v.defaultMuted = true;
@@ -413,13 +453,28 @@
       return seen;
     }
 
+    /* ---------- Exact DOM offset measurements for zero subpixel drift ---------- */
     measure() {
       const items = Array.from(this.track.children);
       if (!items.length) return;
-      const gap = parseFloat(getComputedStyle(this.track).gap) || 0;
-      const oneItemWidth = items[0].getBoundingClientRect().width + gap;
-      this.itemWidth = oneItemWidth;
-      this.setWidth = oneItemWidth * this.originalCount;
+
+      // Record exact offsetLeft for every card directly from browser layout engine
+      this.itemOffsets = items.map((el) => el.offsetLeft);
+
+      // Single card pitch and full original set width
+      const centerStart = 2 * this.originalCount;
+      const centerNext = centerStart + 1;
+      const nextSetStart = 3 * this.originalCount;
+
+      this.itemWidth =
+        this.itemOffsets[centerNext] !== undefined
+          ? this.itemOffsets[centerNext] - this.itemOffsets[centerStart]
+          : items[0].getBoundingClientRect().width;
+
+      this.setWidth =
+        this.itemOffsets[nextSetStart] !== undefined && this.itemOffsets[centerStart] !== undefined
+          ? this.itemOffsets[nextSetStart] - this.itemOffsets[centerStart]
+          : this.itemWidth * this.originalCount;
     }
 
     bindResize() {
@@ -427,31 +482,189 @@
       window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
-          const prevSetWidth = this.setWidth || 1;
           this.measure();
-          const ratio = this.currentTranslate / prevSetWidth;
-          this.setTranslate(ratio * this.setWidth, false);
-          this.settleInfiniteBounds();
+          if (this.currentIndex !== undefined && this.itemOffsets && this.itemOffsets[this.currentIndex] !== undefined) {
+            this.goTo(this.currentIndex, false);
+          }
         }, 150);
       });
     }
 
-    /* ---------- Drag / swipe with momentum + smooth snap ---------- */
+    /* ---------- Navigation (Prev / Next) with Queueing ---------- */
+    bindNav() {
+      if (this.prevBtn) {
+        this.prevBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.slidePrev();
+        });
+      }
+
+      if (this.nextBtn) {
+        this.nextBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.slideNext();
+        });
+      }
+    }
+
+    slideNext() {
+      this.pauseAutoplay();
+      if (this.isAnimating) {
+        this.queuedNav = 1;
+        return;
+      }
+      this.goTo(this.currentIndex + 1, true);
+    }
+
+    slidePrev() {
+      this.pauseAutoplay();
+      if (this.isAnimating) {
+        this.queuedNav = -1;
+        return;
+      }
+      this.goTo(this.currentIndex - 1, true);
+    }
+
+    /* ---------- Card Movement & Seamless Normalization ---------- */
+    goTo(targetIndex, animate = true) {
+      if (!this.itemOffsets || !this.itemOffsets.length) return;
+
+      // Safe clamp
+      const clampedIndex = Math.max(0, Math.min(targetIndex, this.itemOffsets.length - 1));
+      this.currentIndex = clampedIndex;
+      const targetTranslate = -this.itemOffsets[this.currentIndex];
+      this.currentTranslate = targetTranslate;
+
+      if (animate) {
+        this.isAnimating = true;
+        this.track.style.transition = this.easeSnap;
+      } else {
+        this.track.style.transition = 'none';
+      }
+
+      this.track.style.transform = `translateX(${targetTranslate}px)`;
+
+      if (!animate) {
+        this.isAnimating = false;
+        this.normalizeBounds();
+      }
+    }
+
+    bindTransition() {
+      this.track.addEventListener('transitionend', (e) => {
+        // STRICT FILTER: Ignore bubbling transitions from videos, play buttons, captions, etc.
+        if (e.target !== this.track || e.propertyName !== 'transform') return;
+
+        this.isAnimating = false;
+
+        // Perform instantaneous invisible position normalization if we landed in a clone set
+        this.normalizeBounds();
+
+        // Process queued user clicks without jarring resets
+        if (this.queuedNav !== 0) {
+          const dir = this.queuedNav;
+          this.queuedNav = 0;
+          this.goTo(this.currentIndex + dir, true);
+        } else {
+          this.scheduleAutoplayResume(1500);
+        }
+      });
+    }
+
+    /**
+     * Seamlessly wrap index back to middle set (Set 2) in 0ms without the user ever noticing.
+     * Clone cards in Set 3 are pixel-identical to original cards in Set 2.
+     */
+    normalizeBounds() {
+      if (!this.originalCount || !this.itemOffsets) return;
+
+      const centerMin = 2 * this.originalCount;
+      const centerMax = 3 * this.originalCount - 1;
+
+      if (this.currentIndex > centerMax || this.currentIndex < centerMin) {
+        const oldIndex = this.currentIndex;
+        let newIndex = this.currentIndex;
+
+        while (newIndex > centerMax) {
+          newIndex -= this.originalCount;
+        }
+        while (newIndex < centerMin) {
+          newIndex += this.originalCount;
+        }
+
+        if (newIndex !== oldIndex && this.itemOffsets[newIndex] !== undefined) {
+          // Sync any active video from the clone card to the target card so video playback doesn't reset
+          this.syncVideoState(oldIndex, newIndex);
+
+          this.currentIndex = newIndex;
+          this.currentTranslate = -this.itemOffsets[newIndex];
+          this.track.style.transition = 'none';
+          this.track.style.transform = `translateX(${this.currentTranslate}px)`;
+
+          // Force reflow to immediately commit the transform before any subsequent transition
+          void this.track.offsetHeight;
+        }
+      }
+    }
+
+    syncVideoState(fromIndex, toIndex) {
+      const fromItem = this.track.children[fromIndex];
+      const toItem = this.track.children[toIndex];
+      if (!fromItem || !toItem) return;
+
+      const fromVideo = fromItem.querySelector('[data-vgc-video]');
+      const toVideo = toItem.querySelector('[data-vgc-video]');
+      if (!fromVideo || !toVideo) return;
+
+      if (!fromVideo.paused || fromItem.classList.contains('is-playing')) {
+        try {
+          toVideo.currentTime = fromVideo.currentTime;
+          toVideo.muted = fromVideo.muted;
+          const p = toVideo.play();
+          if (p !== undefined) {
+            p.then(() => {
+              toItem.classList.add('is-playing', 'is-active');
+              fromVideo.pause();
+              fromItem.classList.remove('is-playing', 'is-active');
+            }).catch(() => {});
+          }
+        } catch (err) {}
+      }
+    }
+
+    /* ---------- Drag & Swipe with Continuous Momentum ---------- */
     bindDrag() {
       const track = this.track;
 
       const onDown = (e) => {
+        // Only trigger on primary mouse button or touch
+        if (e.button !== undefined && e.button !== 0) return;
+
         this.isDragging = true;
         this.hasMoved = false;
         this.startX = this.getClientX(e);
         this.lastX = this.startX;
         this.lastT = performance.now();
         this.velocity = 0;
-        this.settleInfiniteBounds();
+
+        // If dragging mid-flight, immediately freeze at current visual transform
+        if (this.isAnimating) {
+          const matrix = window.getComputedStyle(track).transform;
+          if (matrix && matrix !== 'none') {
+            const values = matrix.split('(')[1].split(')')[0].split(',');
+            const currentX = parseFloat(values[4]);
+            if (!isNaN(currentX)) {
+              this.currentTranslate = currentX;
+            }
+          }
+          this.isAnimating = false;
+          this.queuedNav = 0;
+        }
+
         this.startTranslate = this.currentTranslate;
+        track.style.transition = 'none';
         track.classList.add('is-dragging');
         this.pauseAutoplay();
-        cancelAnimationFrame(this.momentumRaf);
       };
 
       const onMove = (e) => {
@@ -463,27 +676,30 @@
         const delta = x - this.startX;
         if (Math.abs(delta) > 4) this.hasMoved = true;
 
-        // instantaneous velocity (px per ms), smoothed
+        // Smooth velocity calculation (px/ms)
         const instVelocity = (x - this.lastX) / dt;
-        this.velocity = this.velocity * 0.7 + instVelocity * 0.3;
+        this.velocity = this.velocity * 0.65 + instVelocity * 0.35;
 
         this.lastX = x;
         this.lastT = now;
 
         let nextTranslate = this.startTranslate + delta;
 
-        // Seamless live wrapping during drag: never run out of cards even on infinite continuous drags
+        // Live continuous buffer wrap during massive multi-screen drags
         if (this.setWidth > 0) {
-          if (nextTranslate < -3.5 * this.setWidth) {
+          const minBound = -3.5 * this.setWidth;
+          const maxBound = -0.5 * this.setWidth;
+          if (nextTranslate < minBound) {
             this.startTranslate += this.setWidth;
             nextTranslate += this.setWidth;
-          } else if (nextTranslate > -0.5 * this.setWidth) {
+          } else if (nextTranslate > maxBound) {
             this.startTranslate -= this.setWidth;
             nextTranslate -= this.setWidth;
           }
         }
 
-        this.setTranslate(nextTranslate, false);
+        this.currentTranslate = nextTranslate;
+        track.style.transform = `translateX(${nextTranslate}px)`;
       };
 
       const onUp = () => {
@@ -492,8 +708,7 @@
         track.classList.remove('is-dragging');
 
         if (!this.hasMoved) {
-          // treat as a tap/click
-          this.scheduleAutoplayResume(600);
+          this.scheduleAutoplayResume(800);
           return;
         }
 
@@ -505,6 +720,7 @@
       window.addEventListener('pointerup', onUp);
       window.addEventListener('pointercancel', onUp);
 
+      // Prevent accidental link/video triggers after a drag gesture
       track.addEventListener(
         'click',
         (e) => {
@@ -518,96 +734,49 @@
     }
 
     getClientX(e) {
-      return e.touches ? e.touches[0].clientX : e.clientX;
+      return e.touches && e.touches.length ? e.touches[0].clientX : e.clientX;
     }
 
-    setTranslate(px, animate) {
-      this.currentTranslate = px;
-      this.track.style.transition = animate ? this.easeSnap : 'none';
-      this.track.style.transform = `translateX(${px}px)`;
-    }
-
-    /* Fling based on release velocity, then ease into the nearest card */
     applyMomentumAndSnap() {
-      const MAX_VELOCITY = 1.8; // px/ms clamp
-      const MOMENTUM_MULTIPLIER = 180; // how far the fling projects
+      const MAX_VELOCITY = 1.6;
+      const MOMENTUM_MULTIPLIER = 140;
       const v = Math.max(Math.min(this.velocity, MAX_VELOCITY), -MAX_VELOCITY);
       const projected = this.currentTranslate + v * MOMENTUM_MULTIPLIER;
 
-      const nearestIndex = Math.round(-projected / this.itemWidth);
-      let target = -nearestIndex * this.itemWidth;
+      // Find the card whose offset aligns closest to the projected release position
+      let closestIndex = this.currentIndex;
+      let minDiff = Infinity;
 
-      // Ensure target stays safely within the 5-set track buffer [-3.5 * setWidth, -0.5 * setWidth]
-      if (this.setWidth > 0) {
-        while (target < -3.5 * this.setWidth) {
-          target += this.setWidth;
-          this.currentTranslate += this.setWidth;
-          this.setTranslate(this.currentTranslate, false);
+      if (this.itemOffsets && this.itemOffsets.length) {
+        for (let i = 0; i < this.itemOffsets.length; i++) {
+          const diff = Math.abs(-this.itemOffsets[i] - projected);
+          if (diff < minDiff) {
+            minDiff = diff;
+            closestIndex = i;
+          }
         }
-        while (target > -0.5 * this.setWidth) {
-          target -= this.setWidth;
-          this.currentTranslate -= this.setWidth;
-          this.setTranslate(this.currentTranslate, false);
-        }
+        // Guardrail: Never allow momentum fling to pull empty white space into view
+        const visibleCards = Math.ceil((this.carousel ? this.carousel.clientWidth : 1000) / (this.itemWidth || 1)) || 4;
+        const maxSafeIndex = Math.max(0, this.itemOffsets.length - visibleCards);
+        closestIndex = Math.max(0, Math.min(closestIndex, maxSafeIndex));
       }
 
-      this.setTranslate(target, true);
-
-      const onEnd = () => {
-        this.track.removeEventListener('transitionend', onEnd);
-        this.settleInfiniteBounds();
-        this.scheduleAutoplayResume(500);
-      };
-      this.track.addEventListener('transitionend', onEnd);
+      this.goTo(closestIndex, true);
     }
 
-    settleInfiniteBounds() {
-      if (!this.setWidth) return;
-      // Seamlessly wrap position back to the middle range [-2.5 * setWidth, -1.5 * setWidth]
-      while (this.currentTranslate > -1.5 * this.setWidth) {
-        this.currentTranslate -= this.setWidth;
-      }
-      while (this.currentTranslate < -2.5 * this.setWidth) {
-        this.currentTranslate += this.setWidth;
-      }
-      this.setTranslate(this.currentTranslate, false);
-    }
-
-    bindNav() {
-      const goTo = (direction) => {
-        this.pauseAutoplay();
-        this.settleInfiniteBounds();
-        const target = this.currentTranslate + direction * this.itemWidth;
-        this.setTranslate(target, true);
-
-        const onEnd = () => {
-          this.track.removeEventListener('transitionend', onEnd);
-          this.settleInfiniteBounds();
-          this.scheduleAutoplayResume(1200);
-        };
-        this.track.addEventListener('transitionend', onEnd);
-      };
-
-      if (this.prevBtn) this.prevBtn.addEventListener('click', () => goTo(1));
-      if (this.nextBtn) this.nextBtn.addEventListener('click', () => goTo(-1));
-    }
-
-    /* ---------- Video autoplay (sequential) + hover/click override ---------- */
+    /* ---------- Video Interactions & Single Audio Policy ---------- */
     bindVideoInteractions() {
-      Array.from(this.track.children).forEach((item) => {
+      Array.from(this.track.children).forEach((item, index) => {
         const video = item.querySelector('[data-vgc-video]');
         const playBtn = item.querySelector('[data-vgc-play-btn]');
         const blockId = item.dataset.blockId;
 
-        const activateThis = (e) => {
+        const handleUserPlay = (e) => {
           if (this.hasMoved) return;
           this.pauseAutoplay();
 
           const isUserClick = e && (e.type === 'click' || e.type === 'pointerup');
-          this.playBlock(blockId, isUserClick);
-
-          const idx = this.blockIds.indexOf(blockId);
-          if (idx > -1) this.currentBlockIndex = idx;
+          this.playSingleVideo(item, isUserClick);
         };
 
         if (video) {
@@ -619,16 +788,20 @@
           });
           video.addEventListener('ended', () => {
             item.classList.remove('is-playing');
-            if (item.dataset.clone !== 'true') this.advanceAutoplay();
+            // If the video naturally ended, smoothly advance to the next card
+            if (item.dataset.clone !== 'true') {
+              this.slideNext();
+            }
           });
         }
 
-        item.addEventListener('mouseenter', activateThis);
-        item.addEventListener('click', activateThis);
+        item.addEventListener('mouseenter', handleUserPlay);
+        item.addEventListener('click', handleUserPlay);
+
         if (playBtn) {
           playBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            activateThis(e);
+            handleUserPlay(e);
           });
         }
 
@@ -638,90 +811,71 @@
       });
     }
 
-    playBlock(blockId, allowSound) {
-      // Pause all other non-target videos
+    playSingleVideo(activeItem, userInitiated = false) {
+      // Pause all other videos across all clones to prevent audio overlap and CPU/GPU strain
       Array.from(this.track.children).forEach((item) => {
-        const video = item.querySelector('[data-vgc-video]');
-        if (item.dataset.blockId !== blockId) {
+        if (item !== activeItem) {
           item.classList.remove('is-active', 'is-playing');
-          if (video && !video.paused) {
-            video.pause();
+          const v = item.querySelector('[data-vgc-video]');
+          if (v && !v.paused) {
+            v.pause();
           }
         }
       });
 
-      const matches = Array.from(this.track.querySelectorAll(`[data-block-id="${blockId}"]`));
-      if (!matches.length) return;
-
-      // On mobile / Safari, prioritize playing the visible or central match to prevent hardware decoder exhaustion
-      const carouselRect = this.carousel.getBoundingClientRect();
-      let primaryMatch = matches[0];
-      let closestDist = Infinity;
-
-      matches.forEach((item) => {
-        const rect = item.getBoundingClientRect();
-        const dist = Math.abs((rect.left + rect.width / 2) - (carouselRect.left + carouselRect.width / 2));
-        if (dist < closestDist) {
-          closestDist = dist;
-          primaryMatch = item;
+      activeItem.classList.add('is-active');
+      const targetVideo = activeItem.querySelector('[data-vgc-video]');
+      if (targetVideo) {
+        targetVideo.muted = !userInitiated;
+        const playPromise = targetVideo.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              activeItem.classList.add('is-playing');
+            })
+            .catch(() => {
+              activeItem.classList.remove('is-playing');
+            });
         }
-      });
-
-      matches.forEach((item) => {
-        const video = item.querySelector('[data-vgc-video]');
-        item.classList.add('is-active');
-
-        if (video) {
-          video.muted = !allowSound ? true : video.muted;
-          video.defaultMuted = true;
-          video.playsInline = true;
-
-          if (item === primaryMatch) {
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-              playPromise
-                .then(() => {
-                  item.classList.add('is-playing');
-                })
-                .catch(() => {
-                  // Autoplay restricted on iOS (e.g. Low Power Mode) - poster remains gracefully visible
-                  item.classList.remove('is-playing');
-                });
-            }
-          } else {
-            if (!video.paused) video.pause();
-            item.classList.remove('is-playing');
-          }
-        }
-      });
+      }
     }
 
+    playVisibleVideo() {
+      // Automatically activate the video on the currently visible leftmost card
+      const currentItem = this.track.children[this.currentIndex];
+      if (currentItem) {
+        this.playSingleVideo(currentItem, false);
+      }
+    }
+
+    /* ---------- Continuous Smooth Autoplay ---------- */
     startAutoplay() {
-      if (!this.blockIds.length) return;
-      this.playBlock(this.blockIds[this.currentBlockIndex], false);
-      this.autoplayTimer = setInterval(() => this.advanceAutoplay(), this.autoplayInterval);
-    }
-
-    advanceAutoplay() {
-      if (!this.blockIds.length) return;
-      this.currentBlockIndex = (this.currentBlockIndex + 1) % this.blockIds.length;
-      this.playBlock(this.blockIds[this.currentBlockIndex], false);
+      if (!this.autoplayInterval || this.autoplayInterval <= 0) return;
+      this.clearTimers();
+      this.autoplayTimer = setInterval(() => {
+        if (!this.isDragging) {
+          this.slideNext();
+        }
+      }, this.autoplayInterval);
     }
 
     pauseAutoplay() {
-      clearInterval(this.autoplayTimer);
-      clearTimeout(this.resumeTimer);
-      this.autoplayTimer = null;
+      this.clearTimers();
     }
 
-    scheduleAutoplayResume(delay) {
-      clearTimeout(this.resumeTimer);
+    scheduleAutoplayResume(delay = 1500) {
+      if (!this.autoplayInterval || this.autoplayInterval <= 0) return;
+      this.clearTimers();
       this.resumeTimer = setTimeout(() => {
-        if (!this.autoplayTimer) {
-          this.playBlock(this.blockIds[this.currentBlockIndex], false);
-          this.autoplayTimer = setInterval(() => this.advanceAutoplay(), this.autoplayInterval);
-        }
+        this.startAutoplay();
       }, delay);
+    }
+
+    clearTimers() {
+      if (this.autoplayTimer) clearInterval(this.autoplayTimer);
+      if (this.resumeTimer) clearTimeout(this.resumeTimer);
+      this.autoplayTimer = null;
+      this.resumeTimer = null;
     }
   }
 
@@ -800,6 +954,34 @@
       "max": 15,
       "step": 1,
       "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Mobile layout"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Cards to show on mobile",
+      "default": "2",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 Card"
+        },
+        {
+          "value": "2",
+          "label": "2 Cards"
+        },
+        {
+          "value": "3",
+          "label": "3 Cards"
+        },
+        {
+          "value": "4",
+          "label": "4 Cards"
+        }
+      ]
     }
   ],
   "blocks": [

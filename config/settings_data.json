@@ -72,8 +72,9 @@
     "social_instagram_label": "",
     "social_tiktok_link": "https://www.tiktok.com/@mylaleh.co",
     "enable_cart_drawer": false,
-    "discount_code_enable": true,
-    "cart_estimate_shipping": true,
+    "cart_notes_enable": false,
+    "discount_code_enable": false,
+    "cart_estimate_shipping": false,
     "show_delivery_days": true,
     "wishlist_page": "wishlist",
     "product_compare_page": "product-compare",
@@ -138,7 +139,7 @@
           "form_field_label": "#000000",
           "tooltip": "#222222",
           "tooltip_label": "#ffffff",
-          "border": "#927E63"
+          "border": "#927e63"
         }
       },
       "dark": {
@@ -270,7 +271,7 @@
   },
   "platform_customizations": {
     "custom_css": [
-      ".template-page #MainContent {padding-bottom: 20px;}"
+      ".template-page #MainContent {padding-bottom: 0px;}"
     ]
   }
 }

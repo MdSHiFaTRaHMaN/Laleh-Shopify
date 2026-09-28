@@ -297,11 +297,11 @@
               assign tag_name = tag_content | split: '_' | last
               assign color_scheme_class = 'm-gradient m-color-'
               case type
-                when 'sale':
+                when 'sale'
                   assign color_scheme_class = color_scheme_class | append: settings.sale_badge_color_scheme
-                when 'new':
+                when 'new'
                   assign color_scheme_class = color_scheme_class | append: settings.new_badge_color_scheme
-                when 'hot':
+                when 'hot'
                   assign color_scheme_class = color_scheme_class | append: settings.hot_badge_color_scheme
               endcase
             -%}
@@ -386,7 +386,7 @@
 
         {%- for tooltip in tooltip_items -%}
           {%- assign settings_key = 'show_' | append: tooltip | append: '_button' | replace: 'add-to-cart', 'cart' -%}
-          {%- if [settings_key] -%}
+          {%- if self[settings_key] -%}
             {% render 'tooltip', type: tooltip, section: section, product: product, class_name: 'm-tooltip--left' %}
           {%- endif -%}
         {%- endfor -%}
@@ -578,7 +578,7 @@
                 | append: '_button'
                 | replace: 'add-to-cart', 'cart'
               -%}
-              {%- if [settings_key] -%}
+              {%- if self[settings_key] -%}
                 {% render 'tooltip', type: tooltip, section: section, product: product, class_name: 'm-tooltip--top' %}
               {%- endif -%}
             {%- endfor -%}
@@ -590,3 +590,25 @@
   <input hidden name="id" required value="{{ variant_id }}" data-selected-variant="{{ selected_variant_id }}">
 </div>
 {%- if column_wrapper -%}</div>{%- endif -%}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "                when 'sale':"
+  to: "                when 'sale'"
+  position: 10895..10922
+- from: "                when 'new':"
+  to: "                when 'new'"
+  position: 11031..11057
+- from: "                when 'hot':"
+  to: "                when 'hot'"
+  position: 11165..11191
+- from: "{%- if [settings_key] -%}"
+  to: "{%- if self[settings_key] -%}"
+  position: 15240..15269
+- from: "{%- if [settings_key] -%}"
+  to: "{%- if self[settings_key] -%}"
+  position: 23083..23112
+{% endcomment %}

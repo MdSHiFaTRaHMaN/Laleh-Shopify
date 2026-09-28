@@ -11,6 +11,7 @@
   if settings.currency_code_enabled
     assign money_format = shop.money_with_currency_format | strip_html
   endif
+  assign money_format = money_format | replace: '{{', ' {{' | replace: '  {{', ' {{' | replace: '}}', '}} ' | replace: '}}  ', '}} ' | strip
 -%}
 
 {%- capture theme_data -%}
@@ -57,7 +58,7 @@ window.MinimogStrings = {
   unitPrice: {{ 'products.product.unit_price_label' | t | json }},
   unitPriceSeparator: {{ 'general.accessibility.unit_price_separator' | t | json }},
   cartError: "{% render 'new-locale', key: 'cart.general.cart_error' %}",
-  quantityError: "{{ 'products.product.not_enough_items_message' | t: quantity: '{{ quantity }}' }}",
+  quantityError: "{% render 'new-locale', key: 'products.product.not_enough_items_message', param: '{{ quantity }}', value: '{{ quantity }}' %}",
   duplicateDiscountError: `{{ 'cart.general.discount_duplicate_error_message' | t }}`, 
   applyDiscountError: `{{ 'cart.general.discount_apply_error_message' | t }}`,
   selectVariant: "{% render 'new-locale', key: 'products.product.select_variant' %}",
@@ -82,9 +83,19 @@ window.MinimogSettings = {
     productHandle: {{ product.handle | json }},
     productId: {{ product.id | json }},
   {%- endif -%}
-  currency_code: {{ shop.currency | json }},
+  currency_code: {{ localization.country.currency.iso_code | default: shop.currency | json }},
   country_code: {{ localization.country.iso_code | default: 'CH' | json }},
   country_name: {{ localization.country.name | default: 'Switzerland' | json }},
+  currency_symbol: {{ localization.country.currency.symbol | json }},
+  market_countries: {
+    {%- for country in localization.available_countries -%}
+      {{ country.iso_code | json }}: {
+        name: {{ country.name | json }},
+        currency: {{ country.currency.iso_code | json }},
+        symbol: {{ country.currency.symbol | json }}
+      }{%- unless forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  },
   money_format: {{ money_format | json }},
   base_url: window.location.origin + Shopify.routes.root,
   money_with_currency_format: {{ shop.money_with_currency_format | strip_html | json }},

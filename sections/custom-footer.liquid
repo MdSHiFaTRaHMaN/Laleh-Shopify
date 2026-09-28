@@ -787,12 +787,13 @@
             <ul class="m-clean-footer-{{ section_id }}__country-list" id="FooterCleanCountryList-{{ section_id }}">
               {% if localization.available_countries.size > 0 %}
                 {% for country in localization.available_countries %}
+                  {%- assign c_curr = country.currency.iso_code -%}
                   <li
                     class="m-clean-footer-{{ section_id }}__country-item {% if country.iso_code == current_country_code %}is-selected{% endif %}"
                     role="option"
                     data-value="{{ country.iso_code }}"
                     data-name="{{ country.name }}"
-                    data-currency="{{ country.currency.iso_code }}"
+                    data-currency="{{ c_curr }}"
                     aria-selected="{% if country.iso_code == current_country_code %}true{% else %}false{% endif %}"
                     tabindex="0"
                   >
@@ -807,7 +808,7 @@
                         loading="lazy"
                       >
                       <span class="m-clean-footer-{{ section_id }}__country-name">{{ country.name }}</span>
-                      <span class="m-clean-footer-{{ section_id }}__currency-code">({{ country.currency.iso_code }})</span>
+                      <span class="m-clean-footer-{{ section_id }}__currency-code">({{ c_curr }})</span>
                     </div>
 
                     <svg class="m-clean-footer-{{ section_id }}__check-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -940,15 +941,17 @@
           });
 
           function selectCountry(item) {
-            const code = item.getAttribute('data-value');
+            const code = (item.getAttribute('data-value') || '').toUpperCase();
             const name = item.getAttribute('data-name');
             const curr = item.getAttribute('data-currency');
+            const marketData = window.MinimogSettings && window.MinimogSettings.market_countries && window.MinimogSettings.market_countries[code];
+            const finalCurr = (marketData && marketData.currency) || curr || (window.CurrencyEngine && window.CurrencyEngine.countryMap && window.CurrencyEngine.countryMap[code]) || 'USD';
 
             if (code) {
               hiddenInput.value = code;
               const label = document.getElementById('FooterCleanCountryLabel-{{ section_id }}');
-              if (label && name && curr) {
-                label.textContent = name + ' (' + curr + ')';
+              if (label && name && finalCurr) {
+                label.textContent = name + ' (' + finalCurr + ')';
               }
 
               items.forEach(function (el) {
@@ -958,9 +961,16 @@
               item.classList.add('is-selected');
               item.setAttribute('aria-selected', 'true');
 
-              toggleDropdown(false);
+              try {
+                localStorage.setItem('m_active_country', code);
+                localStorage.setItem('m_active_currency', finalCurr);
+              } catch (err) {}
 
-              // Submit Shopify localization form
+              if (window.CurrencyEngine && typeof window.CurrencyEngine.setCurrency === 'function') {
+                window.CurrencyEngine.setCurrency(finalCurr, code);
+              }
+
+              // Submit Shopify localization form so Shopify Markets loads local currency
               if (form) {
                 form.submit();
               }

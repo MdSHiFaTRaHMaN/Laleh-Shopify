@@ -104,7 +104,7 @@
           "type": "tab",
           "settings": {
             "header": "Shipping & Return",
-            "content": "<p>Shipping cost is based on weight. Just add products to your cart and use the Shipping Calculator to see the shipping price.</p><p>We want you to be 100% satisfied with your purchase. Items can be returned or exchanged within 30 days of delivery.</p>",
+            "content": "<p>Shipping cost is based on weight. Just add products to your cart and use the Shipping Calculator to see the shipping price.</p><p>We want you to be 100% satisfied with your purchase. Items can be returned within 14 days of delivery.</p>",
             "content_page": ""
           }
         }
@@ -254,7 +254,7 @@
           "settings": {
             "image_by_url": "",
             "link": "",
-            "title": "High-quality materials",
+            "title": "Considered materials",
             "description": "<p>Orders are secured in our sturdy, 100% PCW packaging, which is fully recyclable biodegradable, and compostable</p>",
             "button_label": "",
             "button_link": "",

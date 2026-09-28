@@ -174,7 +174,7 @@
           "type": "tab",
           "settings": {
             "header": "Shipping & Return",
-            "content": "<p>Shipping cost is based on weight. Just add products to your cart and use the Shipping Calculator to see the shipping price.</p><p>We want you to be 100% satisfied with your purchase. Items can be returned or exchanged within 30 days of delivery.</p>",
+            "content": "<p>Shipping cost is based on weight. Just add products to your cart and use the Shipping Calculator to see the shipping price.</p><p>We want you to be 100% satisfied with your purchase. Items can be returned within 14 days of delivery.</p>",
             "content_page": ""
           }
         }
@@ -294,7 +294,7 @@
         "sub_title": "The Dress Edit",
         "title": "Dresses you’ll turn<br> to again and again.",
         "text_size": "medium",
-        "text": "<p>This piece features a cord collar, button-front closure, and two front <br/>pockets in durable organic cotton canvas.  <br/></p><p>Did You Know? Organic cotton uses crop rotation, cover crops,<br/> and organic fertilizers instead of toxic chemical fertilizers or<br/> pesticides—which means cleaner water, lower water usage, lower <br/>pesticide use, healthier soil, and a safer working environment for <br/>cotton farmers, compared to conventional.</p>",
+        "text": "<p>This piece features a cord collar, button-front closure, and two front <br/>pockets in durable organic cotton canvas.<br/></p><p>Did You Know? Organic cotton uses crop rotation, cover crops,<br/> and organic fertilizers instead of toxic chemical fertilizers or<br/> pesticides—which means cleaner water, lower water usage, lower <br/>pesticide use, healthier soil, and a safer working environment for <br/>cotton farmers, compared to conventional.</p>",
         "content_alignment": "left",
         "button_label": "",
         "button_link": "",

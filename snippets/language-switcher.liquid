@@ -11,6 +11,12 @@ Language switcher snippet
     assign max = 80
     assign diff = max | minus: min
     assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min
+
+    assign current_lang = localization.language.iso_code
+    assign current_language_name = localization.language.endonym_name | default: localization.language.name | capitalize
+    if current_lang == 'fr'
+      assign current_language_name = 'Français'
+    endif
   %}
   <div class="m-switcher-dropdown m-language-switcher {{ box_size }}">
     {% assign form_id = 'localization_form-' | append: randomNumber %}
@@ -21,13 +27,17 @@ Language switcher snippet
           <select class="js-selectNative" data-localization-select>
             {%- if localization.available_languages.size > 0 -%}
               {%- for language in localization.available_languages -%}
+                {%- assign lang_name = language.endonym_name | default: language.name | capitalize -%}
+                {%- if language.iso_code == 'fr' -%}
+                  {%- assign lang_name = 'Français' -%}
+                {%- endif -%}
                 <option
                   value="{{- language.iso_code -}}"
                   {%- if language.iso_code == localization.language.iso_code -%}
                     selected="selected"
                   {%- endif -%}
                 >
-                  {{- language.endonym_name | default: language.name -}}
+                  {{- lang_name -}}
                 </option>
               {%- endfor -%}
             {%- else -%}
@@ -41,7 +51,7 @@ Language switcher snippet
         </m-localization-form>
         <div class="m-select-custom js-selectCustom" aria-hidden="true">
           <div class="m-select-custom--trigger">
-            <span class="m-select-custom--trigger-text"></span>
+            <span class="m-select-custom--trigger-text">{{ current_language_name | default: 'English' }}</span>
             <span class="m-select-custom--trigger-icon">
               <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M1 1L5 5L9 1"/>
@@ -51,7 +61,11 @@ Language switcher snippet
           <div class="m-select-custom--options m-select-custom--options-{{ pos }}">
             {%- if localization.available_languages.size > 0 -%}
               {%- for language in localization.available_languages -%}
-                <div class="m-select-custom--option" data-value="{{ language.iso_code }}">{{ language.endonym_name | default: language.name }}</div>
+                {%- assign lang_name = language.endonym_name | default: language.name | capitalize -%}
+                {%- if language.iso_code == 'fr' -%}
+                  {%- assign lang_name = 'Français' -%}
+                {%- endif -%}
+                <div class="m-select-custom--option" data-value="{{ language.iso_code }}">{{ lang_name }}</div>
               {%- endfor -%}
             {%- else -%}
               <div class="m-select-custom--option" data-value="en">English</div>

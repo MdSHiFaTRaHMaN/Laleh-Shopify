@@ -78,15 +78,15 @@
           "type": "accordion",
           "settings": {
             "title": "What is your return policy?",
-            "content": "<p>You can return eligible items within the applicable return period. <a href=\"/policies/refund-policy\" title=\"Refund Policy\"><strong>Read our full Return Policy</strong></a></p>",
+            "content": "<p>You can return eligible items within 14 days of delivery. <a href=\"/policies/refund-policy\" title=\"Return Policy\"><strong>Read our full Return Policy</strong></a></p>",
             "open": false
           }
         },
         "accordion-5": {
           "type": "accordion",
           "settings": {
-            "title": "Can I exchange an item?",
-            "content": "<p>Yes. If your preferred size is available, we'll be happy to arrange an exchange.</p>",
+            "title": "Do you offer exchanges?",
+            "content": "<p>We do not offer exchanges. We only accept returns according to our return policy. If you would like another size or style, please return your eligible item for a refund and place a new order.</p>",
             "open": false
           }
         },
@@ -100,6 +100,7 @@
         },
         "accordion_m7UqUy": {
           "type": "accordion",
+          "disabled": true,
           "settings": {
             "title": "Will sold-out items be restocked?",
             "content": "<p>Some of our styles may be restocked, while others are released in limited quantities. <br/>Follow us on <a href=\"https://www.instagram.com/mylaleh.co\" target=\"_blank\" title=\"https://www.instagram.com/mylaleh.co\"><strong>Instagram</strong> </a>for restock updates.<br/><br/></p>",
@@ -110,7 +111,7 @@
           "type": "accordion",
           "settings": {
             "title": "How can I contact LALEH?",
-            "content": "<p>You can reach our team at <a href=\"mailto:contact@mylaleh.com\" title=\"mailto:contact@mylaleh.com\">contact@mylaleh.com</a>. We aim to respond within 24–48 hours.<br/></p>",
+            "content": "<p>For any questions regarding your order or our collection, please contact us at contact@mylaleh.com</p>",
             "open": false
           }
         },
@@ -126,7 +127,7 @@
           "type": "accordion",
           "settings": {
             "title": "Are customs duties or taxes included?",
-            "content": "<p>International orders may be subject to local customs duties, import tariffs, or taxes depending on the destination country. Any applicable charges are the responsibility of the recipient.</p>",
+            "content": "<p>International orders may be subject to customs duties, import taxes, or additional fees depending on the destination country. Those charges arc not included in the purchase price and are the responsibility of the customer.</p>",
             "open": false
           }
         }

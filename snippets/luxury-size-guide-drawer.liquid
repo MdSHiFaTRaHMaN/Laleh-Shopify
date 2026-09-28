@@ -1,19 +1,106 @@
 {% comment %}
   Luxury Size Guide Drawer & Spec Table
+  Fully localized for English (en), French (fr), and Arabic (ar).
   Accurately matches reference design and product metafields:
   - product.metafields.custom.size_chart_info (JSON)
   - product.metafields.custom.size_chart_image (File/Image)
 {% endcomment %}
 
 {% liquid
+  assign current_lang = localization.language.iso_code | default: request.locale.iso_code | default: 'en' | downcase
+
+  if current_lang contains 'ar'
+    assign t_sg_title = 'دليل المقاسات'
+    assign t_how_to_measure = 'طريقة أخذ القياسات'
+    assign t_size_chart = 'جدول المقاسات'
+    assign t_measurement = 'القياس'
+    assign t_note_cm = 'جميع القياسات بالسنتيمتر.'
+    assign t_note_in = 'جميع القياسات بالبوصة.'
+    assign t_return = 'العودة إلى المنتج'
+  elsif current_lang contains 'fr'
+    assign t_sg_title = 'Guide des tailles'
+    assign t_how_to_measure = 'Comment mesurer'
+    assign t_size_chart = 'Tableau des tailles'
+    assign t_measurement = 'Mesure'
+    assign t_note_cm = 'Toutes les mesures sont en centimètres.'
+    assign t_note_in = 'Toutes les mesures sont en pouces.'
+    assign t_return = 'Retour au produit'
+  else
+    assign t_sg_title = 'products.product.size_guide' | t | default: 'Size Guide'
+    assign t_how_to_measure = 'products.product.how_to_measure' | t | default: 'How to Measure'
+    assign t_size_chart = 'products.product.size_chart' | t | default: 'Size Chart'
+    assign t_measurement = 'products.product.measurement' | t | default: 'Measurement'
+    assign t_note_cm = 'products.product.measurement_note_cm' | t | default: 'All measurements are in centimeters.'
+    assign t_note_in = 'products.product.measurement_note_in' | t | default: 'All measurements are in inches.'
+    assign t_return = 'products.product.return_to_product' | t | default: 'Return to product'
+  endif
+
   assign current_prod = product
   assign sg_info = current_prod.metafields.custom.size_chart_info.value
   assign sg_image = current_prod.metafields.custom.size_chart_image
 
-  assign sg_title = sg_info.title | default: 'Size Guide'
-  assign how_to_measure_title = sg_info.how_to_measure_title | default: 'How to Measure'
-  assign measurement_note = sg_info.measurement_note | default: 'All measurements are in centimeters.'
-  assign size_chart_title = sg_info.size_chart_title | default: 'Size Chart'
+  if sg_info.title != blank
+    if sg_info.title.en != blank or sg_info.title.ar != blank or sg_info.title.fr != blank
+      if current_lang contains 'ar' and sg_info.title.ar != blank
+        assign t_sg_title = sg_info.title.ar
+      elsif current_lang contains 'fr' and sg_info.title.fr != blank
+        assign t_sg_title = sg_info.title.fr
+      elsif sg_info.title.en != blank
+        assign t_sg_title = sg_info.title.en
+      endif
+    endif
+  endif
+
+  if sg_info.how_to_measure_title != blank
+    if sg_info.how_to_measure_title.en != blank or sg_info.how_to_measure_title.ar != blank or sg_info.how_to_measure_title.fr != blank
+      if current_lang contains 'ar' and sg_info.how_to_measure_title.ar != blank
+        assign t_how_to_measure = sg_info.how_to_measure_title.ar
+      elsif current_lang contains 'fr' and sg_info.how_to_measure_title.fr != blank
+        assign t_how_to_measure = sg_info.how_to_measure_title.fr
+      elsif sg_info.how_to_measure_title.en != blank
+        assign t_how_to_measure = sg_info.how_to_measure_title.en
+      endif
+    endif
+  endif
+
+  if sg_info.size_chart_title != blank
+    if sg_info.size_chart_title.en != blank or sg_info.size_chart_title.ar != blank or sg_info.size_chart_title.fr != blank
+      if current_lang contains 'ar' and sg_info.size_chart_title.ar != blank
+        assign t_size_chart = sg_info.size_chart_title.ar
+      elsif current_lang contains 'fr' and sg_info.size_chart_title.fr != blank
+        assign t_size_chart = sg_info.size_chart_title.fr
+      elsif sg_info.size_chart_title.en != blank
+        assign t_size_chart = sg_info.size_chart_title.en
+      endif
+    endif
+  endif
+
+  if sg_info.measurement_note != blank
+    if sg_info.measurement_note.en != blank or sg_info.measurement_note.ar != blank or sg_info.measurement_note.fr != blank
+      if current_lang contains 'ar' and sg_info.measurement_note.ar != blank
+        assign t_note_cm = sg_info.measurement_note.ar
+      elsif current_lang contains 'fr' and sg_info.measurement_note.fr != blank
+        assign t_note_cm = sg_info.measurement_note.fr
+      elsif sg_info.measurement_note.en != blank
+        assign t_note_cm = sg_info.measurement_note.en
+      endif
+    endif
+  endif
+
+  if sg_info.measurement_title != blank
+    if sg_info.measurement_title.en != blank or sg_info.measurement_title.ar != blank or sg_info.measurement_title.fr != blank
+      if current_lang contains 'ar' and sg_info.measurement_title.ar != blank
+        assign t_measurement = sg_info.measurement_title.ar
+      elsif current_lang contains 'fr' and sg_info.measurement_title.fr != blank
+        assign t_measurement = sg_info.measurement_title.fr
+      elsif sg_info.measurement_title.en != blank
+        assign t_measurement = sg_info.measurement_title.en
+      endif
+    else
+      assign t_measurement = sg_info.measurement_title
+    endif
+  endif
+
   assign size_chart_unit = sg_info.size_chart_unit | default: 'CM'
 
   assign sg_img_url = ''
@@ -31,33 +118,33 @@
     
     <!-- Top Action Bar: Return Button & Unit Switcher -->
     <div class="m-luxury-sg-topbar">
-      <button type="button" class="m-luxury-sg-back-btn" data-close-sizeguide aria-label="{{ 'products.product.return_to_product' | t | default: 'Return to product' }}">
+      <button type="button" class="m-luxury-sg-back-btn" data-close-sizeguide aria-label="{{ t_return }}">
         <span class="m-luxury-sg-back-arrow">&lt;</span>
-        <span class="m-luxury-sg-back-text">{{ 'products.product.return_to_product' | t | default: 'Return to product' }}</span>
+        <span class="m-luxury-sg-back-text">{{ t_return }}</span>
       </button>
 
       <div class="m-luxury-sg-unit-switcher">
         <button type="button" class="m-luxury-sg-unit-btn active" data-unit="cm">CM</button>
-        <span class="m-luxury-sg-unit-divider">|</span>
-        <button type="button" class="m-luxury-sg-unit-btn" data-unit="in">IN</button>
+        {% comment %} <span class="m-luxury-sg-unit-divider">|</span> {% endcomment %}
+        {% comment %} <button type="button" class="m-luxury-sg-unit-btn" data-unit="in">IN</button> {% endcomment %}
       </div>
     </div>
 
     <!-- Main Header Title -->
     <div class="m-luxury-sg-title-wrap">
-      <h2 class="m-luxury-sg-title">{{ sg_title | upcase }}</h2>
+      <h2 class="m-luxury-sg-title">{{ t_sg_title | upcase }}</h2>
     </div>
 
     <!-- Upper Section: How to Measure & Model Diagram -->
     <div class="m-luxury-sg-measure-section">
-      <div class="m-luxury-sg-section-title">{{ how_to_measure_title | upcase }}</div>
+      <div class="m-luxury-sg-section-title">{{ t_how_to_measure | upcase }}</div>
       
       <div class="m-luxury-sg-measure-flow">
-        <!-- Floated Right Diagram Image -->
+        <!-- Floated Diagram Image -->
         <div class="m-luxury-sg-diagram-wrap">
           <img
             src="{{ sg_img_url }}"
-            alt="{{ how_to_measure_title | default: 'How to Measure' }}"
+            alt="{{ t_how_to_measure }}"
             class="m-luxury-sg-diagram-img"
             loading="lazy"
             width="390"
@@ -68,58 +155,200 @@
         <!-- Measurement Guide Items (Flows beside image at top, and spans 100% full width below image) -->
         {% if sg_info != blank and sg_info.measurements != blank %}
           {% for item in sg_info.measurements %}
-            {% assign p_key = item.name | downcase | strip | replace: ' ', '_' %}
+            {% assign p_key = '' %}
+            {% if item.name.en != blank or item.name.ar != blank or item.name.fr != blank %}
+              {% assign p_key = item.name.en | default: item.name | downcase | strip | replace: ' ', '_' %}
+            {% else %}
+              {% assign p_key = item.name | downcase | strip | replace: ' ', '_' %}
+            {% endif %}
+
+            {% liquid
+              assign item_name = item.name
+              assign item_desc = item.description
+
+              if current_lang contains 'ar'
+                if item.name.ar != blank
+                  assign item_name = item.name.ar
+                else
+                  case p_key
+                    when 'shoulder'
+                      assign item_name = 'products.product.sg_shoulder' | t | default: 'الكتف'
+                    when 'bust'
+                      assign item_name = 'products.product.sg_bust' | t | default: 'الصدر'
+                    when 'waist'
+                      assign item_name = 'products.product.sg_waist' | t | default: 'الخصر'
+                    when 'hip'
+                      assign item_name = 'products.product.sg_hip' | t | default: 'الورك'
+                    when 'sleeve_length' or 'sleeve'
+                      assign item_name = 'products.product.sg_sleeve_length' | t | default: 'طول الكم'
+                    when 'length'
+                      assign item_name = 'products.product.sg_length' | t | default: 'الطول'
+                  endcase
+                endif
+
+                if item.description.ar != blank
+                  assign item_desc = item.description.ar
+                else
+                  case p_key
+                    when 'shoulder'
+                      assign item_desc = 'products.product.sg_shoulder_desc' | t | default: 'قيسي من طرف أحد الكتفين إلى طرف الكتف الآخر.'
+                    when 'bust'
+                      assign item_desc = 'products.product.sg_bust_desc' | t | default: 'قيسي حول أمتلأ جزء من الصدر.'
+                    when 'waist'
+                      assign item_desc = 'products.product.sg_waist_desc' | t | default: 'قيسي حول أضيق جزء من الخصر.'
+                    when 'hip'
+                      assign item_desc = 'products.product.sg_hip_desc' | t | default: 'قيسي حول أمتلأ جزء من الوركين.'
+                    when 'sleeve_length' or 'sleeve'
+                      assign item_desc = 'products.product.sg_sleeve_length_desc' | t | default: 'قيسي من درز الكتف حتى نهاية الكم.'
+                    when 'length'
+                      assign item_desc = 'products.product.sg_length_desc' | t | default: 'قيسي من أعلى نقطة في الكتف حتى الحافة السفلية.'
+                  endcase
+                endif
+              elsif current_lang contains 'fr'
+                if item.name.fr != blank
+                  assign item_name = item.name.fr
+                else
+                  case p_key
+                    when 'shoulder'
+                      assign item_name = 'products.product.sg_shoulder' | t | default: 'Épaule'
+                    when 'bust'
+                      assign item_name = 'products.product.sg_bust' | t | default: 'Buste'
+                    when 'waist'
+                      assign item_name = 'products.product.sg_waist' | t | default: 'Taille'
+                    when 'hip'
+                      assign item_name = 'products.product.sg_hip' | t | default: 'Hanches'
+                    when 'sleeve_length' or 'sleeve'
+                      assign item_name = 'products.product.sg_sleeve_length' | t | default: 'Longueur de manche'
+                    when 'length'
+                      assign item_name = 'products.product.sg_length' | t | default: 'Longueur'
+                  endcase
+                endif
+
+                if item.description.fr != blank
+                  assign item_desc = item.description.fr
+                else
+                  case p_key
+                    when 'shoulder'
+                      assign item_desc = 'products.product.sg_shoulder_desc' | t | default: "Mesurez d'une pointe d'épaule à l'autre."
+                    when 'bust'
+                      assign item_desc = 'products.product.sg_bust_desc' | t | default: 'Mesurez autour de la partie la plus large de votre poitrine.'
+                    when 'waist'
+                      assign item_desc = 'products.product.sg_waist_desc' | t | default: 'Mesurez autour de la partie la plus étroite de votre taille.'
+                    when 'hip'
+                      assign item_desc = 'products.product.sg_hip_desc' | t | default: 'Mesurez autour de la partie la plus large de vos hanches.'
+                    when 'sleeve_length' or 'sleeve'
+                      assign item_desc = 'products.product.sg_sleeve_length_desc' | t | default: "Mesurez de la couture de l'épaule jusqu'au bout de la manche."
+                    when 'length'
+                      assign item_desc = 'products.product.sg_length_desc' | t | default: "Mesurez du point le plus haut de l'épaule jusqu'à l'ourlet."
+                  endcase
+                endif
+              else
+                if item.name.en != blank
+                  assign item_name = item.name.en
+                elsif item.name != blank
+                  assign item_name = item.name
+                endif
+
+                if item.description.en != blank
+                  assign item_desc = item.description.en
+                elsif item.description != blank
+                  assign item_desc = item.description
+                endif
+              endif
+            %}
             <div class="m-luxury-sg-measure-item" data-param="{{ p_key }}" data-number="{{ item.number }}">
               <div class="m-luxury-sg-measure-heading">
                 <span class="m-luxury-sg-num">{{ item.number }}.</span>
-                <span class="m-luxury-sg-name">{{ item.name }}</span>
+                <span class="m-luxury-sg-name">{{ item_name }}</span>
               </div>
-              <div class="m-luxury-sg-measure-desc">{{ item.description }}</div>
+              <div class="m-luxury-sg-measure-desc">{{ item_desc }}</div>
             </div>
           {% endfor %}
         {% else %}
           <!-- Default 100% Accurate Fallback matching user reference -->
+          {% liquid
+            if current_lang contains 'ar'
+              assign n_sh = 'products.product.sg_shoulder' | t | default: 'الكتف'
+              assign d_sh = 'products.product.sg_shoulder_desc' | t | default: 'قيسي من طرف أحد الكتفين إلى طرف الكتف الآخر.'
+              assign n_bu = 'products.product.sg_bust' | t | default: 'الصدر'
+              assign d_bu = 'products.product.sg_bust_desc' | t | default: 'قيسي حول أمتلأ جزء من الصدر.'
+              assign n_wa = 'products.product.sg_waist' | t | default: 'الخصر'
+              assign d_wa = 'products.product.sg_waist_desc' | t | default: 'قيسي حول أضيق جزء من الخصر.'
+              assign n_hi = 'products.product.sg_hip' | t | default: 'الورك'
+              assign d_hi = 'products.product.sg_hip_desc' | t | default: 'قيسي حول أمتلأ جزء من الوركين.'
+              assign n_sl = 'products.product.sg_sleeve_length' | t | default: 'طول الكم'
+              assign d_sl = 'products.product.sg_sleeve_length_desc' | t | default: 'قيسي من درز الكتف حتى نهاية الكم.'
+              assign n_le = 'products.product.sg_length' | t | default: 'الطول'
+              assign d_le = 'products.product.sg_length_desc' | t | default: 'قيسي من أعلى نقطة في الكتف حتى الحافة السفلية.'
+            elsif current_lang contains 'fr'
+              assign n_sh = 'products.product.sg_shoulder' | t | default: 'Épaule'
+              assign d_sh = 'products.product.sg_shoulder_desc' | t | default: "Mesurez d'une pointe d'épaule à l'autre."
+              assign n_bu = 'products.product.sg_bust' | t | default: 'Buste'
+              assign d_bu = 'products.product.sg_bust_desc' | t | default: 'Mesurez autour de la partie la plus large de votre poitrine.'
+              assign n_wa = 'products.product.sg_waist' | t | default: 'Taille'
+              assign d_wa = 'products.product.sg_waist_desc' | t | default: 'Mesurez autour de la partie la plus étroite de votre taille.'
+              assign n_hi = 'products.product.sg_hip' | t | default: 'Hanches'
+              assign d_hi = 'products.product.sg_hip_desc' | t | default: 'Mesurez autour de la partie la plus large de vos hanches.'
+              assign n_sl = 'products.product.sg_sleeve_length' | t | default: 'Longueur de manche'
+              assign d_sl = 'products.product.sg_sleeve_length_desc' | t | default: "Mesurez de la couture de l'épaule jusqu'au bout de la manche."
+              assign n_le = 'products.product.sg_length' | t | default: 'Longueur'
+              assign d_le = 'products.product.sg_length_desc' | t | default: "Mesurez du point le plus haut de l'épaule jusqu'à l'ourlet."
+            else
+              assign n_sh = 'products.product.sg_shoulder' | t | default: 'Shoulder'
+              assign d_sh = 'products.product.sg_shoulder_desc' | t | default: 'Measure from one shoulder point to the other.'
+              assign n_bu = 'products.product.sg_bust' | t | default: 'Bust'
+              assign d_bu = 'products.product.sg_bust_desc' | t | default: 'Measure around the fullest part of your bust.'
+              assign n_wa = 'products.product.sg_waist' | t | default: 'Waist'
+              assign d_wa = 'products.product.sg_waist_desc' | t | default: 'Measure around the narrowest part of your waist.'
+              assign n_hi = 'products.product.sg_hip' | t | default: 'Hip'
+              assign d_hi = 'products.product.sg_hip_desc' | t | default: 'Measure around the fullest part of your hips.'
+              assign n_sl = 'products.product.sg_sleeve_length' | t | default: 'Sleeve Length'
+              assign d_sl = 'products.product.sg_sleeve_length_desc' | t | default: 'Measure from the shoulder seam to the end of the sleeve.'
+              assign n_le = 'products.product.sg_length' | t | default: 'Length'
+              assign d_le = 'products.product.sg_length_desc' | t | default: 'Measure from the highest point of the shoulder to the hem.'
+            endif
+          %}
           <div class="m-luxury-sg-measure-item" data-param="shoulder" data-number="1">
             <div class="m-luxury-sg-measure-heading">
               <span class="m-luxury-sg-num">1.</span>
-              <span class="m-luxury-sg-name">Shoulder</span>
+              <span class="m-luxury-sg-name">{{ n_sh }}</span>
             </div>
-            <div class="m-luxury-sg-measure-desc">Measure from one shoulder point to the other.</div>
+            <div class="m-luxury-sg-measure-desc">{{ d_sh }}</div>
           </div>
           <div class="m-luxury-sg-measure-item" data-param="bust" data-number="2">
             <div class="m-luxury-sg-measure-heading">
               <span class="m-luxury-sg-num">2.</span>
-              <span class="m-luxury-sg-name">Bust</span>
+              <span class="m-luxury-sg-name">{{ n_bu }}</span>
             </div>
-            <div class="m-luxury-sg-measure-desc">Measure around the fullest part of your bust.</div>
+            <div class="m-luxury-sg-measure-desc">{{ d_bu }}</div>
           </div>
           <div class="m-luxury-sg-measure-item" data-param="waist" data-number="3">
             <div class="m-luxury-sg-measure-heading">
               <span class="m-luxury-sg-num">3.</span>
-              <span class="m-luxury-sg-name">Waist</span>
+              <span class="m-luxury-sg-name">{{ n_wa }}</span>
             </div>
-            <div class="m-luxury-sg-measure-desc">Measure around the narrowest part of your waist.</div>
+            <div class="m-luxury-sg-measure-desc">{{ d_wa }}</div>
           </div>
           <div class="m-luxury-sg-measure-item" data-param="hip" data-number="4">
             <div class="m-luxury-sg-measure-heading">
               <span class="m-luxury-sg-num">4.</span>
-              <span class="m-luxury-sg-name">Hip</span>
+              <span class="m-luxury-sg-name">{{ n_hi }}</span>
             </div>
-            <div class="m-luxury-sg-measure-desc">Measure around the fullest part of your hips.</div>
+            <div class="m-luxury-sg-measure-desc">{{ d_hi }}</div>
           </div>
           <div class="m-luxury-sg-measure-item" data-param="sleeve_length" data-number="5">
             <div class="m-luxury-sg-measure-heading">
               <span class="m-luxury-sg-num">5.</span>
-              <span class="m-luxury-sg-name">Sleeve Length</span>
+              <span class="m-luxury-sg-name">{{ n_sl }}</span>
             </div>
-            <div class="m-luxury-sg-measure-desc">Measure from the shoulder seam to the end of the sleeve.</div>
+            <div class="m-luxury-sg-measure-desc">{{ d_sl }}</div>
           </div>
           <div class="m-luxury-sg-measure-item" data-param="length" data-number="6">
             <div class="m-luxury-sg-measure-heading">
               <span class="m-luxury-sg-num">6.</span>
-              <span class="m-luxury-sg-name">Length</span>
+              <span class="m-luxury-sg-name">{{ n_le }}</span>
             </div>
-            <div class="m-luxury-sg-measure-desc">Measure from the highest point of the shoulder to the hem.</div>
+            <div class="m-luxury-sg-measure-desc">{{ d_le }}</div>
           </div>
         {% endif %}
       </div>
@@ -127,10 +356,10 @@
       <!-- Measurement Note -->
       <div
         class="m-luxury-sg-note"
-        data-note-cm="All measurements are in centimeters."
-        data-note-in="All measurements are in inches."
+        data-note-cm="{{ t_note_cm }}"
+        data-note-in="{{ t_note_in }}"
       >
-        {{ measurement_note }}
+        {{ t_note_cm }}
       </div>
 
       <!-- Divider -->
@@ -140,7 +369,7 @@
     <!-- Lower Section: Size Chart Table -->
     <div class="m-luxury-sg-chart-section">
       <div class="m-luxury-sg-chart-header">
-        <span class="m-luxury-sg-chart-title">{{ size_chart_title | upcase }}</span>
+        <span class="m-luxury-sg-chart-title">{{ t_size_chart | upcase }}</span>
         <span class="m-luxury-sg-chart-unit-badge">(<span class="m-luxury-sg-unit-label">{{ size_chart_unit }}</span>)</span>
       </div>
 
@@ -149,7 +378,7 @@
           <thead>
             <tr>
               <th class="m-luxury-sg-th-title">
-                MEASUREMENT (<span class="m-luxury-sg-unit-label">{{ size_chart_unit }}</span>)
+                {{ t_measurement | upcase }} (<span class="m-luxury-sg-unit-label">{{ size_chart_unit }}</span>)
               </th>
               {% if sg_info != blank and sg_info.sizes != blank %}
                 {% for s in sg_info.sizes %}
@@ -167,67 +396,179 @@
           <tbody>
             {% if sg_info != blank and sg_info.measurements != blank and sg_info.sizes != blank %}
               {% for item in sg_info.measurements %}
-                {% assign param_key = item.name | downcase | strip | replace: ' ', '_' %}
-                <tr class="m-luxury-sg-row" data-param="{{ param_key }}">
-                  <td class="m-luxury-sg-td-title">{{ item.name }}</td>
-                  {% for s in sg_info.sizes %}
-                    {% assign cell_val = '' %}
-                    {% case param_key %}
-                      {% when 'shoulder' %}
-                        {% assign cell_val = s.measurements.shoulder | default: s.measurements[param_key] %}
-                      {% when 'bust' %}
-                        {% assign cell_val = s.measurements.bust | default: s.measurements[param_key] %}
-                      {% when 'waist' %}
-                        {% assign cell_val = s.measurements.waist | default: s.measurements[param_key] %}
-                      {% when 'hip' %}
-                        {% assign cell_val = s.measurements.hip | default: s.measurements[param_key] %}
-                      {% when 'sleeve_length' %}
-                        {% assign cell_val = s.measurements.sleeve_length | default: s.measurements[param_key] %}
-                      {% when 'length' %}
-                        {% assign cell_val = s.measurements.length | default: s.measurements[param_key] %}
-                      {% else %}
-                        {% assign cell_val = s.measurements[param_key] %}
-                    {% endcase %}
-                    <td class="m-luxury-sg-td-val" data-size="{{ s.size }}" data-raw-cm="{{ cell_val }}">
-                      {{ cell_val | default: '-' }}
-                    </td>
-                  {% endfor %}
-                </tr>
+                {% assign param_key = '' %}
+                {% if item.name.en != blank or item.name.ar != blank or item.name.fr != blank %}
+                  {% assign param_key = item.name.en | default: item.name | downcase | strip | replace: ' ', '_' %}
+                {% else %}
+                  {% assign param_key = item.name | downcase | strip | replace: ' ', '_' %}
+                {% endif %}
+
+                {% assign row_has_data = false %}
+                {% for s in sg_info.sizes %}
+                  {% assign check_val = '' %}
+                  {% case param_key %}
+                    {% when 'shoulder' %}
+                      {% assign check_val = s.measurements.shoulder | default: s.measurements[param_key] %}
+                    {% when 'bust' %}
+                      {% assign check_val = s.measurements.bust | default: s.measurements[param_key] %}
+                    {% when 'waist' %}
+                      {% assign check_val = s.measurements.waist | default: s.measurements[param_key] %}
+                    {% when 'hip' %}
+                      {% assign check_val = s.measurements.hip | default: s.measurements[param_key] %}
+                    {% when 'sleeve_length' or 'sleeve' %}
+                      {% assign check_val = s.measurements.sleeve_length | default: s.measurements.sleeve | default: s.measurements[param_key] %}
+                    {% when 'length' %}
+                      {% assign check_val = s.measurements.length | default: s.measurements[param_key] %}
+                    {% else %}
+                      {% assign check_val = s.measurements[param_key] %}
+                  {% endcase %}
+                  {% assign check_str = check_val | append: '' | strip | downcase %}
+                  {% if check_val != blank and check_str != '' and check_str != '-' and check_str != '--' and check_str != '0' and check_str != '0.0' and check_str != '0cm' and check_str != '0in' and check_str != 'null' and check_str != 'undefined' and check_str != 'none' %}
+                    {% assign row_has_data = true %}
+                  {% endif %}
+                {% endfor %}
+
+                {% if row_has_data %}
+                  {% liquid
+                    assign row_name = item.name
+                    if current_lang contains 'ar'
+                      if item.name.ar != blank
+                        assign row_name = item.name.ar
+                      else
+                        case param_key
+                          when 'shoulder'
+                            assign row_name = 'products.product.sg_shoulder' | t | default: 'الكتف'
+                          when 'bust'
+                            assign row_name = 'products.product.sg_bust' | t | default: 'الصدر'
+                          when 'waist'
+                            assign row_name = 'products.product.sg_waist' | t | default: 'الخصر'
+                          when 'hip'
+                            assign row_name = 'products.product.sg_hip' | t | default: 'الورك'
+                          when 'sleeve_length' or 'sleeve'
+                            assign row_name = 'products.product.sg_sleeve_length' | t | default: 'طول الكم'
+                          when 'length'
+                            assign row_name = 'products.product.sg_length' | t | default: 'الطول'
+                        endcase
+                      endif
+                    elsif current_lang contains 'fr'
+                      if item.name.fr != blank
+                        assign row_name = item.name.fr
+                      else
+                        case param_key
+                          when 'shoulder'
+                            assign row_name = 'products.product.sg_shoulder' | t | default: 'Épaule'
+                          when 'bust'
+                            assign row_name = 'products.product.sg_bust' | t | default: 'Buste'
+                          when 'waist'
+                            assign row_name = 'products.product.sg_waist' | t | default: 'Taille'
+                          when 'hip'
+                            assign row_name = 'products.product.sg_hip' | t | default: 'Hanches'
+                          when 'sleeve_length' or 'sleeve'
+                            assign row_name = 'products.product.sg_sleeve_length' | t | default: 'Longueur de manche'
+                          when 'length'
+                            assign row_name = 'products.product.sg_length' | t | default: 'Longueur'
+                        endcase
+                      endif
+                    else
+                      if item.name.en != blank
+                        assign row_name = item.name.en
+                      elsif item.name != blank
+                        assign row_name = item.name
+                      endif
+                    endif
+                  %}
+                  <tr class="m-luxury-sg-row" data-param="{{ param_key }}">
+                    <td class="m-luxury-sg-td-title">{{ row_name }}</td>
+                    {% for s in sg_info.sizes %}
+                      {% assign cell_val = '' %}
+                      {% case param_key %}
+                        {% when 'shoulder' %}
+                          {% assign cell_val = s.measurements.shoulder | default: s.measurements[param_key] %}
+                        {% when 'bust' %}
+                          {% assign cell_val = s.measurements.bust | default: s.measurements[param_key] %}
+                        {% when 'waist' %}
+                          {% assign cell_val = s.measurements.waist | default: s.measurements[param_key] %}
+                        {% when 'hip' %}
+                          {% assign cell_val = s.measurements.hip | default: s.measurements[param_key] %}
+                        {% when 'sleeve_length' or 'sleeve' %}
+                          {% assign cell_val = s.measurements.sleeve_length | default: s.measurements.sleeve | default: s.measurements[param_key] %}
+                        {% when 'length' %}
+                          {% assign cell_val = s.measurements.length | default: s.measurements[param_key] %}
+                        {% else %}
+                          {% assign cell_val = s.measurements[param_key] %}
+                      {% endcase %}
+                      {% assign cell_str = cell_val | append: '' | strip | downcase %}
+                      {% assign display_val = cell_val %}
+                      {% assign cell_raw = cell_val %}
+                      {% if cell_val == blank or cell_str == '' or cell_str == '-' or cell_str == '--' or cell_str == '0' or cell_str == '0.0' or cell_str == 'null' or cell_str == 'undefined' or cell_str == 'none' %}
+                        {% assign display_val = '-' %}
+                        {% assign cell_raw = '' %}
+                      {% endif %}
+                      <td class="m-luxury-sg-td-val" data-size="{{ s.size }}" data-raw-cm="{{ cell_raw }}">
+                        {{ display_val }}
+                      </td>
+                    {% endfor %}
+                  </tr>
+                {% endif %}
               {% endfor %}
             {% else %}
               <!-- 100% Accurate Fallback Data matching user spec -->
+              {% liquid
+                if current_lang contains 'ar'
+                  assign row_sh = 'products.product.sg_shoulder' | t | default: 'الكتف'
+                  assign row_bu = 'products.product.sg_bust' | t | default: 'الصدر'
+                  assign row_wa = 'products.product.sg_waist' | t | default: 'الخصر'
+                  assign row_hi = 'products.product.sg_hip' | t | default: 'الورك'
+                  assign row_sl = 'products.product.sg_sleeve_length' | t | default: 'طول الكم'
+                  assign row_le = 'products.product.sg_length' | t | default: 'الطول'
+                elsif current_lang contains 'fr'
+                  assign row_sh = 'products.product.sg_shoulder' | t | default: 'Épaule'
+                  assign row_bu = 'products.product.sg_bust' | t | default: 'Buste'
+                  assign row_wa = 'products.product.sg_waist' | t | default: 'Taille'
+                  assign row_hi = 'products.product.sg_hip' | t | default: 'Hanches'
+                  assign row_sl = 'products.product.sg_sleeve_length' | t | default: 'Longueur de manche'
+                  assign row_le = 'products.product.sg_length' | t | default: 'Longueur'
+                else
+                  assign row_sh = 'products.product.sg_shoulder' | t | default: 'Shoulder'
+                  assign row_bu = 'products.product.sg_bust' | t | default: 'Bust'
+                  assign row_wa = 'products.product.sg_waist' | t | default: 'Waist'
+                  assign row_hi = 'products.product.sg_hip' | t | default: 'Hip'
+                  assign row_sl = 'products.product.sg_sleeve_length' | t | default: 'Sleeve Length'
+                  assign row_le = 'products.product.sg_length' | t | default: 'Length'
+                endif
+              %}
               <tr class="m-luxury-sg-row" data-param="shoulder">
-                <td class="m-luxury-sg-td-title">Shoulder</td>
+                <td class="m-luxury-sg-td-title">{{ row_sh }}</td>
                 <td class="m-luxury-sg-td-val" data-size="S" data-raw-cm="37">37</td>
                 <td class="m-luxury-sg-td-val" data-size="M" data-raw-cm="38">38</td>
                 <td class="m-luxury-sg-td-val" data-size="L" data-raw-cm="39">39</td>
               </tr>
               <tr class="m-luxury-sg-row" data-param="bust">
-                <td class="m-luxury-sg-td-title">Bust</td>
+                <td class="m-luxury-sg-td-title">{{ row_bu }}</td>
                 <td class="m-luxury-sg-td-val" data-size="S" data-raw-cm="84">84</td>
                 <td class="m-luxury-sg-td-val" data-size="M" data-raw-cm="88">88</td>
                 <td class="m-luxury-sg-td-val" data-size="L" data-raw-cm="92">92</td>
               </tr>
               <tr class="m-luxury-sg-row" data-param="waist">
-                <td class="m-luxury-sg-td-title">Waist</td>
+                <td class="m-luxury-sg-td-title">{{ row_wa }}</td>
                 <td class="m-luxury-sg-td-val" data-size="S" data-raw-cm="72">72</td>
                 <td class="m-luxury-sg-td-val" data-size="M" data-raw-cm="76">76</td>
                 <td class="m-luxury-sg-td-val" data-size="L" data-raw-cm="80">80</td>
               </tr>
               <tr class="m-luxury-sg-row" data-param="hip">
-                <td class="m-luxury-sg-td-title">Hip</td>
+                <td class="m-luxury-sg-td-title">{{ row_hi }}</td>
                 <td class="m-luxury-sg-td-val" data-size="S" data-raw-cm="92">92</td>
                 <td class="m-luxury-sg-td-val" data-size="M" data-raw-cm="96">96</td>
                 <td class="m-luxury-sg-td-val" data-size="L" data-raw-cm="100">100</td>
               </tr>
               <tr class="m-luxury-sg-row" data-param="sleeve_length">
-                <td class="m-luxury-sg-td-title">Sleeve Length</td>
+                <td class="m-luxury-sg-td-title">{{ row_sl }}</td>
                 <td class="m-luxury-sg-td-val" data-size="S" data-raw-cm="58">58</td>
                 <td class="m-luxury-sg-td-val" data-size="M" data-raw-cm="59">59</td>
                 <td class="m-luxury-sg-td-val" data-size="L" data-raw-cm="60">60</td>
               </tr>
               <tr class="m-luxury-sg-row" data-param="length">
-                <td class="m-luxury-sg-td-title">Length</td>
+                <td class="m-luxury-sg-td-title">{{ row_le }}</td>
                 <td class="m-luxury-sg-td-val" data-size="S" data-raw-cm="112">112</td>
                 <td class="m-luxury-sg-td-val" data-size="M" data-raw-cm="113">113</td>
                 <td class="m-luxury-sg-td-val" data-size="L" data-raw-cm="114">114</td>
@@ -241,8 +582,8 @@
     <!-- Return to product CTA link -->
     <div class="m-luxury-sg-footer">
       <button type="button" class="m-luxury-sg-return-btn" data-close-sizeguide>
-        <span>{{ 'products.product.return_to_product' | t | default: 'Return to product' }}</span>
-        <span class="m-luxury-sg-return-arrow">&gt;</span>
+        <span>{{ t_return }}</span>
+        <span class="m-luxury-sg-return-arrow">{% if current_lang contains 'ar' %}&lt;{% else %}&gt;{% endif %}</span>
       </button>
     </div>
 

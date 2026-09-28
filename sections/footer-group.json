@@ -121,7 +121,7 @@
             "heading_font_weight": "medium",
             "image": "shopify://shop_images/ChatGPT_Image_Sep_10_2026_10_20_14_AM.png",
             "image_max": "150px",
-            "description": "<p>Timeless femininity, thoughtfully design.</p>",
+            "description": "<p>Timeless femininity, thoughtfully designed.</p>",
             "text_size": "text-base",
             "width": "50%",
             "order_first": false,
@@ -206,7 +206,7 @@
       ],
       "custom_css": [
         ".social-media-links {gap: 12px; margin: 0; padding: 5px 0;}",
-        ".social-media-links a {color: #222; width: 48px; height: 48px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background-color: #e9e9e9; transition: all 0.3s;}",
+        ".social-media-links a {color: #222; width: 35px; height: 35px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background-color: #e9e9e9; transition: all 0.3s;}",
         ".social-media-links a:hover {background-color: #222; color: #fff; box-shadow: 0 0 0 0.2rem #222;}",
         "a.m-link {font-size: 14px;}",
         "responsive-image.m-image.m-image-loaded {max-width: 150px;}"

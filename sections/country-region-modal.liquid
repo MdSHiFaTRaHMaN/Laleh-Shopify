@@ -159,11 +159,13 @@
               <ul class="m-crm-list" id="CountryModalList-{{ section.id }}">
                 {%- if localization.available_countries.size > 0 -%}
                   {%- for country in localization.available_countries -%}
+                    {%- assign c_curr = country.currency.iso_code -%}
                     <li
                       class="m-crm-item {% if country.iso_code == current_iso %}is-selected{% endif %}"
                       role="option"
                       data-value="{{ country.iso_code }}"
                       data-name="{{ country.name }}"
+                      data-currency="{{ c_curr }}"
                       aria-selected="{% if country.iso_code == current_iso %}true{% else %}false{% endif %}"
                     >
                       <div class="m-crm-item__left">
@@ -748,7 +750,24 @@
       if (form) {
         form.addEventListener('submit', function (e) {
           setDismissed();
-          // Native Shopify localization form submission
+          const code = (hiddenInput ? hiddenInput.value : '').toUpperCase();
+          const selectedItem = itemsList ? itemsList.querySelector('.m-crm-item.is-selected') : null;
+          const curr = selectedItem ? selectedItem.getAttribute('data-currency') : '';
+          const marketData = window.MinimogSettings && window.MinimogSettings.market_countries && window.MinimogSettings.market_countries[code];
+          const finalCurr = (marketData && marketData.currency) || curr || (window.CurrencyEngine && window.CurrencyEngine.countryMap && window.CurrencyEngine.countryMap[code]) || 'USD';
+          try {
+            if (code) localStorage.setItem('m_active_country', code);
+            if (finalCurr) localStorage.setItem('m_active_currency', finalCurr);
+          } catch (err) {}
+          if (window.CurrencyEngine && typeof window.CurrencyEngine.setCurrency === 'function') {
+            window.CurrencyEngine.setCurrency(finalCurr, code);
+          }
+          const saveBtn = form.querySelector('.m-crm-save-btn');
+          if (saveBtn) {
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+          }
+          // Form will submit natively to Shopify's /localization endpoint and reload with new market
         });
       }
 

@@ -458,7 +458,7 @@
 /* Sizing System & Size Guide Row */
 .m-luxury-size-header-row {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
 }
@@ -516,7 +516,6 @@
 .m-luxury-size-box.active,
 .m-product-option--node input:checked+.m-product-option--node__label {
   border-color: #18181b;
-  box-shadow: 0 0 0 1px #18181b;
   font-weight: 600;
 }
 
@@ -1647,7 +1646,7 @@ button.m-luxury-wishlist-btn *,
   .m-luxury-video-wrapper,
   .m-luxury-main-video,
   .m-luxury-quickview-modal-content .m-luxury-main-img {
-    max-height: 420px;
+    max-height: 520px;
     min-height: 280px;
     object-fit: cover;
   }
@@ -1696,5 +1695,35 @@ button.m-luxury-wishlist-btn *,
   .m-luxury-more-tab-btn {
     font-size: 13.5px;
     flex-shrink: 0;
+  }
+}
+
+/* ==========================================================================
+   RTL SUPPORT FOR SIZE GUIDE DRAWER (ARABIC)
+   ========================================================================== */
+[dir="rtl"] .m-luxury-sg-diagram-wrap,
+html[dir="rtl"] .m-luxury-sg-diagram-wrap {
+  float: left;
+  margin-left: 0;
+  margin-right: 14px;
+}
+
+[dir="rtl"] .m-luxury-sg-footer,
+html[dir="rtl"] .m-luxury-sg-footer {
+  text-align: left;
+}
+
+[dir="rtl"] .m-luxury-sg-th-title,
+[dir="rtl"] .m-luxury-sg-td-title,
+html[dir="rtl"] .m-luxury-sg-th-title,
+html[dir="rtl"] .m-luxury-sg-td-title {
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  [dir="rtl"] .m-luxury-sg-diagram-wrap,
+  html[dir="rtl"] .m-luxury-sg-diagram-wrap {
+    margin-left: 0;
+    margin-right: 10px;
   }
 }

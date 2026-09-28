@@ -52,7 +52,8 @@
         "text-block-3"
       ],
       "custom_css": [
-        ".m-contact-form__heading,.m-info-box__title {font-weight: 500;}"
+        ".m-contact-form__heading,.m-info-box__title {font-weight: 500;}",
+        "@media (max-width: 786px) {.h4 {font-size: 16px; } p {font-size: 12px; } .m-contact-form__name input::placeholder {font-size: 13px; } .m-contact-form__email input::placeholder {font-size: 13px; } .m-contact-form__message textarea::placeholder {font-size: 13px; }}"
       ],
       "settings": {
         "container": "container",

@@ -157,7 +157,7 @@
         "show_navigation": false,
         "show_button_on_header": false,
         "button_type": "link",
-        "button_text": "Shop more",
+        "button_text": "",
         "button_style": "m-button--primary",
         "button_size": "",
         "infinite_load": false,

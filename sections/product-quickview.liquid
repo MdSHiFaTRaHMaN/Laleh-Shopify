@@ -34,7 +34,11 @@
       -->
       <div class="m-luxury-col-thumb">
         <div class="m-luxury-thumb-inner">
-          <a href="{{ product.url }}" class="m-luxury-back-link" aria-label="{{ 'products.product.view_details' | t | default: 'View all details' }}">
+          <a
+            href="{{ product.url }}"
+            class="m-luxury-back-link"
+            aria-label="{{ 'products.product.view_details' | t | default: 'View all details' }}"
+          >
             <span class="m-luxury-back-arrow">&lt;</span>
             <span class="m-luxury-back-text">{{ 'products.product.all' | t | default: 'All' }}</span>
           </a>
@@ -201,16 +205,43 @@
 
           <!-- Product Price -->
           <div class="m-luxury-product-price-row" id="Price-{{ section.id }}">
+            {% liquid
+              if settings.currency_code_enabled
+                assign raw_price = current_variant.price | money_with_currency
+                assign raw_compare = current_variant.compare_at_price | money_with_currency
+              else
+                assign raw_price = current_variant.price | money
+                assign raw_compare = current_variant.compare_at_price | money
+              endif
+              assign v_price = raw_price | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip
+              assign v_compare = raw_compare | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip
+            %}
             {% if current_variant.compare_at_price > current_variant.price %}
-              <span class="m-luxury-product-price m-luxury-product-price--sale">
-                {{ current_variant.price | money }}
+              <span
+                class="m-luxury-product-price m-luxury-product-price--sale"
+                data-base-price="{{ current_variant.price }}"
+                data-price="{{ current_variant.price }}"
+                data-amount="{{ current_variant.price }}"
+              >
+                {{ v_price }}
               </span>
-              <s class="m-luxury-product-price--compare" style="margin-left: 8px; color: #a1a1aa; font-size: 14px;">
-                {{ current_variant.compare_at_price | money }}
+              <s
+                class="m-luxury-product-price--compare"
+                data-base-price="{{ current_variant.compare_at_price }}"
+                data-compare-price="{{ current_variant.compare_at_price }}"
+                data-amount="{{ current_variant.compare_at_price }}"
+                style="margin-left: 8px; color: #a1a1aa; font-size: 14px;"
+              >
+                {{ v_compare }}
               </s>
             {% else %}
-              <span class="m-luxury-product-price">
-                {{ current_variant.price | money }}
+              <span
+                class="m-luxury-product-price"
+                data-base-price="{{ current_variant.price }}"
+                data-price="{{ current_variant.price }}"
+                data-amount="{{ current_variant.price }}"
+              >
+                {{ v_price }}
               </span>
             {% endif %}
           </div>
@@ -260,82 +291,51 @@
             </div>
           {% endif %}
 
-          <!-- Size Sizing Standard Row & Dropdown (Right-aligned AU/FR/US/UK/IT) -->
+          <!-- Size Option -->
           {% if size_option_index >= 0 %}
             {% assign size_option = product.options_with_values[size_option_index] %}
-
-            <div class="m-luxury-size-header-row">
-              <div class="m-luxury-size-system-dropdown">
-                <select
-                  id="m-luxury-size-system-select-{{ section.id }}"
-                  class="m-luxury-size-system-select"
-                  aria-label="{{ 'products.product.select_size' | t | default: 'Select Sizing standard' }}"
-                >
-                  <option value="AU" selected>{{ 'products.product.size_au' | t | default: 'Size AU' }}</option>
-                  <option value="FR">{{ 'products.product.size_fr' | t | default: 'Size FR' }}</option>
-                  <option value="US">{{ 'products.product.size_us' | t | default: 'Size US' }}</option>
-                  <option value="UK">{{ 'products.product.size_uk' | t | default: 'Size UK' }}</option>
-                  <option value="IT">{{ 'products.product.size_it' | t | default: 'Size IT' }}</option>
-                </select>
-                <svg
-                  class="m-luxury-size-system-chevron"
-                  viewBox="0 0 10 6"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <polyline points="1 1 5 5 9 1"></polyline>
-                </svg>
-              </div>
-            </div>
-
-            <div>
-              <h3 class="size-v-title">{{ 'products.product.select_size' | t | default: 'Select Size:' }}</h3>
-            </div>
-
-            <!-- Size Buttons Grid -->
-            <div
-              class="m-luxury-sizes-grid"
-              id="m-luxury-sizes-grid-{{ section.id }}"
-              data-option-index="{{ size_option_index }}"
-            >
-              {% for value in size_option.values %}
-                {% liquid
-                  assign is_available = false
-                  assign variant_for_size = null
-                  for var in product.variants
-                    if var.options[size_option_index] == value
-                      assign variant_for_size = var
-                      if var.available
-                        assign is_available = true
-                      endif
-                      break
-                    endif
-                  endfor
-                %}
-                <button
-                  type="button"
-                  class="m-luxury-size-box{% if size_option.selected_value == value %} active{% endif %}{% unless is_available %} is-unavailable{% endunless %}"
-                  data-value="{{ value | escape }}"
-                  data-original-value="{{ value | escape }}"
-                  data-variant-id="{{ variant_for_size.id }}"
-                  {% unless is_available %}
-                    title="{{ 'products.product.sold_out' | t | default: 'Out of Stock' }}"
-                  {% endunless %}
-                  aria-label="{{ value }}"
-                >
-                  {{ value }}
+            <div class="m-luxury-size-section">
+              <div class="m-luxury-size-header-row">
+                <span class="size-v-title">{{ 'products.product.select_size' | t | default: 'Select Size' }}</span>
+                <button type="button" class="m-luxury-size-guide-trigger-btn" data-open-sizeguide>
+                  {{ 'products.product.size_guide' | t | default: 'Size guide' }}
                 </button>
-              {% endfor %}
-            </div>
-
-            <!-- Size Guide Trigger Link -->
-            <div class="m-luxury-size-guide-trigger-row">
-              <button type="button" class="m-luxury-size-guide-trigger-btn" data-open-sizeguide>
-                {{ 'products.product.size_guide' | t | default: 'Size guide' }}
-              </button>
+              </div>
+              <!-- Size Buttons Grid -->
+              <div
+                class="m-luxury-sizes-grid"
+                id="m-luxury-sizes-grid-{{ section.id }}"
+                data-option-index="{{ size_option_index }}"
+              >
+                {% for value in size_option.values %}
+                  {% liquid
+                    assign is_available = false
+                    assign variant_for_size = null
+                    for var in product.variants
+                      if var.options[size_option_index] == value
+                        assign variant_for_size = var
+                        if var.available
+                          assign is_available = true
+                        endif
+                        break
+                      endif
+                    endfor
+                  %}
+                  <button
+                    type="button"
+                    class="m-luxury-size-box{% if size_option.selected_value == value %} active{% endif %}{% unless is_available %} is-unavailable{% endunless %}"
+                    data-value="{{ value | escape }}"
+                    data-original-value="{{ value | escape }}"
+                    data-variant-id="{{ variant_for_size.id }}"
+                    {% unless is_available %}
+                      title="{{ 'products.product.sold_out' | t | default: 'Out of Stock' }}"
+                    {% endunless %}
+                    aria-label="{{ value }}"
+                  >
+                    {{ value }}
+                  </button>
+                {% endfor %}
+              </div>
             </div>
           {% else %}
             {% if product.options.size > 0 and product.has_only_default_variant == false %}
@@ -343,7 +343,10 @@
                 {% unless forloop.index0 == color_option_index %}
                   <div class="m-luxury-size-header-row">
                     <div class="m-luxury-size-system-dropdown">
-                      <select class="m-luxury-size-system-select" aria-label="{{ 'products.product.select_size' | t | default: 'Select Sizing standard' }}">
+                      <select
+                        class="m-luxury-size-system-select"
+                        aria-label="{{ 'products.product.select_size' | t | default: 'Select Sizing standard' }}"
+                      >
                         <option value="AU" selected>{{ 'products.product.size_au' | t | default: 'Size AU' }}</option>
                         <option value="FR">{{ 'products.product.size_fr' | t | default: 'Size FR' }}</option>
                         <option value="US">{{ 'products.product.size_us' | t | default: 'Size US' }}</option>
@@ -406,7 +409,7 @@
                   name="add"
                   id="ProductSubmitButton-{{ section.id }}"
                   class="m-add-to-cart m-luxury-add-to-bag-btn"
-                  data-atc-text="{{ 'products.product.add_to_cart' | t | default: 'Add to Bag' }}"
+                  data-atc-text="{{ 'products.product.add_to_cart' | t | default: 'Add to Cart' }}"
                   data-soldout-text="{{ 'products.product.sold_out' | t | default: 'Out of Stock' }}"
                   {% unless current_variant.available %}
                     disabled
@@ -414,7 +417,7 @@
                 >
                   <span class="m-add-to-cart--text">
                     {%- if current_variant.available -%}
-                      {{ 'products.product.add_to_cart' | t | default: 'Add to Bag' }}
+                      {{ 'products.product.add_to_cart' | t | default: 'Add to Cart' }}
                     {%- else -%}
                       {{ 'products.product.sold_out' | t | default: 'Out of Stock' }}
                     {%- endif -%}
@@ -459,8 +462,9 @@
                   <span
                     class="m-wishlist-button-text"
                     data-revert-text="{{ 'products.product.remove_from_wishlist' | t | default: 'Remove from Wishlist' }}"
-                    >{{ 'products.product.add_to_wishlist' | t | default: 'Add to Wishlist' }}</span
                   >
+                    {{- 'products.product.add_to_wishlist' | t | default: 'Add to Wishlist' -}}
+                  </span>
                 </button>
               </div>
             {%- endform -%}
@@ -496,7 +500,9 @@
                       </p>
                     {% endif %}
                   </div>
-                  <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="desc">{{ 'general.accessibility.view_more' | t | default: 'View more' }}</button>
+                  <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="desc">
+                    {{ 'general.accessibility.view_more' | t | default: 'View more' }}
+                  </button>
                 </div>
               </div>
             </div>
@@ -624,7 +630,7 @@
                     delivery destination.
                   </p>
                   <p>
-                    We accept returns within 30 days of delivery. To request an exchange, please contact our concierge
+                    We accept returns within 14 days of delivery. To request a return, please contact our concierge
                     service with your order number. Items must be returned in their original condition with all tags and
                     packaging intact.
                   </p>

@@ -5,6 +5,32 @@
 {% assign current_country_code = localization.country.iso_code | default: 'CH' %}
 {% assign current_country_name = localization.country.name | default: 'Switzerland' %}
 
+<style>
+  .m-country-flag-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .m-country-flag-icon svg {
+    width: 17px;
+    height: 17px;
+    display: block;
+    border-radius: 50%;
+  }
+  .m-country-flag-icon .m-country-flags {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-block;
+  }
+</style>
+
 {% if localization.available_countries.size > 1 %}
   <div class="m-switcher-dropdown m-country-switcher {{ box_size }}">
     {% form 'localization', data-localization-form: '', id: form_id %}
@@ -13,13 +39,15 @@
         <m-localization-form>
           <select name="country_code" class="js-selectNative" data-localization-select>
             {%- for country in localization.available_countries -%}
+              {%- assign c_curr = country.currency.iso_code -%}
               <option
                 value="{{ country.iso_code }}"
+                data-currency="{{ c_curr }}"
                 {% if country.iso_code == current_country_code %}
                   selected
                 {% endif %}
               >
-                {{ country.name }}
+                {{ country.name }} ({{ c_curr }})
               </option>
             {%- endfor -%}
           </select>
@@ -36,7 +64,7 @@
                 <span class="m-country-flags m-country-flags--{{ current_country_code }}"></span>
               {% endif %}
             </span>
-            <span class="m-select-custom--trigger-text"></span>
+            <span class="m-select-custom--trigger-text">{{ current_country_name }}</span>
             <span class="m-select-custom--trigger-icon">
               <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M1 1L5 5L9 1"/>
@@ -45,7 +73,8 @@
           </div>
           <div class="m-select-custom--options m-select-custom--options-{{ pos }}">
             {%- for country in localization.available_countries -%}
-              <div class="m-select-custom--option" data-value="{{ country.iso_code }}">
+              {%- assign c_curr = country.currency.iso_code -%}
+              <div class="m-select-custom--option" data-value="{{ country.iso_code }}" data-currency="{{ c_curr }}">
                 {% if country.iso_code == 'CH' %}
                   <svg viewBox="0 0 512 512" width="14" height="14" style="display: inline-block; vertical-align: middle; border-radius: 50%; margin-right: 6px;">
                     <circle cx="256" cy="256" r="256" fill="#D52B1E"/>
@@ -54,12 +83,46 @@
                 {% else %}
                   <span class="m-country-flags m-country-flags--{{ country.iso_code }}"></span>
                 {% endif %}
-                {{ country.name }}
+                {{ country.name }} ({{ c_curr }})
               </div>
             {%- endfor -%}
           </div>
         </div>
       </m-select-component>
+      <script>
+        (function() {
+          try {
+            var c = localStorage.getItem('m_active_country');
+            if (c) {
+              var s = document.currentScript;
+              var root = s ? s.previousElementSibling : null;
+              if (root && root.tagName === 'M-SELECT-COMPONENT') {
+                var sel = root.querySelector('.js-selectNative');
+                var txt = root.querySelector('.m-select-custom--trigger-text');
+                var flg = root.querySelector('.m-country-flag-icon');
+                var opt = root.querySelector('.m-select-custom--option[data-value="' + c.toUpperCase() + '"]');
+                if (c.toUpperCase() === 'CH') {
+                  if (txt) txt.textContent = 'Switzerland';
+                  if (flg) flg.innerHTML = '<svg viewBox="0 0 512 512" width="16" height="16" style="display: block; border-radius: 50%;"><circle cx="256" cy="256" r="256" fill="#D52B1E"/><path fill="#FFFFFF" d="M216 116h80v100h100v80H296v100h-80V296H116v-80h100V116z"/></svg>';
+                  if (sel) sel.value = 'CH';
+                  if (!localStorage.getItem('m_active_currency')) {
+                    localStorage.setItem('m_active_currency', 'CHF');
+                  }
+                } else if (opt) {
+                  if (txt) txt.textContent = opt.textContent.trim();
+                  var optFlag = opt.querySelector('svg, .m-country-flags, img');
+                  if (flg && optFlag) flg.innerHTML = optFlag.outerHTML;
+                  if (sel) sel.value = c.toUpperCase();
+                  var curr = opt.getAttribute('data-currency');
+                  if (curr && !localStorage.getItem('m_active_currency')) {
+                    localStorage.setItem('m_active_currency', curr);
+                  }
+                }
+              }
+            }
+          } catch(e) {}
+        })();
+      </script>
     {%- endform -%}
   </div>
 {% else %}
@@ -74,6 +137,7 @@
               {% assign parts = item | split: ":" %}
               <option
                 value="{{ parts[1] }}"
+                data-currency="{{ parts[2] }}"
                 {% if parts[1] == current_country_code %}
                   selected
                 {% endif %}
@@ -95,7 +159,7 @@
                 <span class="m-country-flags m-country-flags--{{ current_country_code }}"></span>
               {% endif %}
             </span>
-            <span class="m-select-custom--trigger-text"></span>
+            <span class="m-select-custom--trigger-text">{{ current_country_name }}</span>
             <span class="m-select-custom--trigger-icon">
               <svg viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M1 1L5 5L9 1"/>
@@ -105,7 +169,7 @@
           <div class="m-select-custom--options m-select-custom--options-{{ pos }}">
             {%- for item in fallback_countries -%}
               {% assign parts = item | split: ":" %}
-              <div class="m-select-custom--option" data-value="{{ parts[1] }}">
+              <div class="m-select-custom--option" data-value="{{ parts[1] }}" data-currency="{{ parts[2] }}">
                 {% if parts[1] == 'CH' %}
                   <svg viewBox="0 0 512 512" width="14" height="14" style="display: inline-block; vertical-align: middle; border-radius: 50%; margin-right: 6px;">
                     <circle cx="256" cy="256" r="256" fill="#D52B1E"/>
@@ -120,6 +184,40 @@
           </div>
         </div>
       </m-select-component>
+      <script>
+        (function() {
+          try {
+            var c = localStorage.getItem('m_active_country');
+            if (c) {
+              var s = document.currentScript;
+              var root = s ? s.previousElementSibling : null;
+              if (root && root.tagName === 'M-SELECT-COMPONENT') {
+                var sel = root.querySelector('.js-selectNative');
+                var txt = root.querySelector('.m-select-custom--trigger-text');
+                var flg = root.querySelector('.m-country-flag-icon');
+                var opt = root.querySelector('.m-select-custom--option[data-value="' + c.toUpperCase() + '"]');
+                if (c.toUpperCase() === 'CH') {
+                  if (txt) txt.textContent = 'Switzerland';
+                  if (flg) flg.innerHTML = '<svg viewBox="0 0 512 512" width="16" height="16" style="display: block; border-radius: 50%;"><circle cx="256" cy="256" r="256" fill="#D52B1E"/><path fill="#FFFFFF" d="M216 116h80v100h100v80H296v100h-80V296H116v-80h100V116z"/></svg>';
+                  if (sel) sel.value = 'CH';
+                  if (!localStorage.getItem('m_active_currency')) {
+                    localStorage.setItem('m_active_currency', 'CHF');
+                  }
+                } else if (opt) {
+                  if (txt) txt.textContent = opt.textContent.trim();
+                  var optFlag = opt.querySelector('svg, .m-country-flags, img');
+                  if (flg && optFlag) flg.innerHTML = optFlag.outerHTML;
+                  if (sel) sel.value = c.toUpperCase();
+                  var curr = opt.getAttribute('data-currency');
+                  if (curr && !localStorage.getItem('m_active_currency')) {
+                    localStorage.setItem('m_active_currency', curr);
+                  }
+                }
+              }
+            }
+          } catch(e) {}
+        })();
+      </script>
     {%- endform -%}
   </div>
 {% endif %}

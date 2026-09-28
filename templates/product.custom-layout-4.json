@@ -169,7 +169,7 @@
           "type": "tab",
           "settings": {
             "header": "Shipping & Return",
-            "content": "<p>Shipping cost is based on weight. Just add products to your cart and use the Shipping Calculator to see the shipping price.</p><p>We want you to be 100% satisfied with your purchase. Items can be returned or exchanged within 30 days of delivery.</p>",
+            "content": "<p>Shipping cost is based on weight. Just add products to your cart and use the Shipping Calculator to see the shipping price.</p><p>We want you to be 100% satisfied with your purchase. Items can be returned within 14 days of delivery.</p>",
             "content_page": ""
           }
         }
@@ -192,7 +192,7 @@
           "type": "html",
           "settings": {
             "width": "50%",
-            "code": "<div class=\"rte\">\n<div class=\"block__content-header\">\n<h2 class=\"section__heading\">100% Sustainable</h2>\n<p class=\"text-color-subtext\">Get skincare made to fit—with some of the top acne-busting<br> ingredients prescribed by dermatologists nationwide.</p>\n</div>\n<div class=\"block__content-body\">\n<h3>Plastic free</h3>\n<p class=\"text-color-subtext\">From sourcing recycled paper, to printing with eco-friendly inks and<br> shipping orders in post-consumer-waste mailers. </p>\n</div>\n<div class=\"block__content-body\">\n<h3>100% recycable</h3>\n<p class=\"text-color-subtext\">Orders are secured in our sturdy, 100% PCW packaging, which is<br> fully recyclable biodegradable, and compostable</p>\n</div>\n<div class=\"block__content-body\">\n<h3>High-quality materials.</h3>\n<p class=\"text-color-subtext\">Orders are secured in our sturdy, 100% PCW packaging, which is<br> fully recyclable biodegradable, and compostable</p>\n</div>\n</div>",
+            "code": "<div class=\"rte\">\n<div class=\"block__content-header\">\n<h2 class=\"section__heading\">100% Sustainable</h2>\n<p class=\"text-color-subtext\">Get skincare made to fit—with some of the top acne-busting<br> ingredients prescribed by dermatologists nationwide.</p>\n</div>\n<div class=\"block__content-body\">\n<h3>Plastic free</h3>\n<p class=\"text-color-subtext\">From sourcing recycled paper, to printing with eco-friendly inks and<br> shipping orders in post-consumer-waste mailers. </p>\n</div>\n<div class=\"block__content-body\">\n<h3>100% recycable</h3>\n<p class=\"text-color-subtext\">Orders are secured in our sturdy, 100% PCW packaging, which is<br> fully recyclable biodegradable, and compostable</p>\n</div>\n<div class=\"block__content-body\">\n<h3>Considered materials.</h3>\n<p class=\"text-color-subtext\">Orders are secured in our sturdy, 100% PCW packaging, which is<br> fully recyclable biodegradable, and compostable</p>\n</div>\n</div>",
             "block_custom_class": "sf__index-custom-html",
             "animations": "inherit"
           }

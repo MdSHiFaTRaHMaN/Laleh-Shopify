@@ -3377,7 +3377,7 @@
       "in_stock": "متوفر",
       "add_to_wishlist": "أضف إلى قائمة الأمنيات",
       "size_guide": "دليل المقاسات",
-      "select_size": "اختر المقاس:",
+      "select_size": "اختر المقاس",
       "return_to_product": "العودة إلى المنتج",
       "description_title": "الوصف",
       "delivery_returns_title": "التوصيل والإرجاع",
@@ -4080,9 +4080,7 @@
         "ineligible_return_message_when_returned": "لا توجد سلع إضافية في هذا الطلب مؤهلة للإرجاع.",
         "print_shipping_label": "طباعة ملصق الشحن",
         "return_and_refund_modal_header": "سياسة الاسترجاع",
-        "tracking_number": "رقم التتبع:",
-        "exchange_header": "تبادل العناصر",
-        "exchange_subheader": "سيتم إضافة المنتجات المراد استبدالها إلى الطلب بمجرد اكتمال الإرجاع."
+        "tracking_number": "رقم التتبع:"
       },
       "shipping": {
         "address": "عنوان الشحن",

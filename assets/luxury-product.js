@@ -449,6 +449,27 @@
         });
       });
 
+      // Hide rows where all values are empty, 0, or '-'
+      const allRows = this.container.querySelectorAll('.m-luxury-sg-row');
+      allRows.forEach((row) => {
+        const cells = row.querySelectorAll('.m-luxury-sg-td-val');
+        if (cells.length === 0) return;
+        let hasValidData = false;
+        cells.forEach((td) => {
+          const raw = (td.getAttribute('data-raw-cm') || '').trim();
+          const text = (td.textContent || '').trim();
+          const num = parseFloat(raw || text);
+          if (raw && raw !== '-' && raw !== '--' && raw !== '0' && raw !== '0.0' && raw !== 'null' && (!isNaN(num) ? num > 0 : true)) {
+            hasValidData = true;
+          } else if (text && text !== '-' && text !== '--' && text !== '0' && text !== '0.0' && text !== 'null' && (!isNaN(num) ? num > 0 : true)) {
+            hasValidData = true;
+          }
+        });
+        if (!hasValidData) {
+          row.style.display = 'none';
+        }
+      });
+
       // Initial unit & table state setup
       this.updateSizeGuideUnits();
       this.highlightActiveSizeColumn();
@@ -475,14 +496,17 @@
       // Convert table values
       const valCells = this.container.querySelectorAll('.m-luxury-sg-td-val');
       valCells.forEach((td) => {
-        const rawCm = parseFloat(td.getAttribute('data-raw-cm'));
-        if (!isNaN(rawCm)) {
+        const rawAttr = td.getAttribute('data-raw-cm');
+        const rawCm = parseFloat(rawAttr);
+        if (!isNaN(rawCm) && rawCm > 0) {
           if (isInch) {
             const inVal = rawCm / 2.54;
             td.textContent = (Math.round(inVal * 10) / 10).toFixed(1);
           } else {
             td.textContent = rawCm;
           }
+        } else {
+          td.textContent = '-';
         }
       });
     }
@@ -639,13 +663,19 @@
     }
 
     formatMoney(cents) {
+      let formatted = '';
       if (window.CurrencyEngine && typeof window.CurrencyEngine.formatMoney === 'function') {
-        return window.CurrencyEngine.formatMoney(cents, window.CurrencyEngine.getActiveCurrency());
+        formatted = window.CurrencyEngine.formatMoney(cents, window.CurrencyEngine.getActiveCurrency());
+      } else if (typeof Shopify !== 'undefined' && Shopify.formatMoney) {
+        formatted = Shopify.formatMoney(cents, window.MinimogSettings?.money_format || 'Dhs {{amount}}');
+      } else {
+        formatted = 'Dhs ' + (cents / 100).toFixed(2);
       }
-      if (typeof Shopify !== 'undefined' && Shopify.formatMoney) {
-        return Shopify.formatMoney(cents, window.MinimogSettings?.money_format || 'Dhs {{amount}}');
-      }
-      return 'Dhs ' + (cents / 100).toFixed(2);
+      return formatted
+        .replace(/^([^\d\s]+)(\d)/, '$1 $2')
+        .replace(/(\d)([^\d\s.,]+)$/, '$1 $2')
+        .replace(/\s+/g, ' ')
+        .trim();
     }
 
     /* ======================================================================

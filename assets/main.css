@@ -2885,7 +2885,7 @@ textarea:not(.m-quantity__input, .form-field, .m-facets-price--range, .tcustomiz
 .m-section__description a,
 .m-link-underline,
 .rte a:not(.spr-summary-actions-newreview) {
-  --btn-link-border: 1px
+  --btn-link-border: 0px
 }
 
 .m-section__description a::after,
@@ -2894,7 +2894,7 @@ textarea:not(.m-quantity__input, .form-field, .m-facets-price--range, .tcustomiz
 .m-link-underline::before,
 .rte a:not(.spr-summary-actions-newreview)::after,
 .rte a:not(.spr-summary-actions-newreview)::before {
-  bottom: 1px
+  bottom: 0px
 }
 
 .button[name=checkout]>* {
@@ -6218,7 +6218,7 @@ deferred-media {
 }
 
 .m-contact-form .m-info-box {
-  margin-bottom: 30px
+  margin-bottom: 6px
 }
 
 .m-contact-information {
@@ -6909,19 +6909,17 @@ variant-picker .m-product-option--swatch .m-product-option--node__label[data-opt
 }
 
 .m-product-tag--soldout {
-  width: 80px;
-  height: 20px;
-  font-size: 10px;
-  line-height: 12px;
+  width: 60px;
+  height: 12px;
+  font-size: 7px !important;
+  line-height: 10px;
   align-items: center;
   justify-content: center;
   text-align: center;
   white-space: nowrap;
-  padding: 0 10px;
   position: absolute;
   top: 50%;
   left: 50%;
-  bac
 }
 
 .m-product-tag--sale .m-currency--saved {

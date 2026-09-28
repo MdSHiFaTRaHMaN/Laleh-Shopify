@@ -20,14 +20,22 @@ function safeQueryDomNodes(selectors, context = document) {
 
 // Utility to format money if Shopify.formatMoney is not globally defined
 function formatMoney(cents) {
+  let result = "";
   if (window.CurrencyEngine && typeof window.CurrencyEngine.formatMoney === 'function') {
-    return window.CurrencyEngine.formatMoney(cents, window.CurrencyEngine.getActiveCurrency());
+    result = window.CurrencyEngine.formatMoney(cents, window.CurrencyEngine.getActiveCurrency());
+  } else if (typeof Shopify !== "undefined" && typeof Shopify.formatMoney === "function") {
+    result = Shopify.formatMoney(cents, MinimogSettings?.money_format || "$ {{amount}}");
+  } else {
+    const dollars = (cents / 100).toFixed(2);
+    result = "$ " + dollars;
   }
-  if (typeof Shopify !== "undefined" && typeof Shopify.formatMoney === "function") {
-    return Shopify.formatMoney(cents, MinimogSettings?.money_format || "$ {{amount}}");
-  }
-  const dollars = (cents / 100).toFixed(2);
-  return "$ " + dollars;
+  return result
+    .replace(/^([^\d\s]+)(\d)/, '$1 $2')
+    .replace(/(\d)([^\d\s.,]+)$/, '$1 $2')
+    .replace(/Dhs(\d)/gi, 'Dhs $1')
+    .replace(/AED(\d)/gi, 'Dhs $1')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 class Megamenu {
@@ -232,6 +240,47 @@ class Megamenu {
           return;
         }
 
+        // --- Complete Your Collection Quick Add ---
+        const collAddBtn = e.target.closest("[data-coll-quick-add]");
+        if (collAddBtn && !collAddBtn.disabled) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (collAddBtn.dataset.adding === "true") return;
+          collAddBtn.dataset.adding = "true";
+
+          const variantId = collAddBtn.dataset.collQuickAdd;
+          if (variantId) {
+            const originalText = collAddBtn.textContent;
+            collAddBtn.textContent = "Adding...";
+            instance.addProductToShopifyCart(variantId, collAddBtn).finally(() => {
+              delete collAddBtn.dataset.adding;
+            });
+          }
+          return;
+        }
+
+        // --- Complete Your Collection Slider Navigation Arrows ---
+        const collPrevBtn = e.target.closest("[data-coll-slider-prev]");
+        if (collPrevBtn) {
+          e.preventDefault();
+          const track = document.getElementById("m-right-coll-slider-track");
+          if (track) {
+            track.scrollBy({ left: -160, behavior: "smooth" });
+          }
+          return;
+        }
+
+        const collNextBtn = e.target.closest("[data-coll-slider-next]");
+        if (collNextBtn) {
+          e.preventDefault();
+          const track = document.getElementById("m-right-coll-slider-track");
+          if (track) {
+            track.scrollBy({ left: 160, behavior: "smooth" });
+          }
+          return;
+        }
+
         // --- Real Wishlist Item Removal ---
         const wishlistRemoveBtn = e.target.closest("[data-wishlist-remove-handle]");
         if (wishlistRemoveBtn) {
@@ -239,7 +288,7 @@ class Megamenu {
           const handle = wishlistRemoveBtn.dataset.wishlistRemoveHandle;
           if (handle) {
             instance.removeFromWishlist(handle);
-            const card = wishlistRemoveBtn.closest(".m-right-item-card");
+            const card = wishlistRemoveBtn.closest(".m-right-wishlist-card, .m-right-item-card");
             if (card) {
               card.style.transition = "opacity 0.25s ease, transform 0.25s ease";
               card.style.opacity = "0";
@@ -440,6 +489,10 @@ class Megamenu {
         footer.classList.remove("active");
         footer.classList.add("m:hidden");
       }
+      const collSection = document.getElementById("m-right-complete-collection");
+      if (collSection) {
+        collSection.classList.add("m:hidden");
+      }
       return;
     }
 
@@ -493,6 +546,26 @@ class Megamenu {
       footer.classList.add("active");
       footer.classList.remove("m:hidden");
     }
+
+    // Update Complete Your Collection Slider visibility & filter out in-cart items
+    const collSection = document.getElementById("m-right-complete-collection");
+    if (collSection) {
+      collSection.classList.remove("m:hidden");
+      const inCartIds = items.map((it) => it.product_id);
+      let visibleCount = 0;
+      document.querySelectorAll("#m-right-coll-slider-track .m-right-coll-card").forEach((card) => {
+        const pid = parseInt(card.dataset.productId);
+        if (inCartIds.includes(pid)) {
+          card.style.display = "none";
+        } else {
+          card.style.display = "";
+          visibleCount++;
+        }
+      });
+      if (visibleCount === 0) {
+        collSection.classList.add("m:hidden");
+      }
+    }
   }
 
   // =========================================================================
@@ -511,18 +584,28 @@ class Megamenu {
       let targetTabId = "tab-btn-search";
       let targetPaneId = "#right-tab-search";
 
+      const searchTabBtn = document.getElementById("tab-btn-search");
+
       if (tabName === "wishlist") {
         targetTabId = "tab-btn-wishlist";
         targetPaneId = "#right-tab-wishlist";
+        if (searchTabBtn) searchTabBtn.style.display = "none";
         this.renderWishlistDrawerItems();
       } else if (tabName === "cart" || tabName === "bag") {
         targetTabId = "tab-btn-cart";
         targetPaneId = "#right-tab-cart";
+        if (searchTabBtn) searchTabBtn.style.display = "none";
+      } else if (tabName === "search") {
+        if (searchTabBtn) searchTabBtn.style.display = "";
       }
 
       const targetTabBtn = document.getElementById(targetTabId);
       if (targetTabBtn) {
         this.switchRightDrawerTab(targetTabBtn, targetPaneId);
+      }
+
+      if (window.CurrencyEngine && typeof window.CurrencyEngine.ensurePriceSpacing === 'function') {
+        window.CurrencyEngine.ensurePriceSpacing(rightDrawer);
       }
 
       if (tabName === "search") {
@@ -695,7 +778,10 @@ class Megamenu {
     const handles = this.getWishlistItems();
     this.updateWishlistCount();
 
+    const wishlistFooter = document.getElementById("m-right-wishlist-footer");
+
     if (handles.length === 0) {
+      if (wishlistFooter) wishlistFooter.style.display = "none";
       const emptyWishlistText = window.MinimogStrings?.emptyWishlist || "Your wishlist is currently empty.";
       const discoverText = window.MinimogStrings?.discoverCollections || "Discover Collections";
       container.innerHTML = `
@@ -712,6 +798,7 @@ class Megamenu {
     }
 
     const loadingText = window.MinimogStrings?.loadingSavedItems || "Loading saved items...";
+    if (wishlistFooter) wishlistFooter.style.display = "none";
     container.innerHTML = `
       <div style="text-align: center; padding: 30px 0; color: rgba(var(--color-foreground), 0.6); font-size: 13px;">
         ${loadingText}
@@ -732,6 +819,7 @@ class Megamenu {
       const products = (await Promise.all(productPromises)).filter(Boolean);
 
       if (products.length === 0) {
+        if (wishlistFooter) wishlistFooter.style.display = "none";
         const emptyWishlistText = window.MinimogStrings?.emptyWishlist || "Your wishlist is currently empty.";
         const discoverText = window.MinimogStrings?.discoverCollections || "Discover Collections";
         container.innerHTML = `
@@ -747,27 +835,46 @@ class Megamenu {
         return;
       }
 
+      function formatVariantName(title) {
+        if (!title || title === "Default Title") return "";
+        const trimmed = title.trim();
+        if (/^size\s+/i.test(trimmed)) {
+          return trimmed;
+        }
+        if (/^(\d+|[xXsSmlL0-9]+)$/i.test(trimmed) || !trimmed.includes("/")) {
+          return `Size ${trimmed}`;
+        }
+        return trimmed;
+      }
+
       container.innerHTML = products
         .map((prod) => {
           const imageSrc = prod.featured_image || (prod.images && prod.images[0]) || "";
           const firstVariant = (prod.variants && prod.variants[0]) || {};
-          const hasVariants = prod.variants && prod.variants.length > 1;
+          const hasVariants = prod.variants && (prod.variants.length > 1 || (firstVariant.title && firstVariant.title !== "Default Title"));
 
           let variantOptionsHtml = "";
           if (hasVariants) {
+            const currentLabel = formatVariantName(firstVariant.title);
             variantOptionsHtml = `
-              <div class="m-right-item-card__variant" style="margin-top: 4px;">
-                <select class="m-right-variant-select" aria-label="Select variant" data-variant-selector>
+              <div class="m-right-wishlist-variant-picker">
+                <select class="m-right-wishlist-variant-select" aria-label="Select variant" data-variant-selector>
                   ${prod.variants
                     .map(
                       (v) => `
-                    <option value="${v.id}" data-price="${v.price}" data-compare-price="${v.compare_at_price || 0}">
-                      ${v.title}
+                    <option value="${v.id}" data-price="${v.price}" data-compare-price="${v.compare_at_price || 0}" data-label="${formatVariantName(v.title)}" ${v.id === firstVariant.id ? "selected" : ""}>
+                      ${formatVariantName(v.title)}
                     </option>
                   `
                     )
                     .join("")}
                 </select>
+                <div class="m-right-wishlist-variant-display">
+                  <span class="m-right-wishlist-variant-text" data-variant-display-text>${currentLabel}</span>
+                  <svg class="m-right-wishlist-chevron" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 1L5 5L9 1"></path>
+                  </svg>
+                </div>
               </div>
             `;
           }
@@ -775,43 +882,49 @@ class Megamenu {
           const priceFormatted = formatMoney(firstVariant.price || prod.price);
           const comparePriceFormatted =
             firstVariant.compare_at_price > firstVariant.price
-              ? `<span class="m-right-price-compare">${formatMoney(firstVariant.compare_at_price)}</span>`
+              ? `<span class="m-right-wishlist-price-compare">${formatMoney(firstVariant.compare_at_price)}</span>`
               : "";
 
           return `
-            <div class="m-right-item-card" data-wishlist-handle="${prod.handle}">
-              <a href="${prod.url || '#'}" class="m-right-item-card__media">
+            <div class="m-right-wishlist-card" data-wishlist-handle="${prod.handle}">
+              <a href="${prod.url || '#'}" class="m-right-wishlist-card__media">
                 ${
                   imageSrc
                     ? `<img src="${imageSrc}" alt="${prod.title}" loading="lazy">`
-                    : `<div style="width: 100%; height: 100%; background: #f3f3f3;"></div>`
+                    : `<div class="m-right-wishlist-card__placeholder"></div>`
                 }
+                <button
+                  type="button"
+                  class="m-right-wishlist-remove-icon"
+                  data-wishlist-remove-handle="${prod.handle}"
+                  aria-label="Remove from wishlist"
+                  title="Remove"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
               </a>
-              <div class="m-right-item-card__details">
-                <a href="${prod.url || '#'}" class="m-right-item-card__title" style="text-decoration: none;">
-                  ${prod.title}
-                </a>
-                ${variantOptionsHtml}
-                <div class="m-right-item-card__price-row" style="margin-top: 6px;">
-                  ${comparePriceFormatted}
-                  <span class="m-right-price-regular">${priceFormatted}</span>
+              <div class="m-right-wishlist-card__details">
+                <div class="m-right-wishlist-card__top">
+                  <a href="${prod.url || '#'}" class="m-right-wishlist-card__title">
+                    ${prod.title}
+                  </a>
+                  ${variantOptionsHtml}
                 </div>
-                <div style="display: flex; align-items: center; gap: 16px; margin-top: 10px;">
+                <div class="m-right-wishlist-card__bottom">
+                  <div class="m-right-wishlist-card__price-row">
+                    ${comparePriceFormatted}
+                    <span class="m-right-wishlist-price-regular">${priceFormatted}</span>
+                  </div>
                   <button
                     type="button"
-                    class="m-right-action-link"
+                    class="m-right-wishlist-add-btn"
                     data-wishlist-add-to-bag
                     data-wishlist-variant-id="${firstVariant.id || '1'}"
                   >
                     ${window.MinimogStrings?.addToBag || "Add to bag"}
-                  </button>
-                  <button
-                    type="button"
-                    class="m-right-remove-btn"
-                    style="margin-top: 0;"
-                    data-wishlist-remove-handle="${prod.handle}"
-                  >
-                    ${window.MinimogStrings?.cartRemove || "Remove"}
                   </button>
                 </div>
               </div>
@@ -820,14 +933,35 @@ class Megamenu {
         })
         .join("");
 
+      if (wishlistFooter) {
+        wishlistFooter.style.display = "block";
+      }
+
       // Handle variant select changes
       container.querySelectorAll("[data-variant-selector]").forEach((select) => {
         select.addEventListener("change", (e) => {
           const opt = select.selectedOptions[0];
-          const card = select.closest(".m-right-item-card");
-          const addBtn = card?.querySelector("[data-wishlist-add-to-bag]");
-          if (addBtn && opt) {
+          const card = select.closest(".m-right-wishlist-card");
+          if (!card || !opt) return;
+
+          const labelEl = card.querySelector("[data-variant-display-text]");
+          if (labelEl) {
+            labelEl.textContent = opt.dataset.label || opt.textContent.trim();
+          }
+
+          const addBtn = card.querySelector("[data-wishlist-add-to-bag]");
+          if (addBtn) {
             addBtn.dataset.wishlistVariantId = opt.value;
+          }
+
+          const price = parseInt(opt.dataset.price, 10);
+          const comparePrice = parseInt(opt.dataset.comparePrice, 10);
+          const priceRow = card.querySelector(".m-right-wishlist-card__price-row");
+          if (priceRow && !isNaN(price)) {
+            const compHtml = (comparePrice && comparePrice > price)
+              ? `<span class="m-right-wishlist-price-compare">${formatMoney(comparePrice)}</span>`
+              : "";
+            priceRow.innerHTML = `${compHtml}<span class="m-right-wishlist-price-regular">${formatMoney(price)}</span>`;
           }
         });
       });
