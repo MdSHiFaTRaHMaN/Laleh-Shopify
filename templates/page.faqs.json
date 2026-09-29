@@ -127,7 +127,7 @@
           "type": "accordion",
           "settings": {
             "title": "Are customs duties or taxes included?",
-            "content": "<p>International orders may be subject to customs duties, import taxes, or additional fees depending on the destination country. Those charges arc not included in the purchase price and are the responsibility of the customer.</p>",
+            "content": "<p>International orders may be subject to customs duties, import taxes, or additional fees depending on the destination country. Those charges are not included in the purchase price and are the responsibility to the customer.</p>",
             "open": false
           }
         }

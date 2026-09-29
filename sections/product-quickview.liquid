@@ -327,6 +327,7 @@
                     data-value="{{ value | escape }}"
                     data-original-value="{{ value | escape }}"
                     data-variant-id="{{ variant_for_size.id }}"
+                    data-available="{{ is_available }}"
                     {% unless is_available %}
                       title="{{ 'products.product.sold_out' | t | default: 'Out of Stock' }}"
                     {% endunless %}

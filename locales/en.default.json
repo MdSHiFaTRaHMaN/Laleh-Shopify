@@ -244,8 +244,8 @@
       "email": "Email",
       "phone": "Phone Number",
       "message": "Message",
-      "send": "Submit Now",
-      "post_success": "Thanks for contacting us. We'll get back to you as soon as possible.",
+      "send": "Send Message",
+      "post_success": "Thank you for contacting LALEH. We'll get back to you as soon as possible.",
       "save_infor_message": "Save my name, email, and website in this browser for the next time I comment."
     },
     "ask-form": {
@@ -255,7 +255,7 @@
       "phone": "Your Phone Number",
       "message": "Your Message",
       "required-fields": "Required fields",
-      "send": "Submit Now",
+      "send": "Send Message",
       "post_success": "Thanks for asking. We'll get back to you as soon as possible."
     }
   },

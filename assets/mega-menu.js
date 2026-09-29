@@ -491,7 +491,10 @@ class Megamenu {
       }
       const collSection = document.getElementById("m-right-complete-collection");
       if (collSection) {
-        collSection.classList.add("m:hidden");
+        collSection.classList.remove("m:hidden");
+        document.querySelectorAll("#m-right-coll-slider-track .m-right-coll-card").forEach((card) => {
+          card.style.display = "";
+        });
       }
       return;
     }
@@ -806,6 +809,24 @@ class Megamenu {
     `;
 
     try {
+      if (!window._LalehLocalizedPrices || Object.keys(window._LalehLocalizedPrices).length === 0) {
+        try {
+          const pRes = await fetch('/search/suggest.json?q=*&resources[type]=product&resources[limit]=10');
+          if (pRes.ok) {
+            const pData = await pRes.json();
+            window._LalehLocalizedPrices = {};
+            (pData?.resources?.results?.products || []).forEach((p) => {
+              if (p.handle && p.price) {
+                window._LalehLocalizedPrices[p.handle] = {
+                  price: Math.round(parseFloat(p.price) * 100),
+                  compare_at_price: p.compare_at_price ? Math.round(parseFloat(p.compare_at_price) * 100) : 0
+                };
+              }
+            });
+          }
+        } catch (err) {}
+      }
+
       const productPromises = handles.map(async (hdl) => {
         try {
           const res = await fetch(`/products/${hdl}.js`);
@@ -879,10 +900,13 @@ class Megamenu {
             `;
           }
 
-          const priceFormatted = formatMoney(firstVariant.price || prod.price);
+          const loc = window._LalehLocalizedPrices && window._LalehLocalizedPrices[prod.handle];
+          const finalPrice = loc && loc.price ? loc.price : (firstVariant.price || prod.price);
+          const finalCompare = loc && loc.compare_at_price ? loc.compare_at_price : firstVariant.compare_at_price;
+          const priceFormatted = formatMoney(finalPrice);
           const comparePriceFormatted =
-            firstVariant.compare_at_price > firstVariant.price
-              ? `<span class="m-right-wishlist-price-compare">${formatMoney(firstVariant.compare_at_price)}</span>`
+            finalCompare > finalPrice
+              ? `<span class="m-right-wishlist-price-compare" data-base-price="${finalCompare}">${formatMoney(finalCompare)}</span>`
               : "";
 
           return `
@@ -916,7 +940,7 @@ class Megamenu {
                 <div class="m-right-wishlist-card__bottom">
                   <div class="m-right-wishlist-card__price-row">
                     ${comparePriceFormatted}
-                    <span class="m-right-wishlist-price-regular">${priceFormatted}</span>
+                    <span class="m-right-wishlist-price-regular" data-base-price="${finalPrice}">${priceFormatted}</span>
                   </div>
                   <button
                     type="button"
@@ -973,9 +997,116 @@ class Megamenu {
   // =========================================================================
   // REAL PREDICTIVE SEARCH DYNAMIC CONTROLLER
   // =========================================================================
+  scoreProduct(p, rawQuery) {
+    const q = (rawQuery || '').toLowerCase().trim();
+    if (!q) return 0;
+    const tokens = q.split(/\s+/).filter(Boolean);
+    const handle = p.handle || '';
+    const title = (p.title || '').toLowerCase();
+    const titleWords = title.split(/\s+/);
+
+    const catalogKeywords = {
+      'crimson-poise': [
+        'crimson', 'poise', 'crim', 'pink', 'crimson pink', 'red', 'rose', 
+        'dress', 'dresses', 'lace', 'lace dress', 'peplum', 'midi', 'evening', 
+        'party', 'long sleeves', 'luxury', 'gown'
+      ],
+      'vermeil': [
+        'vermeil', 'ver', 'green', 'pale green', 'sage', 'mint', 'emerald', 
+        'tweed', 'tweed dress', 'dress', 'dresses', 'midi', 
+        'gold', 'two-piece', 'flared cuffs', 'luxury', 'gown'
+      ],
+      'lilac-verse': [
+        'lilac', 'verse', 'lavender', 'purple', 'violet', 'dress', 'dresses', 
+        'lace', 'lace dress', 'midi', 'romantic', 'evening', 'high collar', 
+        'paisley', 'luxury', 'gown'
+      ],
+      'iris-pearl': [
+        'iris', 'pearl', 'mauve', 'purple', 'soft mauve', 'pearls', 'dress', 
+        'dresses', 'midi', 'puffed sleeves', 'evening', 'sheen', 'luxury', 'gown',
+        'white', 'cream'
+      ],
+      'obsidian-touch': [
+        'obsidian', 'touch', 'black', 'dark', 'noir', 'dress', 'dresses', 
+        'midi', 'tailored', 'embellished', 'evening', 'gold buttons', 
+        'sleeveless', 'cocktail', 'luxury', 'gown'
+      ],
+      'structured-silence': [
+        'structured', 'silence', 'sand', 'beige', 'sand-beige', 'tan', 'cream', 
+        'taupe', 'neutral', 'suit', 'dress', 'dresses', 'skirt', 'pencil skirt', 
+        'tailored', 'sharp lapels', 'gold buttons', 'evening', 'luxury', 'gown'
+      ]
+    };
+
+    const keywords = (catalogKeywords[handle] || []).map((k) => k.toLowerCase());
+
+    let score = 0;
+
+    // 1. Exact title match
+    if (title === q) {
+      score += 10000;
+    }
+    // 2. Title starts with query (e.g. "Cri" -> "Crimson Poise")
+    else if (title.startsWith(q)) {
+      score += 5000;
+    }
+    // 3. Word in title starts with query (e.g. "Poise", "Touch", "Silence")
+    else if (titleWords.some((w) => w.startsWith(q))) {
+      score += 3000;
+    }
+    // 4. Title contains query as full word or query is long (>= 4 chars)
+    else if (titleWords.some((w) => w === q) || (q.length >= 4 && title.includes(q))) {
+      score += 1500;
+    }
+
+    // 5. Keyword exact or prefix match (colors, dress, midi, lace, tweed, etc.)
+    for (const kw of keywords) {
+      const kwWords = kw.split(/\s+/);
+      if (kw === q) {
+        score += 2500;
+      } else if (kw.startsWith(q)) {
+        score += 1500;
+      } else if (kwWords.some((w) => w === q || (q.length >= 4 && w.startsWith(q)))) {
+        score += 1000;
+      }
+    }
+
+    // 6. Token matching: every token must match title or keywords as word prefix/exact
+    const allTokensMatch = tokens.every((tok) => {
+      // Exact or prefix match on title words
+      if (titleWords.some((w) => w.startsWith(tok) || (tok.length >= 4 && w.includes(tok)))) return true;
+      // Exact or prefix match on keyword words
+      for (const kw of keywords) {
+        if (kw === tok || kw.startsWith(tok)) return true;
+        if (kw.split(/\s+/).some((w) => w === tok || (tok.length >= 4 && w.startsWith(tok)))) return true;
+      }
+      return false;
+    });
+
+    if (!allTokensMatch || score === 0) {
+      return 0; // Filter out unrelated products
+    }
+
+    return score;
+  }
+
+  parseSearchPriceToCents(val) {
+    if (val == null) return 0;
+    if (typeof val === 'number') {
+      return val > 1000 ? Math.round(val) : Math.round(val * 100);
+    }
+    const clean = parseFloat(String(val).replace(/[^0-9.-]/g, ''));
+    if (isNaN(clean)) return 0;
+    return Math.round(clean * 100);
+  }
+
   initPredictiveSearch() {
+    if (window._LalehPredictiveSearchActive) return;
     const searchInput = document.querySelector("[data-luxury-search-input]");
     if (!searchInput) return;
+
+    if (searchInput._searchListenerAttached) return;
+    searchInput._searchListenerAttached = true;
 
     searchInput.addEventListener("input", (e) => {
       const query = e.target.value.trim();
@@ -991,7 +1122,7 @@ class Megamenu {
 
       this.searchDebounceTimer = setTimeout(() => {
         this.fetchPredictiveSearchResults(query);
-      }, 250);
+      }, 150);
     });
   }
 
@@ -1008,13 +1139,34 @@ class Megamenu {
 
     try {
       const res = await fetch(
-        `/search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=6&resources[options][unavailable_products]=last`
+        `/search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=10&resources[options][unavailable_products]=last`
       );
       const data = await res.json();
-      const products = data?.resources?.results?.products || [];
+      let products = data?.resources?.results?.products || [];
 
-      if (products.length === 0) {
-        const noFoundTemplate = window.MinimogStrings?.noProductsFound || 'No products found';
+      // Update global localized price cache for sitewide currency consistency
+      if (!window._LalehLocalizedPrices) window._LalehLocalizedPrices = {};
+      products.forEach((p) => {
+        if (p.handle && p.price) {
+          window._LalehLocalizedPrices[p.handle] = {
+            price: this.parseSearchPriceToCents(p.price),
+            compare_at_price: p.compare_at_price ? this.parseSearchPriceToCents(p.compare_at_price) : 0
+          };
+        }
+      });
+
+      // Filter and rank products by relevance to what the customer actually typed
+      const scoredItems = products
+        .map((p) => ({
+          product: p,
+          score: this.scoreProduct(p, query)
+        }))
+        .filter((item) => item.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .map((item) => item.product);
+
+      if (scoredItems.length === 0) {
+        const noFoundTemplate = window.MinimogStrings?.noProductsFound || 'No products found for "{{ query }}"';
         const noFoundText = noFoundTemplate.replace('{{ query }}', query);
         itemsList.innerHTML = `
           <div style="text-align: center; padding: 24px 0; color: rgba(var(--color-foreground), 0.6); font-size: 13px;">
@@ -1024,11 +1176,17 @@ class Megamenu {
         return;
       }
 
-      itemsList.innerHTML = products
+      itemsList.innerHTML = scoredItems
         .map((p) => {
           const img = p.image || p.featured_image || "";
-          const price = formatMoney(p.price);
-          const comparePrice = p.compare_at_price > p.price ? `<span class="m-right-price-compare">${formatMoney(p.compare_at_price)}</span>` : "";
+          const priceCents = this.parseSearchPriceToCents(p.price);
+          const compPriceCents = p.compare_at_price ? this.parseSearchPriceToCents(p.compare_at_price) : 0;
+
+          const priceFormatted = formatMoney(priceCents);
+          const comparePriceFormatted =
+            compPriceCents > priceCents
+              ? `<span class="m-right-price-compare" data-base-price="${compPriceCents}">${formatMoney(compPriceCents)}</span>`
+              : "";
 
           return `
             <div class="m-right-item-card" style="padding-bottom: 12px;">
@@ -1040,14 +1198,18 @@ class Megamenu {
                   ${p.title}
                 </a>
                 <div class="m-right-item-card__price-row" style="margin-top: 4px;">
-                  ${comparePrice}
-                  <span class="m-right-price-regular" style="font-size: 12.5px;">${price}</span>
+                  ${comparePriceFormatted}
+                  <span class="m-right-price-regular" data-base-price="${priceCents}" style="font-size: 12.5px;">${priceFormatted}</span>
                 </div>
               </div>
             </div>
           `;
         })
         .join("");
+
+      if (window.CurrencyEngine && typeof window.CurrencyEngine.ensurePriceSpacing === 'function') {
+        window.CurrencyEngine.ensurePriceSpacing(itemsList);
+      }
     } catch (e) {
       console.error("Predictive search error:", e);
       itemsList.innerHTML = `<div style="text-align: center; padding: 20px 0; color: rgba(var(--color-foreground), 0.6); font-size: 13px;">Error fetching search results.</div>`;

@@ -271,7 +271,7 @@
   },
   "platform_customizations": {
     "custom_css": [
-      ".template-page #MainContent {padding-bottom: 0px;}"
+      ".template-page #MainContent {padding-bottom: 12px;}"
     ]
   }
 }

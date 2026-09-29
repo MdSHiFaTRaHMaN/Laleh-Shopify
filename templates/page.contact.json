@@ -53,18 +53,18 @@
       ],
       "custom_css": [
         ".m-contact-form__heading,.m-info-box__title {font-weight: 500;}",
-        "@media (max-width: 786px) {.h4 {font-size: 16px; } p {font-size: 12px; } .m-contact-form__name input::placeholder {font-size: 13px; } .m-contact-form__email input::placeholder {font-size: 13px; } .m-contact-form__message textarea::placeholder {font-size: 13px; }}"
+        "@media (max-width: 786px) {.h4 {font-size: 16px; } p {font-size: 12px; } .m-contact-form__name input::placeholder {font-size: 13px; } .m-contact-form__email input::placeholder {font-size: 13px; } .m-contact-form__message textarea::placeholder {font-size: 13px; } .m-contact-form__message textarea {min-height: 100px; height: 100px; }}"
       ],
       "settings": {
         "container": "container",
         "title": "We would love to hear from you.",
         "heading_size": "h4",
-        "description": "<p>For questions about your order, our collection, sizing or anything else, please send us a message and our team will be happy to assist you.</p>",
+        "description": "<p>For questions about your order, our collection, sizing or anything else, please send us a message. Our team will be happy to assist you.</p>",
         "show_name": true,
         "show_phone": false,
         "show_signup_email": false,
         "padding_top": 12,
-        "padding_bottom": 0,
+        "padding_bottom": 12,
         "animations": "inherit"
       }
     }

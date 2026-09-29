@@ -81,7 +81,7 @@
         "sub_title": "",
         "title": "WHY LALEH",
         "text_size": "h4",
-        "text": "<p>LALEH began with a simple idea: to create pieces that make dressing beautifully feel natural.</p><p><br/>Each design is created with attention to proportion, detail and fit, balancing femininity with a clean, modern aesthetic.</p>",
+        "text": "<p>LALEH began with a simple idea: to create pieces that feel considered, refined and effortless to wear.<br/></p><p><br/>Each design is shaped with attention to proportion, detail, and fit, creating pieces with a distinctive yet timeless presence.</p>",
         "desc_size": "text-base",
         "content_alignment": "left",
         "button_label": "",
@@ -128,7 +128,7 @@
         "button_link": "",
         "button_style": "m-button--link",
         "button_size": "",
-        "padding_top": 20,
+        "padding_top": 8,
         "padding_bottom": 20,
         "custom_class": "",
         "animations": "inherit"
@@ -164,14 +164,14 @@
         "subheading_wRXp8V"
       ],
       "custom_css": [
-        "@media (max-width: 768px) {h2.m-richtext__title.h4 {font-size: 16px; color: #222222; } .richtext__description p {font-size: 14px; } .m\\:text-base {font-size: 14px; color: #666666; } p.m-richtext__subtitle.m-scroll-trigger.animate--fade-in-up {font-size: 15px; color: #222222; margin-top: 8px; }}"
+        "@media (max-width: 768px) {h2.m-richtext__title.h4 {font-size: 16px; color: #222222; } .richtext__description p {font-size: 14px; max-width: 500px } .m\\:text-base {font-size: 14px; color: #666666; } p.m-richtext__subtitle.m-scroll-trigger.animate--fade-in-up {font-size: 15px; color: #222222; margin-top: 8px; }}"
       ],
       "name": "Rich text",
       "settings": {
         "container": "container",
         "color_scheme": "",
         "content_alignment": "center",
-        "padding_top": 20,
+        "padding_top": 8,
         "padding_bottom": 20,
         "custom_class": "",
         "animations": "inherit"

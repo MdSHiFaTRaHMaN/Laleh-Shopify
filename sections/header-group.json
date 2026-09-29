@@ -31,7 +31,7 @@
         "item_RHJEnp": {
           "type": "item",
           "settings": {
-            "message": "Free returns within 14 days",
+            "message": "Returns accepted within 14 days",
             "message_link": ""
           }
         }
@@ -47,7 +47,7 @@
         "container": "container",
         "show_close": false,
         "show_divider": false,
-        "bg_color": "#927E63",
+        "bg_color": "#927e63",
         "text_color": "#ffffff",
         "separator_color": "#ffffff",
         "font_size_desktop": 14,

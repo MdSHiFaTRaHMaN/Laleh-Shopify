@@ -70,6 +70,9 @@
       <div id="right-tab-search" class="m-luxury-right-drawer__pane active" role="tabpanel">
         <!-- Live Predictive Search Input -->
         <form action="{{ routes.search_url }}" method="get" class="m-right-search-form" role="search">
+          <input type="hidden" name="type" value="product">
+          <input type="hidden" name="options[unavailable_products]" value="last">
+          <input type="hidden" name="options[prefix]" value="last">
           <div class="m-right-search-input-wrap">
             <input
               type="search"
@@ -287,7 +290,7 @@
         %}
 
         <div
-          class="m-right-collection-slider-section{% if cart.item_count == 0 %} m:hidden{% endif %}"
+          class="m-right-collection-slider-section"
           id="m-right-complete-collection"
         >
           <div class="m-right-collection-slider-header">
@@ -447,7 +450,7 @@
       ===================================================================
     -->
     <div
-      class="m-luxury-right-drawer__footer{% if cart.item_count == 0 %} m:hidden{% endif %}"
+      class="m-luxury-right-drawer__footer{% if cart.item_count > 0 %} active{% endif %}{% if cart.item_count == 0 %} m:hidden{% endif %}"
       id="m-right-cart-footer"
     >
       <p class="m-right-shipping-note">
@@ -471,3 +474,202 @@
     </div>
   </div>
 </div>
+
+<script>
+  (function() {
+    window._LalehPredictiveSearchActive = true;
+
+    const catalogKeywords = {
+      'crimson-poise': [
+        'crimson', 'poise', 'crim', 'pink', 'crimson pink', 'red', 'rose', 
+        'dress', 'dresses', 'lace', 'lace dress', 'peplum', 'midi', 'evening', 
+        'party', 'long sleeves', 'luxury', 'gown'
+      ],
+      'vermeil': [
+        'vermeil', 'ver', 'green', 'pale green', 'sage', 'mint', 'emerald', 
+        'tweed', 'tweed dress', 'dress', 'dresses', 'midi', 
+        'gold', 'two-piece', 'flared cuffs', 'luxury', 'gown'
+      ],
+      'lilac-verse': [
+        'lilac', 'verse', 'lavender', 'purple', 'violet', 'dress', 'dresses', 
+        'lace', 'lace dress', 'midi', 'romantic', 'evening', 'high collar', 
+        'paisley', 'luxury', 'gown'
+      ],
+      'iris-pearl': [
+        'iris', 'pearl', 'mauve', 'purple', 'soft mauve', 'pearls', 'dress', 
+        'dresses', 'midi', 'puffed sleeves', 'evening', 'sheen', 'luxury', 'gown',
+        'white', 'cream'
+      ],
+      'obsidian-touch': [
+        'obsidian', 'touch', 'black', 'dark', 'noir', 'dress', 'dresses', 
+        'midi', 'tailored', 'embellished', 'evening', 'gold buttons', 
+        'sleeveless', 'cocktail', 'luxury', 'gown'
+      ],
+      'structured-silence': [
+        'structured', 'silence', 'sand', 'beige', 'sand-beige', 'tan', 'cream', 
+        'taupe', 'neutral', 'suit', 'dress', 'dresses', 'skirt', 'pencil skirt', 
+        'tailored', 'sharp lapels', 'gold buttons', 'evening', 'luxury', 'gown'
+      ]
+    };
+
+    function scoreProduct(p, rawQuery) {
+      const q = (rawQuery || '').toLowerCase().trim();
+      if (!q) return 0;
+      const tokens = q.split(/\s+/).filter(Boolean);
+      const handle = p.handle || '';
+      const title = (p.title || '').toLowerCase();
+      const titleWords = title.split(/\s+/);
+      const keywords = (catalogKeywords[handle] || []).map(function(k) { return k.toLowerCase(); });
+
+      let score = 0;
+      if (title === q) {
+        score += 10000;
+      } else if (title.startsWith(q)) {
+        score += 5000;
+      } else if (titleWords.some(function(w) { return w.startsWith(q); })) {
+        score += 3000;
+      } else if (titleWords.some(function(w) { return w === q; }) || (q.length >= 4 && title.includes(q))) {
+        score += 1500;
+      }
+
+      for (let i = 0; i < keywords.length; i++) {
+        const kw = keywords[i];
+        const kwWords = kw.split(/\s+/);
+        if (kw === q) {
+          score += 2500;
+        } else if (kw.startsWith(q)) {
+          score += 1500;
+        } else if (kwWords.some(function(w) { return w === q || (q.length >= 4 && w.startsWith(q)); })) {
+          score += 1000;
+        }
+      }
+
+      const allTokensMatch = tokens.every(function(tok) {
+        if (titleWords.some(function(w) { return w.startsWith(tok) || (tok.length >= 4 && w.includes(tok)); })) return true;
+        for (let j = 0; j < keywords.length; j++) {
+          const kw = keywords[j];
+          if (kw === tok || kw.startsWith(tok)) return true;
+          if (kw.split(/\s+/).some(function(w) { return w === tok || (tok.length >= 4 && w.startsWith(tok)); })) return true;
+        }
+        return false;
+      });
+
+      if (!allTokensMatch || score === 0) return 0;
+      return score;
+    }
+
+    function parseSearchPriceToCents(val) {
+      if (val == null) return 0;
+      if (typeof val === 'number') {
+        return val > 1000 ? Math.round(val) : Math.round(val * 100);
+      }
+      const clean = parseFloat(String(val).replace(/[^0-9.-]/g, ''));
+      if (isNaN(clean)) return 0;
+      return Math.round(clean * 100);
+    }
+
+    function formatMoneyStr(cents) {
+      if (window.CurrencyEngine && typeof window.CurrencyEngine.formatMoney === 'function') {
+        return window.CurrencyEngine.formatMoney(cents, window.CurrencyEngine.getActiveCurrency());
+      }
+      if (typeof Shopify !== 'undefined' && Shopify.formatMoney) {
+        return Shopify.formatMoney(cents);
+      }
+      return (cents / 100).toFixed(2);
+    }
+
+    let debounceTimer = null;
+
+    async function handlePredictiveSearch(query) {
+      const liveResults = document.getElementById("m-right-live-search-results");
+      const defaultView = document.getElementById("m-right-search-default-view");
+      const itemsList = document.getElementById("m-right-search-items-list");
+      if (!liveResults || !itemsList) return;
+
+      if (defaultView) defaultView.style.display = "none";
+      liveResults.style.display = "block";
+      const searchingText = window.MinimogStrings?.searchingStore || "Searching store...";
+      itemsList.innerHTML = '<div style="text-align: center; padding: 20px 0; color: rgba(var(--color-foreground), 0.6); font-size: 13px;">' + searchingText + '</div>';
+
+      try {
+        const res = await fetch('/search/suggest.json?q=' + encodeURIComponent(query) + '&resources[type]=product&resources[limit]=10&resources[options][unavailable_products]=last');
+        const data = await res.json();
+        const products = data?.resources?.results?.products || [];
+
+        if (!window._LalehLocalizedPrices) window._LalehLocalizedPrices = {};
+        products.forEach(function(p) {
+          if (p.handle && p.price) {
+            window._LalehLocalizedPrices[p.handle] = {
+              price: parseSearchPriceToCents(p.price),
+              compare_at_price: p.compare_at_price ? parseSearchPriceToCents(p.compare_at_price) : 0
+            };
+          }
+        });
+
+        const scoredItems = products
+          .map(function(p) { return { product: p, score: scoreProduct(p, query) }; })
+          .filter(function(item) { return item.score > 0; })
+          .sort(function(a, b) { return b.score - a.score; })
+          .map(function(item) { return item.product; });
+
+        if (scoredItems.length === 0) {
+          const noFoundTemplate = window.MinimogStrings?.noProductsFound || 'No products found for "{{ query }}"';
+          const noFoundText = noFoundTemplate.replace('{{ query }}', query);
+          itemsList.innerHTML = '<div style="text-align: center; padding: 24px 0; color: rgba(var(--color-foreground), 0.6); font-size: 13px;">' + noFoundText + '</div>';
+          return;
+        }
+
+        itemsList.innerHTML = scoredItems.map(function(p) {
+          const img = p.image || p.featured_image || "";
+          const priceCents = parseSearchPriceToCents(p.price);
+          const compPriceCents = p.compare_at_price ? parseSearchPriceToCents(p.compare_at_price) : 0;
+          const priceFormatted = formatMoneyStr(priceCents);
+          const compareFormatted = compPriceCents > priceCents ? '<span class="m-right-price-compare" data-base-price="' + compPriceCents + '">' + formatMoneyStr(compPriceCents) + '</span>' : '';
+
+          return '<div class="m-right-item-card" style="padding-bottom: 12px;">' +
+            '<a href="' + p.url + '" class="m-right-item-card__media" style="width: 70px; height: 90px;">' +
+              (img ? '<img src="' + img + '" alt="' + (p.title || '') + '" loading="lazy">' : '<div style="width:100%;height:100%;background:#f3f3f3;"></div>') +
+            '</a>' +
+            '<div class="m-right-item-card__details" style="justify-content: center;">' +
+              '<a href="' + p.url + '" class="m-right-item-card__title" style="text-decoration: none; font-size: 13px;">' +
+                p.title +
+              '</a>' +
+              '<div class="m-right-item-card__price-row" style="margin-top: 4px;">' +
+                compareFormatted +
+                '<span class="m-right-price-regular" data-base-price="' + priceCents + '" style="font-size: 12.5px;">' + priceFormatted + '</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }).join("");
+
+        if (window.CurrencyEngine && typeof window.CurrencyEngine.ensurePriceSpacing === 'function') {
+          window.CurrencyEngine.ensurePriceSpacing(itemsList);
+        }
+      } catch(err) {
+        console.error("Predictive search error:", err);
+        itemsList.innerHTML = '<div style="text-align: center; padding: 20px 0; color: rgba(var(--color-foreground), 0.6); font-size: 13px;">Error fetching search results.</div>';
+      }
+    }
+
+    document.addEventListener("input", function(e) {
+      const input = e.target.closest("[data-luxury-search-input]");
+      if (!input) return;
+
+      const query = input.value.trim();
+      if (debounceTimer) clearTimeout(debounceTimer);
+
+      if (!query || query.length < 2) {
+        const liveResults = document.getElementById("m-right-live-search-results");
+        const defaultView = document.getElementById("m-right-search-default-view");
+        if (liveResults) liveResults.style.display = "none";
+        if (defaultView) defaultView.style.display = "block";
+        return;
+      }
+
+      debounceTimer = setTimeout(function() {
+        handlePredictiveSearch(query);
+      }, 150);
+    });
+  })();
+</script>
+

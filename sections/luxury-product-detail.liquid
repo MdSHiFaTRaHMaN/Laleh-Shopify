@@ -7,7 +7,7 @@
 {% endcomment %}
 
 {{ 'luxury-product.css' | asset_url | stylesheet_tag }}
-<script src="{{ 'luxury-product.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'luxury-product.js' | asset_url }}&v=1.0.3" defer="defer"></script>
 
 {% liquid
   assign current_variant = product.selected_or_first_available_variant
@@ -392,6 +392,9 @@
                   data-value="{{ value | escape }}"
                   data-original-value="{{ value | escape }}"
                   data-variant-id="{{ variant_for_size.id }}"
+                  data-available="{{ is_available }}"
+                  data-price="{{ variant_for_size.price }}"
+                  data-compare-price="{{ variant_for_size.compare_at_price }}"
                   {% unless is_available %}
                     title="{{ 'products.product.sold_out' | t | default: 'Out of Stock' }}"
                   {% endunless %}
@@ -510,6 +513,82 @@
             </div>
           {%- endform -%}
         </product-form>
+
+        <script>
+          (function() {
+            function updateSizeSelection(btn) {
+              if (!btn) return;
+              const grid = btn.closest('.m-luxury-sizes-grid');
+              const section = btn.closest('.m-luxury-product-section') || document;
+              if (grid) {
+                grid.querySelectorAll('.m-luxury-size-box').forEach(function(b) {
+                  b.classList.remove('active');
+                });
+              }
+              btn.classList.add('active');
+
+              const variantId = btn.getAttribute('data-variant-id');
+              if (variantId) {
+                const inputs = section.querySelectorAll('form[action*="/cart/add"] input[name="id"], .m-luxury-product-form input[name="id"], .m-product-form input[name="id"]');
+                inputs.forEach(function(input) {
+                  input.value = variantId;
+                  input.dispatchEvent(new Event('change', { bubbles: true }));
+                  input.dispatchEvent(new Event('input', { bubbles: true }));
+                });
+
+                try {
+                  const url = new URL(window.location.href);
+                  url.searchParams.set('variant', variantId);
+                  window.history.replaceState({}, '', url.toString());
+                } catch(e) {}
+              }
+
+              // Update Add to Bag button availability state
+              const isAvailable = btn.getAttribute('data-available') !== 'false' && !btn.classList.contains('is-unavailable');
+              const atcBtns = section.querySelectorAll('.m-luxury-add-to-bag-btn, [name="add"]');
+              atcBtns.forEach(function(atc) {
+                const atcText = atc.querySelector('.m-add-to-cart--text');
+                if (isAvailable) {
+                  atc.removeAttribute('disabled');
+                  if (atcText) {
+                    atcText.textContent = atc.getAttribute('data-atc-text') || 'Add to Bag';
+                  }
+                } else {
+                  atc.setAttribute('disabled', 'disabled');
+                  if (atcText) {
+                    atcText.textContent = atc.getAttribute('data-soldout-text') || 'Out of Stock';
+                  }
+                }
+              });
+            }
+
+            // Capture phase click handler on size boxes
+            document.addEventListener('click', function(e) {
+              const btn = e.target.closest('.m-luxury-size-box');
+              if (btn) {
+                updateSizeSelection(btn);
+              }
+            }, true);
+
+            // Safety check before form submission: make sure input[name="id"] matches active size box
+            document.addEventListener('submit', function(e) {
+              const form = e.target.closest('form[action*="/cart/add"], .m-luxury-product-form');
+              if (form) {
+                const section = form.closest('.m-luxury-product-section') || document;
+                const activeSizeBtn = section.querySelector('.m-luxury-sizes-grid .m-luxury-size-box.active');
+                if (activeSizeBtn) {
+                  const targetVarId = activeSizeBtn.getAttribute('data-variant-id');
+                  if (targetVarId) {
+                    let idInput = form.querySelector('input[name="id"]');
+                    if (idInput && idInput.value !== targetVarId) {
+                      idInput.value = targetVarId;
+                    }
+                  }
+                }
+              }
+            }, true);
+          })();
+        </script>
 
         <!-- Collapsible Accordions (Smooth Open/Close) -->
         <div class="m-luxury-accordions">

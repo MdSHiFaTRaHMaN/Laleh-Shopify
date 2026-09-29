@@ -306,8 +306,13 @@
           {%- endif -%}
         </span>
       {% endif %}
-      {%- if sold_out and settings.show_badge_soldout -%}
-        <span class="m-product-tag m-product-tag--soldout">
+      {%- if settings.show_badge_soldout -%}
+        <span
+          class="m-product-card__tag-name m-product-tag m-product-tag--soldout"
+          {% unless sold_out %}
+            style="display: none;"
+          {% endunless %}
+        >
           {{- 'products.product.sold_out' | t -}}
         </span>
       {%- endif -%}

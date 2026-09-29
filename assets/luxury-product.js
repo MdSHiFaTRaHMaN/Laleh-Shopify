@@ -578,13 +578,27 @@
 
         // Find matching variant
         let matchedVariant = null;
-        for (const variant of this.productData.variants) {
-          let matches = true;
-          if (selectedSize && !variant.options.includes(selectedSize)) matches = false;
-          if (selectedColor && !variant.options.includes(selectedColor)) matches = false;
-          if (matches) {
-            matchedVariant = variant;
-            break;
+
+        // 1. First check if active size box has explicit data-variant-id
+        const activeSizeEl = this.container.querySelector('.m-luxury-sizes-grid .m-luxury-size-box.active');
+        const activeVarId = activeSizeEl ? activeSizeEl.getAttribute('data-variant-id') : null;
+        if (activeVarId) {
+          const directMatch = this.productData.variants.find((v) => String(v.id) === String(activeVarId));
+          if (directMatch) {
+            matchedVariant = directMatch;
+          }
+        }
+
+        // 2. Otherwise match by options
+        if (!matchedVariant) {
+          for (const variant of this.productData.variants) {
+            let matches = true;
+            if (selectedSize && !variant.options.includes(selectedSize)) matches = false;
+            if (selectedColor && !variant.options.includes(selectedColor)) matches = false;
+            if (matches) {
+              matchedVariant = variant;
+              break;
+            }
           }
         }
 
@@ -593,10 +607,20 @@
         }
 
         if (matchedVariant) {
-          // Update hidden ID input
-          if (hiddenVariantInput) {
-            hiddenVariantInput.value = matchedVariant.id;
-          }
+          // Update all hidden ID inputs across forms in this container
+          const allIdInputs = this.container.querySelectorAll('form[action*="/cart/add"] input[name="id"], .m-luxury-product-form input[name="id"], .m-product-form input[name="id"]');
+          allIdInputs.forEach((input) => {
+            input.value = matchedVariant.id;
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+          });
+
+          // Update URL query parameter (?variant=...)
+          try {
+            const url = new URL(window.location.href);
+            url.searchParams.set('variant', matchedVariant.id);
+            window.history.replaceState({}, '', url.toString());
+          } catch (e) {}
 
           // Update Add to Bag Button
           if (atcButton && atcText) {
@@ -615,11 +639,11 @@
             if (matchedVariant.compare_at_price && matchedVariant.compare_at_price > matchedVariant.price) {
               const formattedCompare = this.formatMoney(matchedVariant.compare_at_price);
               priceRow.innerHTML = `
-                <span class="m-luxury-product-price m-luxury-product-price--sale">${formattedPrice}</span>
-                <s class="m-luxury-product-price--compare" style="margin-left: 8px; color: #a1a1aa; font-size: 14px;">${formattedCompare}</s>
+                <span class="m-luxury-product-price m-luxury-product-price--sale" data-base-price="${matchedVariant.price}">${formattedPrice}</span>
+                <s class="m-luxury-product-price--compare" data-base-price="${matchedVariant.compare_at_price}" style="margin-left: 8px; color: #a1a1aa; font-size: 14px;">${formattedCompare}</s>
               `;
             } else {
-              priceRow.innerHTML = `<span class="m-luxury-product-price">${formattedPrice}</span>`;
+              priceRow.innerHTML = `<span class="m-luxury-product-price" data-base-price="${matchedVariant.price}">${formattedPrice}</span>`;
             }
           }
 
@@ -644,6 +668,17 @@
           box.classList.add('active');
           selectedSize = box.getAttribute('data-value') || box.textContent.trim();
           this.activeSize = box.getAttribute('data-original-value') || selectedSize;
+
+          const variantId = box.getAttribute('data-variant-id');
+          if (variantId) {
+            const allIdInputs = this.container.querySelectorAll('form[action*="/cart/add"] input[name="id"], .m-luxury-product-form input[name="id"], .m-product-form input[name="id"]');
+            allIdInputs.forEach((input) => {
+              input.value = variantId;
+              input.dispatchEvent(new Event('change', { bubbles: true }));
+              input.dispatchEvent(new Event('input', { bubbles: true }));
+            });
+          }
+
           this.updateSpecTable();
           updateVariantState();
         };
@@ -922,10 +957,14 @@
     }
   }
 
-  // Initialize sitewide on DOM Ready
-  document.addEventListener('DOMContentLoaded', () => {
+  // Initialize sitewide on DOM Ready or immediately if already loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      window.LuxuryProduct = new LuxuryProductController(document);
+    });
+  } else {
     window.LuxuryProduct = new LuxuryProductController(document);
-  });
+  }
 
   // Re-init on Shopify Section Load / Design Mode
   document.addEventListener('shopify:section:load', (e) => {
