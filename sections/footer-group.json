@@ -121,9 +121,9 @@
             "heading_font_weight": "medium",
             "image": "shopify://shop_images/ChatGPT_Image_Sep_10_2026_10_20_14_AM.png",
             "image_max": "150px",
-            "description": "<p>Timeless femininity, thoughtfully designed.</p>",
+            "description": "",
             "text_size": "text-base",
-            "width": "50%",
+            "width": "33%",
             "order_first": false,
             "enable_accordion": true,
             "open_default": false
@@ -131,6 +131,7 @@
         },
         "12ba5a79-51a6-413a-9802-6add59615034": {
           "type": "spacing",
+          "disabled": true,
           "settings": {
             "width": "20%"
           }
@@ -171,7 +172,7 @@
             "heading_size": "h6",
             "heading_font": "heading",
             "heading_font_weight": "medium",
-            "width": "25%",
+            "width": "33%",
             "order_first": false,
             "enable_accordion": true,
             "open_default": false

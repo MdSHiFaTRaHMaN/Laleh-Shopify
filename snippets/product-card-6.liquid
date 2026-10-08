@@ -332,9 +332,11 @@
                 {% render 'mm-ssw-widget-faveicon' with product.id %}
               {% endunless %}
             </span>
-            <div class="m-tooltip__content" data-revert-text="">
-              {{ 'products.product.add_to_wishlist' | t }}
-            </div>
+            {% comment %}
+              <div class="m-tooltip__content" data-revert-text="">
+                {{ 'products.product.add_to_wishlist' | t }}
+              </div>
+            {% endcomment %}
           </div>
         {% else %}
           {% render 'tooltip', type: 'wishlist', product: product, class_name: 'm-tooltip--left', style: 2 %}

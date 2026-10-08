@@ -54,6 +54,10 @@
   class LuxuryProductController {
     constructor(container) {
       this.container = container || document;
+      if (this.container._luxuryController) {
+        return this.container._luxuryController;
+      }
+      this.container._luxuryController = this;
       this.activeSize = '8';
       this.activeUnit = 'cm';
       this.currentSystem = 'AU';
@@ -172,6 +176,38 @@
         }
       };
 
+      // Touch & Pointer interaction unlock for iOS Safari (iPhone 16 / iPhone 17)
+      let iosMediaUnlocked = false;
+      const unlockIOSMedia = () => {
+        if (iosMediaUnlocked) return;
+        iosMediaUnlocked = true;
+        const allVideos = gallery.querySelectorAll('video');
+        allVideos.forEach((v) => {
+          v.muted = true;
+          v.defaultMuted = true;
+          v.playsInline = true;
+          v.loop = true;
+          v.setAttribute('playsinline', '');
+          v.setAttribute('webkit-playsinline', '');
+          v.setAttribute('muted', '');
+          v.setAttribute('autoplay', '');
+          try {
+            const p = v.play();
+            if (p !== undefined) {
+              p.then(() => {
+                if (parseInt(v.closest('.m-luxury-slide-item')?.getAttribute('data-index') || '0', 10) !== currentIndex) {
+                  v.pause();
+                }
+              }).catch(() => {});
+            }
+          } catch (e) {}
+        });
+      };
+
+      window.addEventListener('touchstart', unlockIOSMedia, { passive: true, once: true });
+      window.addEventListener('pointerdown', unlockIOSMedia, { passive: true, once: true });
+      window.addEventListener('click', unlockIOSMedia, { passive: true, once: true });
+
       this.handleVideoPlayback = (activeIndex) => {
         slides.forEach((slide, idx) => {
           const video = slide.querySelector('video');
@@ -180,22 +216,36 @@
           if (idx === activeIndex) {
             if (video) {
               video.muted = true;
+              video.defaultMuted = true;
               video.playsInline = true;
               video.loop = true;
               video.setAttribute('playsinline', '');
               video.setAttribute('webkit-playsinline', '');
               video.setAttribute('muted', '');
-              
-              // Ensure video is played
-              try {
-                const playPromise = video.play();
-                if (playPromise !== undefined) {
-                  playPromise.catch((err) => {
-                    console.log('Autoplay prevented or waiting for interaction:', err);
-                  });
+              video.setAttribute('autoplay', '');
+
+              const playVideo = () => {
+                if (parseInt(slide.getAttribute('data-index'), 10) === this.currentIndex) {
+                  try {
+                    const playPromise = video.play();
+                    if (playPromise !== undefined) {
+                      playPromise.catch((err) => {
+                        console.log('Video autoplay prevented:', err);
+                      });
+                    }
+                  } catch (err) {
+                    console.log('Video play error:', err);
+                  }
                 }
-              } catch (err) {
-                console.log('Video play error:', err);
+              };
+
+              if (video.readyState >= 2) {
+                playVideo();
+              } else {
+                video.addEventListener('loadeddata', playVideo, { once: true });
+                video.addEventListener('canplay', playVideo, { once: true });
+                try { video.load(); } catch (e) {}
+                playVideo();
               }
             } else if (iframe && iframe.contentWindow) {
               try {
@@ -207,7 +257,6 @@
             if (video) {
               try {
                 video.pause();
-                video.currentTime = 0;
               } catch (e) {}
             } else if (iframe && iframe.contentWindow) {
               try {
@@ -269,7 +318,7 @@
       };
 
       const dragStart = (e) => {
-        if (e.target.closest('.m-luxury-nav-btn')) return;
+        if (e.target.closest('.m-luxury-nav-btn, video, iframe, .m-luxury-video-wrapper')) return;
         isDragging = true;
         startX = getPositionX(e);
         startY = getPositionY(e);
@@ -329,6 +378,18 @@
       // Window Resize Listener
       window.addEventListener('resize', () => {
         this.updateSlidePosition(currentIndex, false);
+      });
+
+      // Video Click Play / Pause Toggle
+      gallery.querySelectorAll('video').forEach((v) => {
+        v.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (v.paused) {
+            v.play().catch(() => {});
+          } else {
+            v.pause();
+          }
+        });
       });
 
       // Recalculate once DOM is fully painted
@@ -702,13 +763,15 @@
       if (window.CurrencyEngine && typeof window.CurrencyEngine.formatMoney === 'function') {
         formatted = window.CurrencyEngine.formatMoney(cents, window.CurrencyEngine.getActiveCurrency());
       } else if (typeof Shopify !== 'undefined' && Shopify.formatMoney) {
-        formatted = Shopify.formatMoney(cents, window.MinimogSettings?.money_format || 'Dhs {{amount}}');
+        formatted = Shopify.formatMoney(cents, window.MinimogSettings?.money_format || 'AED {{amount}}');
       } else {
-        formatted = 'Dhs ' + (cents / 100).toFixed(2);
+        formatted = 'AED ' + (cents / 100).toFixed(2);
       }
       return formatted
         .replace(/^([^\d\s]+)(\d)/, '$1 $2')
         .replace(/(\d)([^\d\s.,]+)$/, '$1 $2')
+        .replace(/Dhs\.?/gi, 'AED')
+        .replace(/AED(\d)/gi, 'AED $1')
         .replace(/\s+/g, ' ')
         .trim();
     }

@@ -33,17 +33,121 @@
 -%}
 
 {%- capture gridClass -%}
-  m:grid-2-cols md:m:grid-{{ section.settings.columns | minus: 1 }}-cols xl:m:grid-{{ section.settings.columns }}-cols
+  m:grid-2-cols md:m:grid-2-cols xl:m:grid-{{ section.settings.columns }}-cols
 {%- endcapture -%}
 
 {%- style -%}
   #m-section--{{ section.id }} {
     --column-gap: {{ section.settings.column_gap }}px;
-    --column-gap-mobile: 16px;
+    --column-gap-mobile: 8px;
     --row-gap: {{ section.settings.column_gap | plus: 10 }}px;
-    --row-gap-mobile: 30px; --items: {{ section.settings.columns }};
+    --row-gap-mobile: 20px;
+    --items: {{ section.settings.columns }};
     --section-padding-top: {{ section.settings.padding_top }}px;
     --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  #m-section--{{ section.id }} .swiper-container .swiper-wrapper {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  #m-section--{{ section.id }} .swiper-container .swiper-slide {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  #m-section--{{ section.id }} .m-product-recommendations__wrapper {
+    position: relative !important;
+  }
+
+  #m-section--{{ section.id }} .m-slider-controls,
+  #m-section--{{ section.id }} .m-slider-controls--absolute {
+    position: static !important;
+    pointer-events: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: inherit !important;
+  }
+
+  #m-section--{{ section.id }} .m-slider-controls__wrapper {
+    position: static !important;
+    pointer-events: none !important;
+  }
+
+  #m-section--{{ section.id }} .m-slider-controls__button {
+    --button-offset-top: calc(var(--offset-top, 42%) + var(--swiper-container-offset-top, 0px));
+    position: absolute !important;
+    top: var(--button-offset-top, 42%) !important;
+    transform: translateY(-50%) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 50% !important;
+    background-color: #ffffff !important;
+    color: #111111 !important;
+    border: 1px solid rgba(0, 0, 0, 0.12) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    z-index: 25 !important;
+    cursor: pointer !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  #m-section--{{ section.id }} .m-slider-controls__button svg {
+    width: 16px !important;
+    height: 16px !important;
+    display: block !important;
+  }
+
+  #m-section--{{ section.id }} .m-slider-controls__button-prev {
+    left: 6px !important;
+    right: auto !important;
+  }
+
+  #m-section--{{ section.id }} .m-slider-controls__button-next {
+    right: 6px !important;
+    left: auto !important;
+  }
+
+  @media screen and (min-width: 768px) {
+    #m-section--{{ section.id }} .m-slider-controls__button {
+      width: 42px !important;
+      height: 42px !important;
+    }
+    #m-section--{{ section.id }} .m-slider-controls__button svg {
+      width: 18px !important;
+      height: 18px !important;
+    }
+    #m-section--{{ section.id }} .m-slider-controls__button-prev {
+      left: 12px !important;
+    }
+    #m-section--{{ section.id }} .m-slider-controls__button-next {
+      right: 12px !important;
+    }
+  }
+
+  #m-section--{{ section.id }} .m-slider-controls__button:hover {
+    background-color: #111111 !important;
+    color: #ffffff !important;
+    border-color: #111111 !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
+    transform: translateY(-50%) scale(1.08) !important;
+  }
+
+  #m-section--{{ section.id }} .m-slider-controls__button:active {
+    transform: translateY(-50%) scale(0.95) !important;
+  }
+
+  #m-section--{{ section.id }} .m-slider-controls__button.swiper-button-disabled {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transform: translateY(-50%) scale(0.7) !important;
   }
 {%- endstyle -%}
 <section
@@ -55,9 +159,196 @@
     data-enable-slider="{{ section.settings.enable_slider }}"
     data-pagination-type="{{ pagination_type }}"
     data-use-scroll-mobile="{{ section.settings.use_scroll_mobile }}"
-    data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product_id }}&limit={{ section.settings.limit | default: 4 }}"
+    data-current-product-id="{{ product.id }}"
+    data-current-product-handle="{{ product.handle }}"
+    data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product_id }}&limit={{ section.settings.limit | default: 8 }}"
   >
-    {% if recommendations.performed and recommendations.products_count > 0 %}
+    {%- liquid
+      assign current_product_id = product.id
+      assign current_product_handle = product.handle
+
+      assign min_needed = 2
+
+      assign target_limit = section.settings.limit | default: 8
+      if target_limit < min_needed
+        assign target_limit = min_needed
+      endif
+
+      assign shown_handles = current_product_handle | append: ','
+      assign shown_ids = current_product_id | append: ','
+      assign rendered_count = 0
+      assign card_index = 0
+    -%}
+
+    {%- capture cards_html -%}
+      {%- comment -%} 1. If currently viewing Vermeil (green dress), prioritize Structured Silence (the beige dress) {%- endcomment -%}
+      {%- if current_product_handle == 'vermeil' -%}
+        {%- assign beige_product = all_products['structured-silence'] -%}
+        {%- if beige_product != blank and beige_product.id != blank and beige_product.available -%}
+          {%- assign shown_handles = shown_handles | append: beige_product.handle | append: ',' -%}
+          {%- assign shown_ids = shown_ids | append: beige_product.id | append: ',' -%}
+          {%- assign card_index = card_index | plus: 1 -%}
+          {%- assign rendered_count = rendered_count | plus: 1 -%}
+          <div class="m:column swiper-slide" data-product-handle="{{ beige_product.handle }}" data-product-id="{{ beige_product.id }}">
+            {% liquid
+              case settings.pcard_layout
+                when '1'
+                  render 'product-card-1', product: beige_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                when '2'
+                  render 'product-card-2', product: beige_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                when '3'
+                  render 'product-card-3', product: beige_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                when '4'
+                  render 'product-card-4', product: beige_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                when '5'
+                  render 'product-card-5', product: beige_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                when '6'
+                  render 'product-card-6', product: beige_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+              endcase
+            %}
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- comment -%} 2. Add Shopify recommendations (skipping current product and duplicates) {%- endcomment -%}
+      {%- if recommendations.performed and recommendations.products_count > 0 -%}
+        {%- for rec_product in recommendations.products -%}
+          {%- if rec_product.id == current_product_id or rec_product.handle == current_product_handle -%}
+            {%- continue -%}
+          {%- endif -%}
+          {%- if rec_product.available == false -%}
+            {%- continue -%}
+          {%- endif -%}
+          {%- if shown_handles contains rec_product.handle or shown_ids contains rec_product.id -%}
+            {%- continue -%}
+          {%- endif -%}
+          {%- if rendered_count >= target_limit -%}
+            {%- break -%}
+          {%- endif -%}
+
+          {%- assign shown_handles = shown_handles | append: rec_product.handle | append: ',' -%}
+          {%- assign shown_ids = shown_ids | append: rec_product.id | append: ',' -%}
+          {%- assign card_index = card_index | plus: 1 -%}
+          {%- assign rendered_count = rendered_count | plus: 1 -%}
+          <div class="m:column swiper-slide" data-product-handle="{{ rec_product.handle }}" data-product-id="{{ rec_product.id }}">
+            {% liquid
+              case settings.pcard_layout
+                when '1'
+                  render 'product-card-1', product: rec_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                when '2'
+                  render 'product-card-2', product: rec_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                when '3'
+                  render 'product-card-3', product: rec_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                when '4'
+                  render 'product-card-4', product: rec_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                when '5'
+                  render 'product-card-5', product: rec_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                when '6'
+                  render 'product-card-6', product: rec_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+              endcase
+            %}
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+
+      {%- comment -%} 3. Ensure all remaining products from store collection are in carousel {%- endcomment -%}
+      {%- if rendered_count < target_limit -%}
+        {%- assign fallback_coll = product.collections.first -%}
+        {%- if fallback_coll == blank or fallback_coll.products_count == 0 -%}
+          {%- assign fallback_coll = collections['favorite-laleh'] -%}
+        {%- endif -%}
+        {%- if fallback_coll == blank or fallback_coll.products_count == 0 -%}
+          {%- assign fallback_coll = collections['my-collection'] -%}
+        {%- endif -%}
+        {%- if fallback_coll == blank or fallback_coll.products_count == 0 -%}
+          {%- assign fallback_coll = collections.all -%}
+        {%- endif -%}
+
+        {%- if fallback_coll != blank and fallback_coll.products_count > 0 -%}
+          {%- for coll_product in fallback_coll.products -%}
+            {%- if coll_product.id == current_product_id or coll_product.handle == current_product_handle -%}
+              {%- continue -%}
+            {%- endif -%}
+            {%- if coll_product.available == false -%}
+              {%- continue -%}
+            {%- endif -%}
+            {%- if shown_handles contains coll_product.handle or shown_ids contains coll_product.id -%}
+              {%- continue -%}
+            {%- endif -%}
+            {%- if rendered_count >= target_limit -%}
+              {%- break -%}
+            {%- endif -%}
+
+            {%- assign shown_handles = shown_handles | append: coll_product.handle | append: ',' -%}
+            {%- assign shown_ids = shown_ids | append: coll_product.id | append: ',' -%}
+            {%- assign card_index = card_index | plus: 1 -%}
+            {%- assign rendered_count = rendered_count | plus: 1 -%}
+            <div class="m:column swiper-slide" data-product-handle="{{ coll_product.handle }}" data-product-id="{{ coll_product.id }}">
+              {% liquid
+                case settings.pcard_layout
+                  when '1'
+                    render 'product-card-1', product: coll_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                  when '2'
+                    render 'product-card-2', product: coll_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                  when '3'
+                    render 'product-card-3', product: coll_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                  when '4'
+                    render 'product-card-4', product: coll_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                  when '5'
+                    render 'product-card-5', product: coll_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                  when '6'
+                    render 'product-card-6', product: coll_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                endcase
+              %}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- comment -%} 4. Guaranteed fallback from known catalog handles {%- endcomment -%}
+      {%- if rendered_count < target_limit -%}
+        {%- assign known_catalog = 'structured-silence,obsidian-touch,vermeil,crimson-poise,iris-pearl,lilac-verse' | split: ',' -%}
+        {%- for k_handle in known_catalog -%}
+          {%- if k_handle == current_product_handle -%}
+            {%- continue -%}
+          {%- endif -%}
+          {%- if shown_handles contains k_handle -%}
+            {%- continue -%}
+          {%- endif -%}
+          {%- if rendered_count >= target_limit -%}
+            {%- break -%}
+          {%- endif -%}
+
+          {%- assign k_product = all_products[k_handle] -%}
+          {%- if k_product != blank and k_product.id != blank and k_product.available -%}
+            {%- assign shown_handles = shown_handles | append: k_product.handle | append: ',' -%}
+            {%- assign shown_ids = shown_ids | append: k_product.id | append: ',' -%}
+            {%- assign card_index = card_index | plus: 1 -%}
+            {%- assign rendered_count = rendered_count | plus: 1 -%}
+            <div class="m:column swiper-slide" data-product-handle="{{ k_product.handle }}" data-product-id="{{ k_product.id }}">
+              {% liquid
+                case settings.pcard_layout
+                  when '1'
+                    render 'product-card-1', product: k_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                  when '2'
+                    render 'product-card-2', product: k_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                  when '3'
+                    render 'product-card-3', product: k_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                  when '4'
+                    render 'product-card-4', product: k_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                  when '5'
+                    render 'product-card-5', product: k_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                  when '6'
+                    render 'product-card-6', product: k_product, index: card_index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
+                endcase
+              %}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endcapture -%}
+
+    {%- if rendered_count >= 2 -%}
       <div class="{{ container }} m-section-my m-section-py">
         {% assign default_heading = 'products.product.product_recommendation_heading' | t %}
         <div class="m-section__header m:text-{{ section.settings.text_align | default: 'left' }}">
@@ -68,26 +359,7 @@
         <div class="m-product-recommendations__wrapper m-slider-control-hover-inside m-mixed-layout{% if section.settings.use_scroll_mobile %} m-mixed-layout--mobile-scroll{% endif %}">
           <div class="m-product-list {% if section.settings.enable_slider %} swiper-container{% endif %}">
             <div class="m:grid {{ gridClass | strip_newlines }} m-mixed-layout__inner{% if section.settings.enable_slider %} swiper-wrapper{% endif %}">
-              {% for product in recommendations.products %}
-                <div class="m:column swiper-slide">
-                  {% liquid
-                    case settings.pcard_layout
-                      when '1'
-                        render 'product-card-1', product: product, index: forloop.index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
-                      when '2'
-                        render 'product-card-2', product: product, index: forloop.index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
-                      when '3'
-                        render 'product-card-3', product: product, index: forloop.index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
-                      when '4'
-                        render 'product-card-4', product: product, index: forloop.index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
-                      when '5'
-                        render 'product-card-5', product: product, index: forloop.index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
-                      when '6'
-                        render 'product-card-6', product: product, index: forloop.index, animated: animated, animation_effect: animation_effect, remove_params: remove_params
-                    endcase
-                  %}
-                </div>
-              {% endfor %}
+              {{ cards_html }}
             </div>
           </div>
           {% if section.settings.enable_slider and show_controls %}
@@ -102,7 +374,7 @@
           {% endif %}
         </div>
       </div>
-    {% endif %}
+    {%- endif -%}
   </product-recommendations>
 </section>
 

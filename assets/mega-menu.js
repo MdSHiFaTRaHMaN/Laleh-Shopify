@@ -32,8 +32,8 @@ function formatMoney(cents) {
   return result
     .replace(/^([^\d\s]+)(\d)/, '$1 $2')
     .replace(/(\d)([^\d\s.,]+)$/, '$1 $2')
-    .replace(/Dhs(\d)/gi, 'Dhs $1')
-    .replace(/AED(\d)/gi, 'Dhs $1')
+    .replace(/Dhs\.?/gi, 'AED')
+    .replace(/AED(\d)/gi, 'AED $1')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -236,6 +236,53 @@ class Megamenu {
             });
           } else {
             delete pcardSizeBtn.dataset.adding;
+          }
+          return;
+        }
+
+        // --- Complete Your Collection Size Pill Selection ---
+        const collSizePill = e.target.closest("[data-coll-size-pill]");
+        if (collSizePill && !collSizePill.disabled) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const card = collSizePill.closest(".m-right-coll-card");
+          if (!card) return;
+
+          const isAlreadySelected = collSizePill.classList.contains("is-selected");
+
+          // Deselect sibling size pills
+          card.querySelectorAll("[data-coll-size-pill]").forEach((p) => p.classList.remove("is-selected"));
+          collSizePill.classList.add("is-selected");
+
+          const variantId = collSizePill.dataset.variantId;
+          const sizeName = collSizePill.dataset.size;
+          const variantPriceFormatted = collSizePill.dataset.variantPriceFormatted;
+
+          // Update the Add to Bag button
+          const addBtn = card.querySelector("[data-coll-quick-add]");
+          if (addBtn) {
+            addBtn.dataset.collQuickAdd = variantId;
+            addBtn.dataset.selectedSize = sizeName;
+            addBtn.textContent = `+ Add to Bag • ${sizeName}`;
+            addBtn.disabled = false;
+          }
+
+          // If variant has different price, update the price element
+          if (variantPriceFormatted) {
+            const priceEl = card.querySelector(".m-right-price-regular");
+            if (priceEl) {
+              const cleanPrice = variantPriceFormatted.replace(/<[^>]*>/g, '').trim();
+              priceEl.textContent = cleanPrice;
+              if (collSizePill.dataset.variantPrice) {
+                priceEl.dataset.basePrice = collSizePill.dataset.variantPrice;
+              }
+            }
+          }
+
+          // If already selected and tapped again, trigger quick add
+          if (isAlreadySelected && addBtn && !addBtn.disabled) {
+            addBtn.click();
           }
           return;
         }

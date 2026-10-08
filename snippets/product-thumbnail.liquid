@@ -107,7 +107,8 @@
               endif
             endif
           when 'video'
-            echo media | media_tag: image_size: '2048x', autoplay: autoplay, loop: loop, controls: true, preload: 'none'
+            assign video_poster = media.preview_image | image_url: width: 1400
+            echo media | video_tag: image_size: '2048x', autoplay: autoplay, loop: loop, muted: true, playsinline: true, controls: true, preload: 'metadata', poster: video_poster, class: 'm-luxury-main-video'
           when 'model'
             echo media | media_tag: image_size: '2048x', toggleable: true
         endcase

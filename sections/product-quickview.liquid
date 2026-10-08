@@ -66,19 +66,27 @@
                       class="m-luxury-thumb-item{% if forloop.first %} is-active{% endif %}"
                       data-index="{{ forloop.index0 }}"
                       data-media-id="{{ media.id }}"
+                      data-media-type="{{ media.media_type }}"
                       role="tab"
                       aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
                       tabindex="0"
                     >
                       <div class="m-luxury-thumb-box">
                         <img
-                          src="{{ media | image_url: width: 240, height: 320, crop: 'center' }}"
+                          src="{{ media.preview_image | default: media | image_url: width: 240, height: 320, crop: 'center' }}"
                           alt="{{ media.alt | default: product.title | escape }}"
                           class="m-luxury-thumb-img"
                           loading="lazy"
                           width="86"
                           height="116"
                         >
+                        {% if media.media_type contains 'video' %}
+                          <span class="m-luxury-thumb-badge" aria-label="Video">
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+                              <path d="M8 5v14l11-7z"/>
+                            </svg>
+                          </span>
+                        {% endif %}
                       </div>
                     </li>
                   {% endfor %}
@@ -123,20 +131,65 @@
                     class="m-luxury-slide-item{% if forloop.first %} is-active{% endif %}"
                     data-index="{{ forloop.index0 }}"
                     data-media-id="{{ media.id }}"
+                    data-media-type="{{ media.media_type }}"
                   >
                     <div class="m-luxury-slide-inner">
-                      <img
-                        src="{{ media | image_url: width: 1400 }}"
-                        alt="{{ media.alt | default: product.title | escape }}"
-                        class="m-luxury-main-img"
-                        {% if forloop.first %}
-                          fetchpriority="high"
+                      {% case media.media_type %}
+                        {% when 'image' %}
+                          <img
+                            src="{{ media | image_url: width: 1400 }}"
+                            alt="{{ media.alt | default: product.title | escape }}"
+                            class="m-luxury-main-img"
+                            {% if forloop.first %}
+                              fetchpriority="high"
+                            {% else %}
+                              loading="lazy"
+                            {% endif %}
+                            width="{{ media.width | default: 640 }}"
+                            height="{{ media.height | default: 880 }}"
+                          >
+                        {% when 'video' %}
+                          <div class="m-luxury-video-wrapper" data-media-type="video">
+                            {% assign video_poster = media.preview_image | default: media | image_url: width: 1400 %}
+                            {{
+                              media
+                              | video_tag:
+                                controls: true,
+                                autoplay: true,
+                                loop: true,
+                                muted: true,
+                                playsinline: true,
+                                preload: 'auto',
+                                poster: video_poster,
+                                image_size: '1400x',
+                                class: 'm-luxury-main-video'
+                            }}
+                          </div>
+                        {% when 'external_video' %}
+                          <div class="m-luxury-video-wrapper" data-media-type="external_video">
+                            {% liquid
+                              assign video_class = 'm-luxury-main-video'
+                              if media.host == 'youtube'
+                                echo media | external_video_url: autoplay: 1, loop: 1, mute: 1, playlist: media.external_id, enablejsapi: 1 | external_video_tag: class: video_class, loading: 'lazy'
+                              elsif media.host == 'vimeo'
+                                echo media | external_video_url: autoplay: 1, loop: 1, muted: 1 | external_video_tag: class: video_class, loading: 'lazy'
+                              else
+                                echo media | external_video_tag: class: video_class, loading: 'lazy'
+                              endif
+                            %}
+                          </div>
+                        {% when 'model' %}
+                          <div class="m-luxury-model-wrapper">
+                            {{ media | model_viewer_tag: image_size: '1000x', reveal: 'interaction', toggleable: true }}
+                          </div>
                         {% else %}
-                          loading="lazy"
-                        {% endif %}
-                        width="640"
-                        height="880"
-                      >
+                          <img
+                            src="{{ media | image_url: width: 1400 }}"
+                            alt="{{ media.alt | default: product.title | escape }}"
+                            class="m-luxury-main-img"
+                            loading="lazy"
+                          >
+                      {% endcase %}
                     </div>
                   </div>
                 {% endfor %}
@@ -213,8 +266,8 @@
                 assign raw_price = current_variant.price | money
                 assign raw_compare = current_variant.compare_at_price | money
               endif
-              assign v_price = raw_price | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip
-              assign v_compare = raw_compare | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip
+              assign v_price = raw_price | replace: 'Dhs.', 'AED ' | replace: 'Dhs', 'AED ' | replace: 'AED', 'AED ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip
+              assign v_compare = raw_compare | replace: 'Dhs.', 'AED ' | replace: 'Dhs', 'AED ' | replace: 'AED', 'AED ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip
             %}
             {% if current_variant.compare_at_price > current_variant.price %}
               <span

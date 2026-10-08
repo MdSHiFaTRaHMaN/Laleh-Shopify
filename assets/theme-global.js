@@ -692,8 +692,8 @@ function formatMoney(cents, format) {
 
   // Ensure clean spacing after currency symbol
   formatString = formatString
-    .replace('Dhs', 'Dhs ')
-    .replace('AED', 'Dhs ')
+    .replace(/Dhs\.?/gi, 'AED ')
+    .replace('AED', 'AED ')
     .replace('CHF', 'CHF ')
     .replace('$', '$ ')
     .replace('€', '€ ')
@@ -1212,25 +1212,56 @@ class ProductRecommendations extends HTMLElement {
   }
 
   connectedCallback() {
+    this.totalProducts = this.querySelectorAll(".m-product-card").length;
+    if (this.totalProducts > 0) {
+      this.initByScreenSize();
+      document.addEventListener("matchMobile", () => {
+        this.initByScreenSize();
+      });
+      document.addEventListener("unmatchMobile", () => {
+        this.initByScreenSize();
+      });
+    }
+
     const handleIntersection = (entries, observer) => {
       if (!entries[0].isIntersecting) return;
       observer.unobserve(this);
+      if (!this.dataset.url) return;
       fetch(this.dataset.url)
         .then((response) => response.text())
         .then((text) => {
           const html = generateDomFromString(text);
           const recommendations = html.querySelector("product-recommendations");
           if (recommendations && recommendations.innerHTML.trim().length) {
-            this.innerHTML = recommendations.innerHTML;
-            this.totalProducts = recommendations.querySelectorAll(".m-product-card").length;
+            const currentHandle = this.dataset.currentProductHandle || '';
+            const currentId = this.dataset.currentProductId || '';
 
-            this.initByScreenSize();
-            document.addEventListener("matchMobile", () => {
-              this.initByScreenSize();
+            // Clean up any slide that matches the current product
+            if (currentHandle || currentId) {
+              const slides = recommendations.querySelectorAll(".swiper-slide");
+              slides.forEach((slide) => {
+                const sHandle = slide.dataset.productHandle;
+                const sId = slide.dataset.productId;
+                if ((sHandle && sHandle === currentHandle) || (sId && sId === currentId)) {
+                  slide.remove();
+                }
+              });
+            }
+
+            // Clean up any slide that is sold out / out of stock
+            const soldOutCards = recommendations.querySelectorAll(".m-product-card--soldout, [data-sold-out='true']");
+            soldOutCards.forEach((card) => {
+              const slide = card.closest(".swiper-slide");
+              if (slide) slide.remove();
             });
-            document.addEventListener("unmatchMobile", () => {
+
+            const newCards = recommendations.querySelectorAll(".m-product-card:not(.m-product-card--soldout)");
+            // If new recommendation cards has at least 2 products, use them
+            if (newCards.length >= 2 || this.querySelectorAll(".m-product-card:not(.m-product-card--soldout)").length < 2) {
+              this.innerHTML = recommendations.innerHTML;
+              this.totalProducts = recommendations.querySelectorAll(".m-product-card:not(.m-product-card--soldout)").length;
               this.initByScreenSize();
-            });
+            }
           }
         })
         .catch((e) => {
@@ -1246,12 +1277,16 @@ class ProductRecommendations extends HTMLElement {
     const { gridContainer, slideControls } = queryDomNodes(this.selectors, this);
 
     if (MinimogTheme.config.mqlMobile) {
+      if (this.useScrollMobile) {
+        gridContainer && gridContainer.classList.remove("swiper-container");
+        slideControls && slideControls.classList.add("m:hidden");
+        if (this.swiper) this.swiper.destroy(false, true);
+        gridContainer && gridContainer.parentNode.classList.add("m-mixed-layout--mobile-scroll");
+        return;
+      }
+      gridContainer && gridContainer.classList.add("swiper-container");
+      gridContainer && gridContainer.parentNode.classList.remove("m-mixed-layout--mobile-scroll");
       this.initSlider();
-      if (!this.useScrollMobile) return;
-      gridContainer && gridContainer.classList.remove("swiper-container");
-      slideControls && slideControls.classList.add("m:hidden");
-      if (this.swiper) this.swiper.destroy(false, true);
-      gridContainer && gridContainer.parentNode.classList.add("m-mixed-layout--mobile-scroll");
     } else {
       gridContainer && gridContainer.classList.add("swiper-container");
       gridContainer && gridContainer.parentNode.classList.remove("m-mixed-layout--mobile-scroll");
@@ -1263,38 +1298,70 @@ class ProductRecommendations extends HTMLElement {
   initSlider() {
     let __this = this;
     const { gridContainer, slideControls } = queryDomNodes(this.selectors, this);
-    if (this.enableSlider && this.totalProducts > this.itemsPerPage) {
+    const itemsDesktop = parseInt(this.itemsPerPage) || 3;
+    const isMobile = MinimogTheme.config.mqlMobile;
+    const minNeededToSlide = isMobile ? 2 : itemsDesktop;
+
+    if (this.enableSlider && this.totalProducts >= 2) {
+      if (this.slider && this.slider.destroy) {
+        this.slider.destroy(true, true);
+        this.slider = null;
+      }
+
       this.slider = new MinimogLibs.Swiper(gridContainer, {
-        slidesPerView: this.itemsPerPage >= 2 ? 2 : 1,
-        loop: true,
+        slidesPerView: 2,
+        spaceBetween: 8,
+        loop: this.totalProducts > itemsDesktop,
         autoplay: false,
+        grabCursor: true,
+        threshold: 2,
         pagination: {
           el: this.querySelector(".swiper-pagination"),
           clickable: true,
           type: this.paginationType,
         },
-        threshold: 2,
         breakpoints: {
+          0: {
+            slidesPerView: 2,
+            spaceBetween: 8,
+          },
+          640: {
+            slidesPerView: 2,
+            spaceBetween: 12,
+          },
+          768: {
+            slidesPerView: 2,
+            spaceBetween: 16,
+          },
+          1024: {
+            slidesPerView: itemsDesktop,
+            spaceBetween: 20,
+          },
           1280: {
-            slidesPerView: this.itemsPerPage,
+            slidesPerView: itemsDesktop,
+            spaceBetween: 24,
           },
         },
         on: {
           init: function () {
-            this.slideToLoop(this.lastActive);
-            setTimeout(() => {
-              // Calculate controls position
-              const firstItem = __this.querySelector(".m-image") || __this.querySelector(".m-placeholder-svg");
+            this.slideToLoop(this.lastActive || 0);
+            const updateControlsPos = () => {
+              const firstItem = __this.querySelector(".m-product-card__media") || __this.querySelector(".m-image") || __this.querySelector(".m-placeholder-svg");
               const prevButton = slideControls && slideControls.querySelector(".m-slider-controls__button-prev");
               const nextButton = slideControls && slideControls.querySelector(".m-slider-controls__button-next");
               if (firstItem && slideControls) {
                 const itemHeight = firstItem.clientHeight;
-                slideControls.style.setProperty("--offset-top", parseInt(itemHeight) / 2 + "px");
-
-                prevButton.classList.remove("m:hidden");
-                nextButton.classList.remove("m:hidden");
+                if (itemHeight > 0) {
+                  slideControls.style.setProperty("--offset-top", parseInt(itemHeight) / 2 + "px");
+                }
+                prevButton && prevButton.classList.remove("m:hidden");
+                nextButton && nextButton.classList.remove("m:hidden");
               }
-            }, 200);
+            };
+            updateControlsPos();
+            setTimeout(updateControlsPos, 150);
+            setTimeout(updateControlsPos, 500);
+            window.addEventListener("resize", updateControlsPos, { passive: true });
           },
         },
       });

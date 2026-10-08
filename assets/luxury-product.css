@@ -13,7 +13,7 @@
   padding: 24px 36px 80px 36px;
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: 24% 40% 30%;
+  grid-template-columns: 25% 30% 45%;
   align-items: start;
   font-family: var(--font-stack-body), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #18181b;
@@ -21,7 +21,7 @@
 
 @media (max-width: 1199px) {
   .m-luxury-3col-container {
-    grid-template-columns: 22% 44% 34%;
+    grid-template-columns: 20% 35% 40%;
     padding: 20px 24px 70px 24px;
     column-gap: 20px;
   }
@@ -246,7 +246,7 @@
   width: 100%;
   height: auto;
   max-height: 840px;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
   pointer-events: none;
 }
@@ -258,7 +258,7 @@
   max-height: 840px;
   position: relative;
   overflow: hidden;
-  background: #121212;
+  background: #f4f4f5;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -274,6 +274,7 @@
   object-fit: cover;
   display: block;
   border: none;
+  background: #f4f4f5;
 }
 
 /* Floating Circular Prev & Next Buttons */
@@ -626,7 +627,8 @@ button.m-luxury-add-to-bag-btn::after,
 /* 2. Wishlist Button */
 button.m-luxury-wishlist-btn,
 .m-luxury-actions-group .m-luxury-wishlist-btn,
-.m-luxury-actions-group .m-wishlist-button {
+.m-luxury-actions-group .m-wishlist-button,
+.m-wishlist-button.in-prod-page {
   width: 100% !important;
   height: 48px !important;
   background-color: #ffffff !important;
@@ -650,7 +652,8 @@ button.m-luxury-wishlist-btn,
 }
 
 button.m-luxury-wishlist-btn:hover,
-.m-luxury-actions-group .m-luxury-wishlist-btn:hover {
+.m-luxury-actions-group .m-luxury-wishlist-btn:hover,
+.m-wishlist-button.in-prod-page:hover {
   border-color: #18181b !important;
   background-color: #fafafa !important;
   background: #fafafa !important;
@@ -658,7 +661,8 @@ button.m-luxury-wishlist-btn:hover,
 }
 
 button.m-luxury-wishlist-btn.added-to-wishlist,
-.m-luxury-actions-group .m-wishlist-button.added-to-wishlist {
+.m-luxury-actions-group .m-wishlist-button.added-to-wishlist,
+.m-wishlist-button.in-prod-page.added-to-wishlist {
   background-color: #ffffff !important;
   background: #ffffff !important;
   border-color: #18181b !important;
@@ -668,35 +672,48 @@ button.m-luxury-wishlist-btn.added-to-wishlist,
 button.m-luxury-wishlist-btn *,
 .m-luxury-wishlist-btn span,
 .m-luxury-wishlist-btn .m-wishlist-button-text,
+.m-wishlist-button.in-prod-page span,
+.m-wishlist-button.in-prod-page .m-wishlist-button-text,
 .m-wishlist-button.added-to-wishlist .m-wishlist-button-text {
   color: #18181b !important;
   font-family: inherit !important;
   font-size: 13.5px !important;
   font-weight: 400 !important;
-  display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
 }
 
-.m-luxury-wishlist-btn .m-luxury-wishlist-icon {
+.m-luxury-wishlist-btn span,
+.m-luxury-wishlist-btn .m-wishlist-button-text,
+.m-wishlist-button.in-prod-page .m-wishlist-button-text {
+  display: inline-block !important;
+  color: #18181b !important;
+}
+
+.m-luxury-wishlist-btn .m-luxury-wishlist-icon,
+.m-wishlist-button.in-prod-page .m-luxury-wishlist-icon {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
 }
 
-.m-luxury-wishlist-btn .m-luxury-wishlist-icon--active {
+.m-luxury-wishlist-btn .m-luxury-wishlist-icon--active,
+.m-wishlist-button.in-prod-page .m-luxury-wishlist-icon--active {
   display: none !important;
 }
 
-.m-luxury-wishlist-btn.added-to-wishlist .m-luxury-wishlist-icon--default {
+.m-luxury-wishlist-btn.added-to-wishlist .m-luxury-wishlist-icon--default,
+.m-wishlist-button.in-prod-page.added-to-wishlist .m-luxury-wishlist-icon--default {
   display: none !important;
 }
 
-.m-luxury-wishlist-btn.added-to-wishlist .m-luxury-wishlist-icon--active {
+.m-luxury-wishlist-btn.added-to-wishlist .m-luxury-wishlist-icon--active,
+.m-wishlist-button.in-prod-page.added-to-wishlist .m-luxury-wishlist-icon--active {
   display: inline-flex !important;
 }
 
-.m-luxury-wishlist-btn svg {
+.m-luxury-wishlist-btn svg,
+.m-wishlist-button.in-prod-page svg {
   display: block !important;
   flex-shrink: 0 !important;
 }
@@ -1410,8 +1427,48 @@ button.m-luxury-wishlist-btn *,
 }
 
 .m-luxury-quickview-modal-content .m-luxury-main-img {
-  max-height: 420px;
+  width: 100%;
+  height: auto;
+  max-height: 720px;
   object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.m-luxury-quickview-modal-content .m-luxury-slide-inner {
+  background: #fbfbfb;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.m-luxury-quickview-modal-content .m-luxury-slider-viewport {
+  background: #fbfbfb;
+}
+
+.m-luxury-quickview-modal-content .m-luxury-video-wrapper {
+  width: 100%;
+  height: 100%;
+  max-height: 720px;
+  min-height: 380px;
+  background: #fbfbfb;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.m-luxury-quickview-modal-content .m-luxury-main-video,
+.m-luxury-quickview-modal-content .m-luxury-video-wrapper video,
+.m-luxury-quickview-modal-content .m-luxury-video-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  max-height: 720px;
+  min-height: 380px;
+  object-fit: contain;
+  background: #fbfbfb;
+  display: block;
 }
 
 .m-luxury-quickview-modal-content .m-luxury-col-info {
@@ -1420,7 +1477,7 @@ button.m-luxury-wishlist-btn *,
 }
 
 .m-luxury-quickview-modal-content .m-luxury-thumbnails-wrap {
-  max-height: 560spx;
+  max-height: 600px;
 }
 
 /* ==========================================================================
@@ -1480,9 +1537,10 @@ button.m-luxury-wishlist-btn *,
 
   .m-luxury-main-img,
   .m-luxury-quickview-modal-content .m-luxury-main-img {
-    max-height: 420px;
+    max-height: 600px;
     width: 100%;
-    object-fit: cover;
+    height: auto;
+    object-fit: contain;
     border-radius: 4px;
   }
 
@@ -1646,9 +1704,10 @@ button.m-luxury-wishlist-btn *,
   .m-luxury-video-wrapper,
   .m-luxury-main-video,
   .m-luxury-quickview-modal-content .m-luxury-main-img {
-    max-height: 520px;
-    min-height: 280px;
-    object-fit: cover;
+    max-height: 540px;
+    min-height: unset;
+    height: auto;
+    object-fit: contain;
   }
 
   .m-luxury-thumb-box {
@@ -1721,9 +1780,119 @@ html[dir="rtl"] .m-luxury-sg-td-title {
 }
 
 @media (max-width: 640px) {
+
   [dir="rtl"] .m-luxury-sg-diagram-wrap,
   html[dir="rtl"] .m-luxury-sg-diagram-wrap {
     margin-left: 0;
     margin-right: 10px;
   }
+}
+
+/* ==========================================================================
+   PRODUCT RECOMMENDATIONS / COMPLETE THE COLLECTION CAROUSEL BUTTONS
+   ========================================================================== */
+.m-product-recommendations .m-product-recommendations__wrapper {
+  position: relative !important;
+}
+
+.m-product-recommendations .swiper-container .swiper-wrapper {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.m-product-recommendations .swiper-container .swiper-slide {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.m-product-recommendations .m-slider-controls,
+.m-product-recommendations .m-slider-controls--absolute {
+  position: static !important;
+  pointer-events: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: inherit !important;
+}
+
+.m-product-recommendations .m-slider-controls__wrapper {
+  position: static !important;
+  pointer-events: none !important;
+}
+
+.m-product-recommendations .m-slider-controls__button {
+  --button-offset-top: calc(var(--offset-top, 42%) + var(--swiper-container-offset-top, 0px));
+  position: absolute !important;
+  top: var(--button-offset-top, 42%) !important;
+  transform: translateY(-50%) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 50% !important;
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+  z-index: 25 !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.m-product-recommendations .m-slider-controls__button svg {
+  width: 16px !important;
+  height: 16px !important;
+  display: block !important;
+}
+
+.m-product-recommendations .m-slider-controls__button-prev {
+  left: 6px !important;
+  right: auto !important;
+}
+
+.m-product-recommendations .m-slider-controls__button-next {
+  right: 6px !important;
+  left: auto !important;
+}
+
+@media screen and (min-width: 768px) {
+  .m-product-recommendations .m-slider-controls__button {
+    width: 42px !important;
+    height: 42px !important;
+  }
+
+  .m-product-recommendations .m-slider-controls__button svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .m-product-recommendations .m-slider-controls__button-prev {
+    left: 12px !important;
+  }
+
+  .m-product-recommendations .m-slider-controls__button-next {
+    right: 12px !important;
+  }
+}
+
+.m-product-recommendations .m-slider-controls__button:hover {
+  background-color: #111111 !important;
+  color: #ffffff !important;
+  border-color: #111111 !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25) !important;
+  transform: translateY(-50%) scale(1.08) !important;
+}
+
+.m-product-recommendations .m-slider-controls__button:active {
+  transform: translateY(-50%) scale(0.95) !important;
+}
+
+.m-product-recommendations .m-slider-controls__button.swiper-button-disabled {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateY(-50%) scale(0.7) !important;
 }

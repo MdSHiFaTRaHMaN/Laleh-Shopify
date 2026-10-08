@@ -165,15 +165,17 @@
                         >
                       {% when 'video' %}
                         <div class="m-luxury-video-wrapper" data-media-type="video">
+                          {% assign video_poster = media.preview_image | image_url: width: 1400 %}
                           {{
                             media
                             | video_tag:
                               controls: false,
-                              autoplay: false,
+                              autoplay: true,
                               loop: true,
                               muted: true,
                               playsinline: true,
                               preload: 'auto',
+                              poster: video_poster,
                               image_size: '1400x',
                               class: 'm-luxury-main-video'
                           }}
@@ -278,8 +280,8 @@
               assign raw_price = current_variant.price | money
               assign raw_compare = current_variant.compare_at_price | money
             endif
-            assign v_price = raw_price | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip
-            assign v_compare = raw_compare | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip
+            assign v_price = raw_price | replace: 'Dhs.', 'AED ' | replace: 'Dhs', 'AED ' | replace: 'AED', 'AED ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip
+            assign v_compare = raw_compare | replace: 'Dhs.', 'AED ' | replace: 'Dhs', 'AED ' | replace: 'AED', 'AED ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip
           %}
           {% if current_variant.compare_at_price > current_variant.price %}
             <span

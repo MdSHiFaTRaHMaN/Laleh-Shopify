@@ -1602,8 +1602,62 @@ sup.m-wishlist-count:empty,
   font-weight: 400;
 }
 
+.m-right-coll-card__sizes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  margin-bottom: 2px;
+  width: 100%;
+}
+
+.m-right-coll-size-pill {
+  min-width: 25px;
+  height: 22px;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: uppercase;
+  color: rgb(var(--color-foreground, 17, 17, 17));
+  background: #ffffff;
+  border: 1px solid rgba(var(--color-foreground, 17, 17, 17), 0.2);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.m-right-coll-size-pill:hover:not(:disabled) {
+  border-color: rgb(var(--color-foreground, 17, 17, 17));
+  background: rgba(var(--color-foreground, 17, 17, 17), 0.04);
+}
+
+.m-right-coll-size-pill.is-selected {
+  background: rgb(var(--color-foreground, 17, 17, 17)) !important;
+  color: rgb(var(--color-background, 255, 255, 255)) !important;
+  border-color: rgb(var(--color-foreground, 17, 17, 17)) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.m-right-coll-size-pill:disabled,
+.m-right-coll-size-pill.is-sold-out {
+  opacity: 0.35;
+  color: rgba(var(--color-foreground, 17, 17, 17), 0.4);
+  border-color: rgba(var(--color-foreground, 17, 17, 17), 0.1);
+  text-decoration: line-through;
+  cursor: not-allowed;
+  pointer-events: none;
+  background: rgba(0, 0, 0, 0.02);
+}
+
 .m-right-coll-add-btn {
-  margin-top: 8px;
+  margin-top: 6px;
   width: 100%;
   padding: 6px 8px;
   background: transparent;
@@ -2082,8 +2136,21 @@ sup.m-wishlist-count:empty,
     font-size: 10px;
   }
 
+  .m-right-coll-card__sizes {
+    gap: 3px;
+    margin-top: 5px;
+    margin-bottom: 2px;
+  }
+
+  .m-right-coll-size-pill {
+    min-width: 21px;
+    height: 19px;
+    padding: 0 3px;
+    font-size: 9px;
+  }
+
   .m-right-coll-add-btn {
-    margin-top: 6px;
+    margin-top: 5px;
     padding: 5px 4px;
     font-size: 10.5px;
     letter-spacing: 0.2px;

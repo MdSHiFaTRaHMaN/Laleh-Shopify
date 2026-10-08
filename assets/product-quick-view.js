@@ -100,6 +100,11 @@ class QuickView {
   // Close the quick view modal
   close() {
     this.isOpen = false;
+    if (this.modalContent) {
+      this.modalContent.querySelectorAll('video').forEach((v) => {
+        try { v.pause(); } catch (e) {}
+      });
+    }
   }
 
   // Toggle loading spinner on the target element

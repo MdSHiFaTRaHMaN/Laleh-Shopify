@@ -11,7 +11,7 @@
   if settings.currency_code_enabled
     assign money_format = shop.money_with_currency_format | strip_html
   endif
-  assign money_format = money_format | replace: '{{', ' {{' | replace: '  {{', ' {{' | replace: '}}', '}} ' | replace: '}}  ', '}} ' | strip
+  assign money_format = money_format | replace: 'Dhs.', 'AED' | replace: 'Dhs', 'AED' | replace: '{{', ' {{' | replace: '  {{', ' {{' | replace: '}}', '}} ' | replace: '}}  ', '}} ' | strip
 -%}
 
 {%- capture theme_data -%}

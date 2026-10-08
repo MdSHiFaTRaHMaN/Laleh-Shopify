@@ -198,7 +198,9 @@
       "delivery_title": "Livraison",
       "delivery_time": "Délai de livraison",
       "delivery_label": "Choisissez une date de livraison :",
-      "delivery_error": "Veuillez choisir l'heure actuelle ou future."
+      "delivery_error": "Veuillez choisir l'heure actuelle ou future.",
+      "explore_more": "En savoir plus",
+      "complete_collection": "Complétez votre collection"
     },
     "label": {
       "product": "Produit",
@@ -386,7 +388,8 @@
     "wishlist": {
       "title": "Liste de souhaits",
       "loading": "Chargement de votre liste d'envies...",
-      "no_products": "Aucun produit n'a été ajouté à la page de liste de souhaits."
+      "no_products": "Aucun produit n'a été ajouté à la page de liste de souhaits.",
+      "view_all": "Voir votre liste d'envies"
     },
     "compare": {
       "title": "Comparer",

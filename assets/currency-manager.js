@@ -21,7 +21,7 @@
     JPY: { code: 'JPY', name: 'Japanese Yen', symbol: '¥', format: '¥ {{amount_no_decimals}}', rate: 155.0, precision: 0 },
     BDT: { code: 'BDT', name: 'Bangladeshi Taka', symbol: '৳', format: '৳ {{amount}}', rate: 120.0, precision: 2 },
     INR: { code: 'INR', name: 'Indian Rupee', symbol: '₹', format: '₹ {{amount}}', rate: 83.5, precision: 2 },
-    AED: { code: 'AED', name: 'UAE Dirham', symbol: 'Dhs', format: 'Dhs {{amount}}', rate: 3.67, precision: 2 },
+    AED: { code: 'AED', name: 'UAE Dirham', symbol: 'AED', format: 'AED {{amount}}', rate: 3.67, precision: 2 },
     SAR: { code: 'SAR', name: 'Saudi Riyal', symbol: 'SAR', format: 'SAR {{amount}}', rate: 3.75, precision: 2 },
     QAR: { code: 'QAR', name: 'Qatari Riyal', symbol: 'QAR', format: 'QAR {{amount}}', rate: 3.64, precision: 2 },
     KWD: { code: 'KWD', name: 'Kuwaiti Dinar', symbol: 'KWD', format: 'KWD {{amount}}', rate: 0.31, precision: 2 },
@@ -319,8 +319,8 @@
     return result
       .replace(/^([^\d\s]+)(\d)/, '$1 $2')
       .replace(/(\d)([^\d\s.,]+)$/, '$1 $2')
-      .replace(/Dhs(\d)/gi, 'Dhs $1')
-      .replace(/AED(\d)/gi, 'Dhs $1')
+      .replace(/Dhs\.?/gi, 'AED')
+      .replace(/AED(\d)/gi, 'AED $1')
       .replace(/\s+/g, ' ')
       .trim();
   }
@@ -408,8 +408,8 @@
         el.textContent = el.textContent
           .replace(/^([^\d\s]+)(\d)/, '$1 $2')
           .replace(/(\d)([^\d\s.,]+)$/, '$1 $2')
-          .replace(/Dhs(\d)/gi, 'Dhs $1')
-          .replace(/AED(\d)/gi, 'Dhs $1')
+          .replace(/Dhs\.?/gi, 'AED')
+          .replace(/AED(\d)/gi, 'AED $1')
           .replace(/\s+/g, ' ')
           .trim();
       }
@@ -785,8 +785,8 @@
       return output
         .replace(/^([^\d\s]+)(\d)/, '$1 $2')
         .replace(/(\d)([^\d\s.,]+)$/, '$1 $2')
-        .replace(/Dhs(\d)/gi, 'Dhs $1')
-        .replace(/AED(\d)/gi, 'Dhs $1')
+        .replace(/Dhs\.?/gi, 'AED')
+        .replace(/AED(\d)/gi, 'AED $1')
         .replace(/\s+/g, ' ')
         .trim();
     };

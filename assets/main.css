@@ -6165,7 +6165,7 @@ deferred-media {
 }
 
 .m-contact-form__message {
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   margin-top: calc(var(--column-gap))
 }
 
@@ -6235,13 +6235,22 @@ deferred-media {
   margin-top: 10px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
+  .m-contact-form__submit-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
 
   .m-contact-form button[type="submit"],
   .m-contact-form .m-button--primary {
     padding: 6.5px 16px !important;
     font-size: 11px !important;
     letter-spacing: 0.7px !important;
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: center !important;
   }
 }
 

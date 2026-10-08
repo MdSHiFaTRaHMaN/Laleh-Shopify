@@ -139,9 +139,9 @@
                     </a>
                     <div class="m-right-item-card__price-row" style="margin-top: 2px;">
                       {%- if product.compare_at_price > product.price -%}
-                        <span class="m-right-price-compare">{{ product.compare_at_price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
+                        <span class="m-right-price-compare">{{ product.compare_at_price | money | replace: 'Dhs.', 'AED ' | replace: 'Dhs', 'AED ' | replace: 'AED', 'AED ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
                       {%- endif -%}
-                      <span class="m-right-price-regular" data-base-price="{{ product.price }}">{{ product.price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
+                      <span class="m-right-price-regular" data-base-price="{{ product.price }}">{{ product.price | money | replace: 'Dhs.', 'AED ' | replace: 'Dhs', 'AED ' | replace: 'AED', 'AED ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
                     </div>
                   </div>
                 </div>
@@ -245,9 +245,9 @@
                   <!-- Real Line Price -->
                   <div class="m-right-item-card__price-row" style="margin-top: 8px;">
                     {%- if item.original_line_price > item.final_line_price -%}
-                      <span class="m-right-price-compare">{{ item.original_line_price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
+                      <span class="m-right-price-compare">{{ item.original_line_price | money | strip_html | replace: 'Dhs.', 'AED ' | replace: 'Dhs', 'AED ' | replace: 'AED', 'AED ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
                     {%- endif -%}
-                    <span class="m-right-price-regular" data-line-price data-base-price="{{ item.final_line_price }}">{{ item.final_line_price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
+                    <span class="m-right-price-regular" data-line-price data-base-price="{{ item.final_line_price }}">{{ item.final_line_price | money | strip_html | replace: 'Dhs.', 'AED ' | replace: 'Dhs', 'AED ' | replace: 'AED', 'AED ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
                   </div>
 
                   <!-- Real Remove Button -->
@@ -365,21 +365,63 @@
                     </a>
                     <div class="m-right-coll-card__price-row">
                       {%- if product.compare_at_price > product.price -%}
-                        <span class="m-right-price-compare">{{ product.compare_at_price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
+                        <span class="m-right-price-compare">{{ product.compare_at_price | money | strip_html | replace: 'Dhs.', 'AED ' | replace: 'Dhs', 'AED ' | replace: 'AED', 'AED ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
                       {%- endif -%}
-                      <span class="m-right-price-regular" data-base-price="{{ product.price }}">{{ product.price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
+                      <span class="m-right-price-regular" data-base-price="{{ product.price }}">{{ product.price | money | strip_html | replace: 'Dhs.', 'AED ' | replace: 'Dhs', 'AED ' | replace: 'AED', 'AED ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
                     </div>
+
+                    {%- unless product.has_only_default_variant -%}
+                      {%- assign default_size_label = default_variant.title -%}
+                      {%- for option_name in product.options -%}
+                        {%- assign down_name = option_name | downcase -%}
+                        {%- if down_name contains 'size' -%}
+                          {%- assign default_size_label = default_variant.options[forloop.index0] -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                      <div class="m-right-coll-card__sizes" data-coll-sizes>
+                        {%- for variant in product.variants -%}
+                          {%- assign pill_label = variant.title -%}
+                          {%- for option_name in product.options -%}
+                            {%- assign down_name = option_name | downcase -%}
+                            {%- if down_name contains 'size' -%}
+                              {%- assign pill_label = variant.options[forloop.index0] -%}
+                            {%- endif -%}
+                          {%- endfor -%}
+                          <button
+                            type="button"
+                            class="m-right-coll-size-pill{% if variant.id == default_variant.id %} is-selected{% endif %}{% unless variant.available %} is-sold-out{% endunless %}"
+                            data-coll-size-pill
+                            data-variant-id="{{ variant.id }}"
+                            data-variant-price="{{ variant.price }}"
+                            data-variant-price-formatted="{{ variant.price | money | strip_html | replace: 'Dhs.', 'AED ' | replace: 'Dhs', 'AED ' | replace: 'AED', 'AED ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}"
+                            data-size="{{ pill_label | escape }}"
+                            {% unless variant.available %}
+                              disabled
+                              aria-disabled="true"
+                            {% endunless %}
+                            title="{{ pill_label }}{% unless variant.available %} (Sold out){% endunless %}"
+                          >
+                            {{ pill_label }}
+                          </button>
+                        {%- endfor -%}
+                      </div>
+                    {%- endunless -%}
 
                     <button
                       type="button"
                       class="m-right-coll-add-btn"
                       data-coll-quick-add="{{ default_variant.id }}"
+                      data-selected-size="{{ default_size_label }}"
                       {% unless product.available %}
                         disabled
                       {% endunless %}
                     >
                       {%- if product.available -%}
-                        + Add to Bag
+                        {%- if product.has_only_default_variant -%}
+                          + Add to Bag
+                        {%- else -%}
+                          + Add to Bag • {{ default_size_label }}
+                        {%- endif -%}
                       {%- else -%}
                         Sold Out
                       {%- endif -%}
@@ -416,21 +458,63 @@
                     </a>
                     <div class="m-right-coll-card__price-row">
                       {%- if product.compare_at_price > product.price -%}
-                        <span class="m-right-price-compare">{{ product.compare_at_price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
+                        <span class="m-right-price-compare">{{ product.compare_at_price | money | strip_html | replace: 'Dhs.', 'AED ' | replace: 'Dhs', 'AED ' | replace: 'AED', 'AED ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
                       {%- endif -%}
-                      <span class="m-right-price-regular" data-base-price="{{ product.price }}">{{ product.price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
+                      <span class="m-right-price-regular" data-base-price="{{ product.price }}">{{ product.price | money | strip_html | replace: 'Dhs.', 'AED ' | replace: 'Dhs', 'AED ' | replace: 'AED', 'AED ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
                     </div>
+
+                    {%- unless product.has_only_default_variant -%}
+                      {%- assign default_size_label = default_variant.title -%}
+                      {%- for option_name in product.options -%}
+                        {%- assign down_name = option_name | downcase -%}
+                        {%- if down_name contains 'size' -%}
+                          {%- assign default_size_label = default_variant.options[forloop.index0] -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                      <div class="m-right-coll-card__sizes" data-coll-sizes>
+                        {%- for variant in product.variants -%}
+                          {%- assign pill_label = variant.title -%}
+                          {%- for option_name in product.options -%}
+                            {%- assign down_name = option_name | downcase -%}
+                            {%- if down_name contains 'size' -%}
+                              {%- assign pill_label = variant.options[forloop.index0] -%}
+                            {%- endif -%}
+                          {%- endfor -%}
+                          <button
+                            type="button"
+                            class="m-right-coll-size-pill{% if variant.id == default_variant.id %} is-selected{% endif %}{% unless variant.available %} is-sold-out{% endunless %}"
+                            data-coll-size-pill
+                            data-variant-id="{{ variant.id }}"
+                            data-variant-price="{{ variant.price }}"
+                            data-variant-price-formatted="{{ variant.price | money | strip_html | replace: 'Dhs.', 'AED ' | replace: 'Dhs', 'AED ' | replace: 'AED', 'AED ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}"
+                            data-size="{{ pill_label | escape }}"
+                            {% unless variant.available %}
+                              disabled
+                              aria-disabled="true"
+                            {% endunless %}
+                            title="{{ pill_label }}{% unless variant.available %} (Sold out){% endunless %}"
+                          >
+                            {{ pill_label }}
+                          </button>
+                        {%- endfor -%}
+                      </div>
+                    {%- endunless -%}
 
                     <button
                       type="button"
-                      class="m-button m-button--primary "
+                      class="m-right-coll-add-btn"
                       data-coll-quick-add="{{ default_variant.id }}"
+                      data-selected-size="{{ default_size_label }}"
                       {% unless product.available %}
                         disabled
                       {% endunless %}
                     >
                       {%- if product.available -%}
-                        + Add to Cart
+                        {%- if product.has_only_default_variant -%}
+                          + Add to Bag
+                        {%- else -%}
+                          + Add to Bag • {{ default_size_label }}
+                        {%- endif -%}
                       {%- else -%}
                         Sold Out
                       {%- endif -%}
@@ -462,7 +546,7 @@
         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 13.5px; font-weight: 500;"
       >
         <span>{{ 'cart.general.subtotal' | t | default: 'Subtotal' }}</span>
-        <span id="m-right-cart-subtotal" data-base-price="{{ cart.total_price }}">{{ cart.total_price | money | replace: 'Dhs', 'Dhs ' | replace: 'AED', 'Dhs ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
+        <span id="m-right-cart-subtotal" data-base-price="{{ cart.total_price }}">{{ cart.total_price | money | strip_html | replace: 'Dhs.', 'AED ' | replace: 'Dhs', 'AED ' | replace: 'AED', 'AED ' | replace: 'CHF', 'CHF ' | replace: '$', '$ ' | replace: '€', '€ ' | replace: '£', '£ ' | replace: '৳', '৳ ' | replace: '₹', '₹ ' | replace: '¥', '¥ ' | replace: 'SAR', 'SAR ' | replace: 'QAR', 'QAR ' | replace: 'KWD', 'KWD ' | replace: 'CA$', 'CA$ ' | replace: 'A$', 'A$ ' | replace: 'kr', 'kr ' | replace: '  ', ' ' | strip }}</span>
       </div>
 
       <a href="/checkout" class="m-right-checkout-btn">

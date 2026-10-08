@@ -117,7 +117,8 @@
                   >
                 {% when 'video' %}
                   <div class="m-luxury-video-wrapper" data-media-type="video">
-                    {{ media | video_tag: controls: true, autoplay: false, loop: true, muted: true, playsinline: true, preload: 'auto', image_size: '1400x', class: 'm-luxury-main-video' }}
+                    {% assign video_poster = media.preview_image | image_url: width: 1400 %}
+                    {{ media | video_tag: controls: true, autoplay: true, loop: true, muted: true, playsinline: true, preload: 'auto', poster: video_poster, image_size: '1400x', class: 'm-luxury-main-video' }}
                   </div>
                 {% when 'external_video' %}
                   <div class="m-luxury-video-wrapper" data-media-type="external_video">

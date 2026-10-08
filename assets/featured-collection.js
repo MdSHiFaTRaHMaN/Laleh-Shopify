@@ -182,27 +182,75 @@ if (!customElements.get("m-featured-collection")) {
         threshold: 2,
         on: {
           init: (swiper) => {
-            this.updateScrollbar(swiper);
-            setTimeout(() => {
-              // Calculate controls position
+            const updateButtonState = () => {
+              if (prevButton) {
+                if (swiper.isBeginning) {
+                  prevButton.classList.add("swiper-button-disabled");
+                } else {
+                  prevButton.classList.remove("swiper-button-disabled");
+                }
+              }
+              if (nextButton) {
+                if (swiper.isEnd) {
+                  nextButton.classList.add("swiper-button-disabled");
+                } else {
+                  nextButton.classList.remove("swiper-button-disabled");
+                }
+              }
+            };
+
+            const updateOffsetTop = () => {
               const firstItem = this.querySelector(".m-image") || this.querySelector(".m-placeholder-svg");
               if (firstItem && controlsContainer) {
                 const itemHeight = firstItem.clientHeight;
-                controlsContainer.style.setProperty("--offset-top", parseInt(itemHeight) / 2 + "px");
-
+                if (itemHeight > 0) {
+                  controlsContainer.style.setProperty("--offset-top", parseInt(itemHeight) / 2 + "px");
+                }
                 prevButton && prevButton.classList.remove("m:hidden");
                 nextButton && nextButton.classList.remove("m:hidden");
               }
+            };
+
+            this.updateScrollbar(swiper);
+            updateButtonState();
+            updateOffsetTop();
+
+            const firstImg = this.querySelector(".m-image img");
+            if (firstImg && !firstImg.complete) {
+              firstImg.addEventListener("load", updateOffsetTop);
+            }
+
+            setTimeout(() => {
+              updateOffsetTop();
+              updateButtonState();
               this.updateScrollbar(swiper);
             }, 200);
           },
           slideChange: (swiper) => {
+            if (prevButton) {
+              if (swiper.isBeginning) {
+                prevButton.classList.add("swiper-button-disabled");
+              } else {
+                prevButton.classList.remove("swiper-button-disabled");
+              }
+            }
+            if (nextButton) {
+              if (swiper.isEnd) {
+                nextButton.classList.add("swiper-button-disabled");
+              } else {
+                nextButton.classList.remove("swiper-button-disabled");
+              }
+            }
             this.updateScrollbar(swiper);
           },
           setTranslate: (swiper) => {
             this.updateScrollbar(swiper);
           },
           resize: (swiper) => {
+            const firstItem = this.querySelector(".m-image") || this.querySelector(".m-placeholder-svg");
+            if (firstItem && controlsContainer && firstItem.clientHeight > 0) {
+              controlsContainer.style.setProperty("--offset-top", parseInt(firstItem.clientHeight) / 2 + "px");
+            }
             this.updateScrollbar(swiper);
           },
           breakpoint: (swiper, breakpointParams) => {
@@ -222,8 +270,12 @@ if (!customElements.get("m-featured-collection")) {
       });
 
       if (this.slider && this.showNavigation) {
-        prevButton && prevButton.addEventListener("click", () => this.slider.slidePrev());
-        nextButton && nextButton.addEventListener("click", () => this.slider.slideNext());
+        prevButton && prevButton.addEventListener("click", () => {
+          this.slider.slidePrev();
+        });
+        nextButton && nextButton.addEventListener("click", () => {
+          this.slider.slideNext();
+        });
       }
 
       this.swiper = slideContainer && slideContainer.swiper;

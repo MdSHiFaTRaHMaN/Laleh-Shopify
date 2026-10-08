@@ -60,7 +60,6 @@
     },
     "product-recommendations": {
       "type": "product-recommendations",
-      "disabled": true,
       "settings": {
         "container": "container-fluid",
         "color_scheme": "",
@@ -70,10 +69,10 @@
         "text_align": "center",
         "limit": 8,
         "columns": 3,
-        "column_gap": 30,
-        "enable_slider": false,
+        "column_gap": 12,
+        "enable_slider": true,
         "show_pagination": false,
-        "show_navigation": false,
+        "show_navigation": true,
         "use_scroll_mobile": false,
         "padding_top": 20,
         "padding_bottom": 20,
@@ -83,6 +82,7 @@
     },
     "featured_collection_4amUfK": {
       "type": "featured-collection",
+      "disabled": true,
       "name": "Featured collection",
       "settings": {
         "heading": "Complete the Collection",

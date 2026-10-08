@@ -52,11 +52,20 @@
     max-width: max-content !important;
     margin-top: 10px;
   }
-  @media (max-width: 767px) {
+  @media (max-width: 768px) {
+    #m-section--{{ section.id }} .m-contact-form__submit-wrapper {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
     #m-section--{{ section.id }} .m-contact-form__submit-btn {
       padding: 6.5px 16px !important;
       font-size: 11px !important;
       letter-spacing: 0.7px !important;
+      display: block !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+      text-align: center !important;
     }
     #m-section--{{ section.id }} .m-contact-form__message textarea {
       min-height: 100px !important;
@@ -157,7 +166,9 @@
               </label>
             </div>
           {% endif %}
-          <button type="submit" class="m-button m-button--primary m-contact-form__submit-btn">{{ 'contact.form.send' | t }}</button>
+          <div class="m-contact-form__submit-wrapper">
+            <button type="submit" class="m-button m-button--primary m-contact-form__submit-btn">{{ 'contact.form.send' | t }}</button>
+          </div>
         {%- endform -%}
       </div>
       {% if section.blocks.size > 0 %}
