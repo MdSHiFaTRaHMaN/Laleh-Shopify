@@ -22,7 +22,7 @@
     "custom_content_tAfTRN": {
       "type": "custom-content",
       "custom_css": [
-        ".m-section__header {--m-section-header-spacing-bottom: 40px;}",
+        ".m-section__header {--m-section-header-spacing-bottom: 12px;}",
         "@media screen and (max-width: 767px) {.m-section__header {margin-bottom: 0px; } p.m-section__subheading.m-scroll-trigger.animate--fade-in-up {font-size: 14px; } .h3 {font-size: 20px; }}"
       ],
       "settings": {
@@ -145,9 +145,7 @@
         "accordion_KbCwBh"
       ],
       "custom_css": [
-        "section.m-section.m-faqs-section.m-gradient.m-color-default {max-width: 900px; margin: 0 auto;}",
-        ".m-faqs-section .m-collapsible--button {font-size: 15px !important; padding-top: 7px !important; padding-bottom: 7px !important;}",
-        ".m-collapsible--content__inner p {font-size: 12px !important;}"
+        "section.m-section.m-faqs-section.m-gradient.m-color-default {max-width: 1340px; margin: 0 auto;}"
       ],
       "settings": {
         "container": "container",

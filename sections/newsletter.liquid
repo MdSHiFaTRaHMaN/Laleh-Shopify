@@ -118,14 +118,40 @@
                 </span>
               {% endif %}
             {% endif %}
-            {%- if section.settings.heading != blank -%}
+            {% liquid
+              assign is_ar = false
+              if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
+                assign is_ar = true
+              endif
+
+              assign display_heading = section.settings.heading
+              assign display_description = section.settings.description
+              assign display_submit_button = section.settings.submit_button
+              assign display_email_placeholder = section.settings.email_placeholder
+
+              if is_ar
+                if display_heading contains 'LALEH List' or display_heading contains 'قائمة'
+                  assign display_heading = 'انضمي إلى قائمة LALEH الخاصة'
+                endif
+                if display_description contains 'Be the first to discover' or display_description contains 'اكتشف'
+                  assign display_description = '<p>كوني أول من يكتشف المجموعات الحصرية، وتجدد القطع، والإصدارات الخاصة.</p>'
+                endif
+                if display_submit_button != blank
+                  assign display_submit_button = 'اشتراك'
+                endif
+                if display_email_placeholder != blank
+                  assign display_email_placeholder = 'أدخلي بريدك الإلكتروني'
+                endif
+              endif
+            %}
+            {%- if display_heading != blank -%}
               <h2 class="m-newsletter-section__heading {{ heading_color }} {{ section.settings.text_size }}">
-                {{ section.settings.heading }}
+                {{ display_heading }}
               </h2>
             {%- endif -%}
-            {%- if section.settings.description != blank -%}
+            {%- if display_description != blank -%}
               <div class="m-newsletter-section__description rte m:w-full {{ desc_color }}">
-                {{ section.settings.description }}
+                {{ display_description }}
               </div>
             {%- endif -%}
           </div>
@@ -134,7 +160,7 @@
             assign button_type = 'icon'
             assign form_style = section.settings.form_design | replace: '1', 'bordered' | replace: '2', 'minimal'
 
-            if section.settings.submit_button != blank
+            if display_submit_button != blank
               assign button_type = 'text'
             endif
           %}
@@ -145,8 +171,8 @@
               button_type: button_type,
               show_agreement: section.settings.show_agreement,
               agree_text: settings.agree_text,
-              button_label: section.settings.submit_button,
-              placeholder: section.settings.email_placeholder
+              button_label: display_submit_button,
+              placeholder: display_email_placeholder
             %}
           </div>
         </div>

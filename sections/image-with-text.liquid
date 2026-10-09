@@ -102,6 +102,43 @@ m-section m-image-with-text {{ section.settings.custom_class }} m-section-{{ sec
           {% endif %}
         </m-image-layer>
       </div>
+      {% liquid
+        assign is_ar = false
+        if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
+          assign is_ar = true
+        endif
+
+        assign display_sub_title = section.settings.sub_title
+        assign display_title = section.settings.title
+        assign display_text = section.settings.text
+        assign display_button_label = section.settings.button_label
+
+        if is_ar
+          assign title_clean = display_title | strip | upcase
+          if title_clean == 'THE STORY' or title_clean == 'القصة' or display_text contains 'Middle Eastern woman' or display_text contains 'سويسرا'
+            if display_text contains 'Growing between two cultures' or display_text contains 'ثقافتين'
+              assign display_title = 'قصتنا'
+              assign display_text = '<p>تأسست دار LALEH برؤية سيدة من الشرق الأوسط نشأت في سويسرا، لتجسد تلاقي الأناقة الخالدة والأنوثة الراقية مع لمسة عصرية متجددة.</p><p><br/>ألهمها العيش بين ثقافتين تقديراً عميقاً لتنوع مفاهيم الأناقة والجمال. ومن هنا انطلقت LALEH، بشغف صياغة تلك الرؤية في تصاميم تنبض بالرقي، وتعكس حضوراً واثقاً وأنوثة متفردة.</p>'
+            elsif display_title contains 'Born from two worlds' or title_clean contains 'عالمين' or display_sub_title contains 'ABOUT US' or display_sub_title contains 'من نحن'
+              assign display_sub_title = 'عن الدار'
+              assign display_title = 'ولدت من تلاقي عالمين، وصيغت برؤية واحدة.'
+              assign display_text = '<p>تأسست دار LALEH برؤية سيدة من الشرق الأوسط نشأت في سويسرا، لتجسد تلاقي الأناقة الخالدة والأنوثة الراقية مع رؤية عصرية متجددة.</p>'
+              if display_button_label != blank
+                assign display_button_label = 'اكتشفي قصتنا'
+              endif
+            endif
+          elsif title_clean == 'WHY LALEH' or title_clean contains 'لماذا لاله' or title_clean contains 'لماذا LALEH' or display_title contains 'لماذا' or display_text contains 'considered, refined and effortless' or display_text contains 'بفكرة بسيطة' or display_text contains 'ابتكار قطع' or display_text contains 'مدروسة وراقية'
+            assign display_title = 'لماذا LALEH'
+            assign display_text = '<p>انطلقت LALEH برؤية واضحة: إبداع تصاميم مدروسة وراقية، تمنحكِ حضوراً آسراً وأناقة تنساب دون عناء.<br/></p><p><br/>يُصاغ كل تصميم بعناية فائقة تراعي توازن الأبعاد ودقة التفاصيل وانسيابية القصّة، لنمنحكِ قطعاً تتسم بحضور استثنائي وتألق يدوم عبر الزمن.</p>'
+          elsif title_clean == 'THE LALEH WOMAN' or title_clean == 'امرأة لاله' or title_clean == 'امرأة LALEH' or display_title contains 'امرأة' or display_text contains 'feminine, confident and intentional' or display_text contains 'أنثوية وواثقة' or display_text contains 'قصدية'
+            assign display_title = 'امرأة LALEH'
+            assign display_text = '<p>تتألق بأنوثة آسرة، وثقة هادئة، وخيارات واعية مدروسة.</p><p><br/>تُقدّر الرقي دون تكلف، وتنتقي تصاميمها بذوق أصيل لا تُمليه صيحات الموضة العابرة. صُممت LALEH لتكون جزءاً لا يتجزأ من أناقتها، ومناسباتها الخاصة، وأجمل اللحظات التي تخلد في ذاكرتها.</p>'
+          endif
+
+          assign display_title = display_title | replace: 'لماذا لاله', 'لماذا LALEH' | replace: 'امرأة لاله', 'امرأة LALEH' | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+          assign display_text = display_text | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+        endif
+      %}
       <div
         class="m-image-with-text__content m:column m:w-full md:m:w-1/2 lg:m:w-{{ 12 | minus: section.settings.image_column_size }}/12 {% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}"
         {% if animated %}
@@ -110,26 +147,26 @@ m-section m-image-with-text {{ section.settings.custom_class }} m-section-{{ sec
         {% endif %}
       >
         <div class="m-content-box m-richtext m-richtext--{{ section.settings.text_size }} m:w-full m:text-{{ section.settings.content_alignment }}">
-          {% if section.settings.sub_title != blank %}
+          {% if display_sub_title != blank %}
             <p class="m-richtext__subtitle m-content-box__subheading {{ subtext_size }}">
-              {{ section.settings.sub_title }}
+              {{ display_sub_title }}
             </p>
           {% endif %}
-          {% if section.settings.title != blank %}
-            <h3 class="m-richtext__title m-content-box__heading {{ heading_size }}">{{ section.settings.title }}</h3>
+          {% if display_title != blank %}
+            <h3 class="m-richtext__title m-content-box__heading {{ heading_size }}">{{ display_title }}</h3>
           {% endif %}
-          {% if section.settings.text != blank %}
+          {% if display_text != blank %}
             <div class="m-richtext__description rte m-content-box__description {{ section.settings.desc_size | prepend: 'm:' }}">
-              {{ section.settings.text }}
+              {{ display_text }}
             </div>
           {% endif %}
-          {% if section.settings.button_label != blank %}
+          {% if display_button_label != blank %}
             <div class="m-richtext__button">
               <a
                 href="{{ section.settings.button_link | default: "#" }}"
                 class="m-button {{ section.settings.button_style | replace: 'sf__btn-primary', 'm-button--primary' | replace: 'sf__btn-secondary', 'm-button--secondary' | replace: 'sf__btn-link', 'm-button--link' | replace: 'sf__btn-white', 'm-button--white' }} {{ section.settings.button_size }}"
               >
-                {{- section.settings.button_label -}}
+                {{- display_button_label -}}
               </a>
             </div>
           {% endif %}

@@ -65,9 +65,9 @@
       {%- when 'title' -%}
         <div class="product-block-group product-block-group--title">
           {% if is_featured == true %}
-            <h2 class="m-product-title {{ block.settings.heading_size | default: 'h3' }}">{{ product.title }}</h2>
+            <h2 class="m-product-title notranslate {{ block.settings.heading_size | default: 'h3' }}" translate="no">{% render 'product-title', product: product %}</h2>
           {% else %}
-            <h1 class="m-product-title {{ block.settings.heading_size | default: 'h3' }}">{{ product.title }}</h1>
+            <h1 class="m-product-title notranslate {{ block.settings.heading_size | default: 'h3' }}" translate="no">{% render 'product-title', product: product %}</h1>
           {% endif %}
           {% if section.settings.show_atwl and section.settings.layout != 'layout-7' %}
             <div class="m-product-wishlist m:hidden md:m:block">

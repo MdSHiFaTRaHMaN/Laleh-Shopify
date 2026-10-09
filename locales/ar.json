@@ -3371,13 +3371,13 @@
   },
   "products": {
     "product": {
-      "add_to_cart": "أضف إلى الحقيبة",
+      "add_to_cart": "أضف إلى السلة",
       "sold_out": "نفدت الكمية",
       "unavailable": "غير متوفر",
       "in_stock": "متوفر",
-      "add_to_wishlist": "أضف إلى قائمة الأمنيات",
+      "add_to_wishlist": "أضيفي إلى قائمة الأمنيات",
       "size_guide": "دليل المقاسات",
-      "select_size": "اختر المقاس",
+      "select_size": "اختاري المقاس",
       "return_to_product": "العودة إلى المنتج",
       "description_title": "الوصف",
       "delivery_returns_title": "التوصيل والإرجاع",
@@ -3391,7 +3391,7 @@
       "spec_sleeve": "طول الكم",
       "searching_store": "جاري البحث في المتجر...",
       "no_products_found": "لم يتم العثور على منتجات لـ \"{{ query }}\".",
-      "remove_from_wishlist": "إزالة من قائمة الرغبات",
+      "remove_from_wishlist": "إزالة من قائمة الأمنيات",
       "quick_view": "نظرة سريعة",
       "sale_text": "تخفيضات",
       "choose_an_option": "اختر خياراً",
@@ -3411,14 +3411,14 @@
         "each_html": "{{ money }}/لكل"
       },
       "variant_sold_out_or_unavailable": "الخيار مباع أو غير متاح",
-      "size_au": "الحجم الاسترالي",
-      "size_fr": "مقاس فرنسي",
+      "size_au": "المقاس الأسترالي",
+      "size_fr": "المقاس الفرنسي",
       "size_us": "المقاس الأمريكي",
-      "size_uk": "المقاس بريطاني",
+      "size_uk": "المقاس البريطاني",
       "size_it": "المقاس الإيطالي",
       "regular_price": "السعر العادي",
       "availability": "التوفر",
-      "brand": "علامة تجارية",
+      "brand": "العلامة التجارية",
       "colors": "ألوان",
       "out_of_stock": "غير متوفر",
       "low_stock": "مخزون منخفض",
@@ -3432,8 +3432,8 @@
       "quick_add": "إضافة سريعة",
       "zoom_in": "تکبير",
       "collection": "مجموعة",
-      "decrease_quantity": "تقليل كمية {{ title }} بواحد",
-      "increase_quantity": "زيادة الكمية من {{ title }} بمقدار واحد",
+      "decrease_quantity": "تقليل الكمية",
+      "increase_quantity": "زيادة الكمية",
       "quantity_input_label": "الكمية لـ {{ product }}",
       "include_taxes": "شامل الضريبة.",
       "price": {
@@ -3445,17 +3445,17 @@
       },
       "preorder": "طلب مسبق",
       "product_quantity": "كمية المنتج",
-      "product_recommendation_heading": "قد يعجبك أيضاً",
+      "product_recommendation_heading": "مختارات قد تنال إعجابكِ",
       "product_reviews_heading": "التقييمات والمراجعات",
       "quantity_minimum_message": "يجب أن تكون الكمية 1 أو أكثر",
       "not_enough_items_message": "لا تتوفر عناصر كافية. تبقى {{ quantity }} فقط.",
       "sale_price": "سعر البيع",
-      "see_more_options": "شاهد {{ count }} خيارًا إضافيًا (خيارات إضافية)",
+      "see_more_options": "عرض {{ count }} خيارات إضافية",
       "sold_out_items_message": "لقد نفدت الكمية من هذا المنتج.",
       "view_details": "عرض التفاصيل",
-      "vendor": "مورّد",
-      "type": "اكتب",
-      "sku": "وحدة حفظ المخزون",
+      "vendor": "العلامة التجارية",
+      "type": "نوع المنتج",
+      "sku": "رمز المنتج (SKU)",
       "collections": "المجموعات",
       "social_share": "مشاركة",
       "copy_link": "نسخ الرابط",
@@ -3466,7 +3466,7 @@
       "measurement_note_in": "جميع القياسات بالبوصة.",
       "sg_shoulder": "كتف",
       "sg_shoulder_desc": "قِس المسافة من نقطة الكتف إلى الأخرى.",
-      "sg_bust": "تمثال نصفي",
+      "sg_bust": "محيط الصدر",
       "sg_bust_desc": "قيسي حول الجزء الأكثر امتلاءً من صدرك.",
       "sg_waist": "الخصر",
       "sg_waist_desc": "قِس محيط خصرك من أضيق نقطة.",
@@ -3492,8 +3492,10 @@
         "unavailable": "تعذر تحميل توفر الاستلام",
         "refresh": "تحديث"
       },
-      "select_variant": "يُرجى اختيار النوع قبل إضافة المنتج إلى عربة التسوق.",
-      "preorder_note": "منتج للطلب المسبق"
+      "select_variant": "يُرجى اختيار المقاس قبل الإضافة إلى سلة التسوق.",
+      "preorder_note": "منتج للطلب المسبق",
+      "shipping_note": "شحن مجاني لجميع الطلبات عبر الإنترنت، ويستغرق التوصيل عادةً من 3 إلى 10 أيام عمل.",
+      "delivery_returns_content_html": "<p>شحن مجاني لجميع الطلبات عبر الإنترنت، ويستغرق التوصيل عادةً من 3 إلى 10 أيام عمل.<br/><br/>نقبل طلبات الإرجاع خلال 14 يوماً من تاريخ الاستلام. لتقديم طلب إرجاع، يرجى تعبئة نموذج الإرجاع باستخدام رقم طلبكِ. يجب أن تكون القطع بحالتها الأصلية—غير ملبوسة، غير مغسولة، مع بقاء كافة البطاقات والملصقات والتغليف الأصلي بحالة سليمة.</p>"
     },
     "facets": {
       "show_more": "عرض المزيد"
@@ -3689,7 +3691,7 @@
       "edit_payment_method_brand_button_accessibility_label": "تعديل {{paymentMethodName}}",
       "delete_payment_method_button": "حذف",
       "delete_payment_method_button_accessibility_label": "حذف {{paymentMethodName}}",
-      "back_button": "الظهر",
+      "back_button": "رجوع",
       "back_button_accessibility_label": "العودة إلى {{paymentMethodStepTitle}}",
       "default": "افتراضي",
       "generic_card": "بطاقة",
@@ -3730,7 +3732,7 @@
         "loading_message": "جارٍ تحميل التنقل بين الحسابات"
       },
       "action_menu_accessibility_label": "إجراءات أخرى",
-      "back_button_accessibility_label": "الظهر",
+      "back_button_accessibility_label": "الرجوع",
       "go_to_store_link": "اذهب إلى المتجر",
       "orders_link_label": "الطلبات",
       "subscriptions_link_label": "الاشتراكات",
@@ -4722,21 +4724,21 @@
       "last_name": "اسم العائلة"
     },
     "orders": {
-      "make_your_first_order": "قم بطلبك الأول.",
-      "none": "لم تقم بوضع أي طلبات بعد.",
+      "make_your_first_order": "ابدئي طلبكِ الأول مع LALEH.",
+      "none": "لم تقومي بأي طلبات حتى الآن.",
       "title": "سجل الطلبات",
-      "order_number": "طلب",
+      "order_number": "رقم الطلب",
       "date": "التاريخ",
       "payment_status": "حالة الدفع",
       "fulfillment_status": "حالة التنفيذ",
       "total": "الإجمالي"
     },
     "order": {
-      "title": "اطلب {{ name }}",
-      "date": "وضعت بتاريخ {{ date }}",
+      "title": "طلب {{ name }}",
+      "date": "تم الطلب بتاريخ {{ date }}",
       "cancelled": "تم إلغاء الطلب في {{ date }}",
       "cancelled_reason": "السبب: {{ reason }}",
-      "billing_address": "عنوان الفواتير",
+      "billing_address": "عنوان الفاتورة",
       "fulfilled_at_html": "مُنجز {{ date }}",
       "payment_status": "حالة الدفع",
       "shipping_address": "عنوان الشحن",
@@ -4745,7 +4747,7 @@
       "shipping": "الشحن",
       "tax": "ضريبة",
       "product": "منتج",
-      "sku": "وحدة حفظ المخزون",
+      "sku": "رمز المنتج (SKU)",
       "price": "السعر",
       "quantity": "الكمية",
       "total": "الإجمالي",
@@ -4765,8 +4767,8 @@
       "email": "بريد إلكتروني",
       "view_addresses": "عرض العناوين",
       "return": "العودة إلى تفاصيل الحساب",
-      "greeting": "مرحبًا",
-      "not": "ليس"
+      "greeting": "مرحباً",
+      "not": "لستَ"
     },
     "activate_account": {
       "title": "تفعيل الحساب",
@@ -4824,22 +4826,22 @@
   },
   "layout": {
     "back_to_shopping": "العودة للتسوق",
-    "back": "الظهر",
+    "back": "رجوع",
     "wishlist": {
       "title": "قائمة الأمنيات",
-      "no_products": "لم تتم إضافة أي منتجات إلى صفحة قائمة الأمنيات.",
-      "loading": "جارٍ تحميل قائمة أمنياتك...",
-      "view_all": "عرض قائمة أمنياتك"
+      "no_products": "لم تتم إضافة أي منتجات إلى قائمة أمنياتكِ.",
+      "loading": "جارٍ تحميل قائمة أمنياتكِ...",
+      "view_all": "عرض قائمة أمنياتكِ"
     },
     "compare": {
       "title": "قارن",
       "no_products": "لم تتم إضافة أي منتجات إلى صفحة المقارنة."
     },
     "cart": {
-      "title": "عربة التسوق"
+      "title": "سلة التسوق"
     },
     "customer": {
-      "account": "حساب",
+      "account": "حسابي",
       "log_in": "تسجيل الدخول"
     }
   },
@@ -4848,60 +4850,137 @@
   },
   "cart": {
     "general": {
-      "title": "حقيبة التسوق",
+      "title": "سلة التسوق",
       "remove": "إزالة",
       "subtotal": "المجموع الفرعي",
-      "checkout": "إتمام الشراء",
-      "viewcart": "عرض الحقيبة",
-      "empty": "حقيبة التسوق فارغة حالياً.",
-      "start_shopping": "ابدأ التسوق",
+      "checkout": "إتمام الطلب",
+      "viewcart": "عرض السلة",
+      "empty": "سلة التسوق فارغة حالياً.",
+      "start_shopping": "ابدئي التسوق",
       "free_shipping_note": "يتم احتساب رسوم الشحن عند إتمام الدفع.",
-      "added_to_bag": "تمت الإضافة إلى الحقيبة ✓",
+      "added_to_bag": "تمت الإضافة إلى السلة ✓",
       "shipping": "الشحن",
-      "recommend_title": "توصية لك",
+      "recommend_title": "مختارات تناسبكِ",
       "delivery_days": {
         "one": "يوم",
         "other": "أيام"
       },
-      "gift_wrapping_html": "مقابل {{ price }} يرجى تغليف المنتجات بهذا الترتيب.",
+      "gift_wrapping_html": "تغليف الهدايا مقابل {{ price }} لهذا الطلب.",
       "gift_note_placeholder": "رسالة إهداء (مجانية واختيارية)",
       "cart_error": "حدث خطأ أثناء تحديث سلة التسوق الخاصة بك. يرجى المحاولة مرة أخرى.",
-      "cart_quantity_error_html": "لا يمكنك إضافة أكثر من {{ quantity }} من هذا العنصر إلى سلة التسوق.",
+      "cart_quantity_error_html": "لا يمكنك إضافة أكثر من {{ quantity }} من هذا المنتج إلى سلة التسوق.",
       "delivery_title": "التوصيل",
       "delivery_time": "موعد التسليم",
-      "delivery_label": "اختر تاريخ التسليم:",
-      "delivery_error": "يرجى اختيار الوقت الحالي أو المستقبلي."
+      "delivery_label": "اختاري تاريخ التسليم:",
+      "delivery_error": "يرجى اختيار تاريخ صالح.",
+      "note": "إضافة ملاحظة للطلب",
+      "drawer_note": "ملاحظات الطلب",
+      "taxes_and_shipping_at_checkout": "يتم احتساب الضرائب والشحن عند إتمام الطلب",
+      "explore_more": "اكتشفي المزيد"
     },
     "label": {
-      "product": "منتج",
+      "product": "المنتج",
       "price": "السعر",
       "quantity": "الكمية",
       "qty": "الكمية",
       "total": "الإجمالي",
-      "regular_total": "الإجمالي العادي",
+      "regular_total": "السعر الأصلي",
       "discounted_total": "الإجمالي بعد الخصم",
       "product_details": "تفاصيل المنتج",
-      "variant": "متغير"
+      "variant": "الخيار"
     }
   },
   "wishlist": {
-    "empty": "قائمة أمنياتك فارغة حالياً.",
-    "discover": "استكشف المجموعات",
-    "loading": "جاري تحميل العناصر المحفوظة...",
-    "add_to_bag": "أضف إلى الحقيبة"
+    "empty": "قائمة أمنياتكِ فارغة حالياً.",
+    "discover": "اكتشفي المجموعات",
+    "loading": "جارٍ تحميل القطع المحفوظة...",
+    "add_to_bag": "أضف إلى السلة"
   },
   "general": {
+    "404": {
+      "title": "عذراً!",
+      "button": "العودة إلى الرئيسية",
+      "subtext": "الصفحة المطلوبة غير موجودة!"
+    },
     "accessibility": {
-      "view_more": "عرض المزيد"
+      "view_more": "عرض المزيد",
+      "unit_price_separator": "لكل",
+      "error": "خطأ",
+      "link_messages": {
+        "new_window": "يفتح في نافذة جديدة."
+      },
+      "close_header": "إغلاق الترويسة",
+      "close": "إغلاق",
+      "view_less": "عرض أقل",
+      "open_menu": "فتح القائمة"
     },
     "navigation": {
-      "menu": "قائمة طعام"
+      "menu": "القائمة"
+    },
+    "meta": {
+      "tags": "العلامات \"{{ tags }}\"",
+      "page": "صفحة {{ page }}"
+    },
+    "time": {
+      "days": "أيام",
+      "hrs": "ساعات",
+      "hours": "ساعات",
+      "mins": "دقائق",
+      "minutes": "دقائق",
+      "secs": "ثواني",
+      "seconds": "ثواني"
+    },
+    "breadcrumbs": {
+      "home": "الرئيسية",
+      "home_link_title": "العودة إلى الصفحة الرئيسية"
+    },
+    "password_page": {
+      "opening_soon": "الافتتاح قريباً"
+    },
+    "search": {
+      "title": "البحث في المتجر",
+      "placeholder": "ابحثي عن المنتجات...",
+      "placeholder_short": "بحث",
+      "popular_searches": "عمليات البحث الأكثر رواجاً",
+      "results_for": "نتائج البحث عن",
+      "more_results": "المزيد من النتائج",
+      "heading": {
+        "one": "نتيجة البحث: \"{{ terms }}\"",
+        "other": "نتائج البحث: \"{{ terms }}\""
+      },
+      "results_with_count": {
+        "one": "تم العثور على نتيجة واحدة لـ \"{{ terms }}\"",
+        "other": "تم العثور على {{ count }} نتائج لـ \"{{ terms }}\""
+      },
+      "no_results": "لا توجد نتائج لـ",
+      "no_results_html": "يرجى تجربة مصطلح بحث آخر أو العودة إلى <a href=\"/\">الصفحة الرئيسية</a>.",
+      "suggestions": "المقترحات",
+      "page_article": "الصفحات والمقالات",
+      "products": "المنتجات"
+    },
+    "newsletter_form": {
+      "confirmation": "مرحباً بكِ في قائمة LALEH الخاصة"
+    },
+    "payment": {
+      "options": "خيارات الدفع"
+    },
+    "notifications": {
+      "item_added": "تمت إضافة المنتج إلى سلة التسوق بنجاح",
+      "required_field": "يرجى ملء جميع الحقول المطلوبة (*) قبل الإضافة إلى السلة!"
+    },
+    "foxkit": {
+      "add": "إضافة"
+    },
+    "tooltip": {
+      "not_found": "نوع التلميح غير موجود"
     }
   },
   "collections": {
     "general": {
       "no_matches": "عذراً، لا توجد منتجات في هذه المجموعة",
-      "collection_items": "{{ title }} عناصر"
+      "collection_items": "{{ title }} عناصر",
+      "shop_all": "المجموعة",
+      "shop_the_collection": "تسوق المجموعة"
     },
     "sidebar": {
       "clear_all": "مسح الكل"
@@ -4925,22 +5004,91 @@
   "contact": {
     "form": {
       "name": "الاسم",
-      "email": "بريد إلكتروني",
+      "email": "البريد الإلكتروني",
       "phone": "رقم الهاتف",
-      "message": "رسالة",
+      "message": "الرسالة",
       "send": "إرسال الرسالة",
-      "post_success": "شكراً لتواصلك مع LALEH. سنرد عليك في أقرب وقت ممكن.",
-      "save_infor_message": "احفظ اسمي، بريدي الإلكتروني، والموقع الإلكتروني في هذا المتصفح لاستخدامها في المرة القادمة التي أعلق فيها."
+      "post_success": "شكراً لتواصلكِ مع LALEH. سيسعد فريقنا بالرد عليكِ في أقرب وقت ممكن.",
+      "save_infor_message": "حفظ اسمي وبريدي الإلكتروني في هذا المتصفح للزيارات القادمة."
     },
     "ask-form": {
-      "heading": "اطرح سؤالاً",
+      "heading": "اطرحي سؤالاً",
       "name": "اسمك",
-      "email": "بريدك الإلكتروني",
+      "email": "البريد الإلكتروني",
       "phone": "رقم هاتفك",
-      "message": "رسالتك",
+      "message": "رسالتكِ",
       "required-fields": "الحقول المطلوبة",
       "send": "إرسال الرسالة",
-      "post_success": "شكرًا لسؤالكم. سنرد عليكم في أقرب وقت ممكن."
+      "post_success": "شكراً لاستفساركِ. سنرد عليكِ في أقرب وقت ممكن."
+    }
+  },
+  "sections": {
+    "video": {
+      "play": "تشغيل"
+    },
+    "collection_template": {
+      "from": "من",
+      "to": "إلى",
+      "product_count": {
+        "one": "عرض {{ product_count }} من أصل {{ count }} منتج",
+        "other": "عرض {{ product_count }} من أصل {{ count }} منتجات"
+      }
+    },
+    "header": {
+      "menu": "القائمة",
+      "open_menu": "فتح القائمة"
+    },
+    "slider": {
+      "video": {
+        "notice": "يرجى إضافة رابط فيديو صالح."
+      }
+    },
+    "lookbook": {
+      "shop_this_look": {
+        "popup": {
+          "title": "تسوقي هذه الإطلالة",
+          "product_title": "المنتجات في هذه الإطلالة"
+        }
+      }
+    },
+    "quick_order_list": {
+      "view_cart": "عرض السلة",
+      "total_items": "إجمالي القطع",
+      "remove_all_items_confirmation": "هل أنتِ متأكدة من رغبتكِ في إزالة جميع العناصر؟",
+      "remove_all": "إزالة الكل",
+      "cancel": "إلغاء"
+    }
+  },
+  "about": {
+    "story": {
+      "title": "قصتنا",
+      "subtitle": "عن الدار",
+      "p1": "تأسست دار LALEH برؤية سيدة من الشرق الأوسط نشأت في سويسرا، لتجسد تلاقي الأناقة الخالدة والأنوثة الراقية مع لمسة عصرية متجددة.",
+      "p2": "ألهمها العيش بين ثقافتين تقديراً عميقاً لتنوع مفاهيم الأناقة والجمال. ومن هنا انطلقت LALEH، بشغف صياغة تلك الرؤية في تصاميم تنبض بالرقي، وتعكس حضوراً واثقاً وأنوثة متفردة."
+    },
+    "why_laleh": {
+      "title": "لماذا LALEH",
+      "p1": "انطلقت LALEH بفلسفة جوهرية: ابتكار تصاميم متقنة، فائقة الرقي، وتمنحكِ شعوراً بالأناقة الهادئة والراحة دون عناء.",
+      "p2": "يُصاغ كل تصميم بعناية فائقة تراعي توازن الأبعاد ودقة التفاصيل وانسيابية القصة، لنمنحكِ قطعاً تتسم بحضور استثنائي وتألق يدوم عبر الزمن."
+    },
+    "the_woman": {
+      "title": "امرأة LALEH",
+      "p1": "تتألق بأنوثة آسرة، وثقة هادئة، وخيارات واعية مدروسة.",
+      "p2": "تُقدّر الرقي دون تكلف، وتنتقي تصاميمها بذوق أصيل لا تُمليه صيحات الموضة العابرة. صُممت LALEH لتكون جزءاً لا يتجزأ من أناقتها، ومناسباتها الخاصة، وأجمل اللحظات التي تخلد في ذاكرتها."
+    },
+    "beginning": {
+      "title": "هذه مجرد البداية",
+      "text": "تبدأ رحلة LALEH بمجموعتنا الأولى وبرؤية إبداعية واضحة، حيث يُنسج كل فصل جديد ليكون امتداداً طبيعياً ومتناغماً لما سبقه.",
+      "subheading": "صُممت لتبقى في الذاكرة."
+    },
+    "home_feature": {
+      "subtitle": "عن الدار",
+      "title": "ولدت من تلاقي عالمين، وصيغت برؤية واحدة.",
+      "text": "تأسست دار LALEH برؤية سيدة من الشرق الأوسط نشأت في سويسرا، لتجسد تلاقي الأناقة الخالدة والأنوثة الراقية مع رؤية عصرية متجددة.",
+      "button": "اكتشفي قصتنا"
+    },
+    "banner": {
+      "button": "اكتشفي المجموعة"
     }
   }
 }

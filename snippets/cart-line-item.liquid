@@ -141,8 +141,8 @@
       </div>
 
       <div class="m-cart-item__info">
-        <a class="m-cart-item__title" href="{{ item.url }}" data-role="product-title">
-          {{ item.product.title }}
+        <a class="m-cart-item__title notranslate" href="{{ item.url }}" data-role="product-title" translate="no">
+          {% render 'product-title', product: item.product, item: item %}
         </a>
         {%- liquid
           assign variant_options = 'template ' | split: ' '

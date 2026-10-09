@@ -31,13 +31,29 @@
   <div class="{{ classes }}">
     {% if show_button_on_header %}<div class="m-section__header-content">{% endif %}
     {% if section_settings.subheading != blank %}
+      {% liquid
+        assign sub_display = section_settings.subheading
+        if request.locale.iso_code contains 'ar'
+          assign sub_display = sub_display | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+        elsif request.locale.iso_code contains 'fr'
+          assign sub_display = sub_display | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+        endif
+      %}
       <p class="m-section__subheading{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
-        {{ section_settings.subheading }}
+        {{ sub_display }}
       </p>
     {% endif %}
     {% if section_settings.heading != blank %}
+      {% liquid
+        assign h_display = section_settings.heading
+        if request.locale.iso_code contains 'ar'
+          assign h_display = h_display | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+        elsif request.locale.iso_code contains 'fr'
+          assign h_display = h_display | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+        endif
+      %}
       <h2 class="m-section__heading {{ heading_size }}{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
-        {{ section_settings.heading }}
+        {{ h_display }}
       </h2>
     {% endif %}
     {% if section_settings.description != blank %}

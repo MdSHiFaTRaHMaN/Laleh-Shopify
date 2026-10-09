@@ -138,7 +138,7 @@
                     {% endunless %}
                   </div>
                   <div class="m-search-item--content">
-                    <p class="m-search-item--title m:font-medium">{{ product.title }}</p>
+                    <p class="m-search-item--title m:font-medium notranslate" translate="no">{% render 'product-title', product: product %}</p>
                     <div class="m-search-item--price">
                       {% render 'product-prices', product: product, use_variant: true, show_badges: false %}
                     </div>

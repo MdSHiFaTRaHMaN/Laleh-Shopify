@@ -38,6 +38,38 @@ function formatMoney(cents) {
     .trim();
 }
 
+// LALEH Official Product Names (English / Latin script across all languages)
+const LALEH_OFFICIAL_PRODUCT_NAMES = {
+  'obsidian-touch': 'OBSIDIAN TOUCH',
+  'structured-silence': 'STRUCTURED SILENCE',
+  'vermeil': 'VERMEIL',
+  'crimson-poise': 'CRIMSON POISE',
+  'iris-pearl': 'IRIS PEARL',
+  'lilac-verse': 'LILAC VERSE'
+};
+
+function getLalehOfficialTitle(handle, defaultTitle) {
+  if (handle) {
+    const cleanHandle = String(handle).toLowerCase().trim();
+    if (LALEH_OFFICIAL_PRODUCT_NAMES[cleanHandle]) {
+      return LALEH_OFFICIAL_PRODUCT_NAMES[cleanHandle];
+    }
+  }
+  if (defaultTitle) {
+    const down = String(defaultTitle).toLowerCase();
+    if (down.includes('obsidian')) return 'OBSIDIAN TOUCH';
+    if (down.includes('structured') || down.includes('silence')) return 'STRUCTURED SILENCE';
+    if (down.includes('vermeil')) return 'VERMEIL';
+    if (down.includes('crimson') || down.includes('poise')) return 'CRIMSON POISE';
+    if (down.includes('iris') || down.includes('pearl')) return 'IRIS PEARL';
+    if (down.includes('lilac') || down.includes('verse')) return 'LILAC VERSE';
+  }
+  if (handle) {
+    return String(handle).replace(/[-_]+/g, ' ').toUpperCase();
+  }
+  return defaultTitle || '';
+}
+
 class Megamenu {
   constructor(container) {
     this.selectors = {
@@ -263,8 +295,8 @@ class Megamenu {
           const addBtn = card.querySelector("[data-coll-quick-add]");
           if (addBtn) {
             addBtn.dataset.collQuickAdd = variantId;
-            addBtn.dataset.selectedSize = sizeName;
-            addBtn.textContent = `+ Add to Bag • ${sizeName}`;
+            const atcPrefix = window.MinimogStrings?.addToBag || 'Add to Bag';
+            addBtn.textContent = `+ ${atcPrefix} • ${sizeName}`;
             addBtn.disabled = false;
           }
 
@@ -548,6 +580,8 @@ class Megamenu {
 
     container.innerHTML = items
       .map((item) => {
+        const itemHandle = item.handle || (item.url ? item.url.split('/products/')[1]?.split('?')[0] : '');
+        const itemTitle = getLalehOfficialTitle(itemHandle, item.product_title || item.title);
         const imgSrc = item.image || item.featured_image?.url || "";
         const hasVariant = item.variant_title && item.variant_title !== "Default Title";
         const comparePriceFormatted =
@@ -561,13 +595,13 @@ class Megamenu {
             <a href="${item.url || '#'}" class="m-right-item-card__media">
               ${
                 imgSrc
-                  ? `<img src="${imgSrc}" alt="${item.product_title || item.title}" loading="lazy">`
+                  ? `<img src="${imgSrc}" alt="${itemTitle}" loading="lazy">`
                   : `<div style="width:100%;height:100%;background:#f3f3f3;"></div>`
               }
             </a>
             <div class="m-right-item-card__details">
-              <a href="${item.url || '#'}" class="m-right-item-card__title" style="text-decoration: none;">
-                ${item.product_title || item.title}
+              <a href="${item.url || '#'}" class="m-right-item-card__title notranslate" translate="no" style="text-decoration: none;">
+                ${itemTitle}
               </a>
               ${
                 hasVariant
@@ -919,6 +953,7 @@ class Megamenu {
         .map((prod) => {
           const imageSrc = prod.featured_image || (prod.images && prod.images[0]) || "";
           const firstVariant = (prod.variants && prod.variants[0]) || {};
+          const wishTitle = getLalehOfficialTitle(prod.handle, prod.title);
           const hasVariants = prod.variants && (prod.variants.length > 1 || (firstVariant.title && firstVariant.title !== "Default Title"));
 
           let variantOptionsHtml = "";
@@ -961,7 +996,7 @@ class Megamenu {
               <a href="${prod.url || '#'}" class="m-right-wishlist-card__media">
                 ${
                   imageSrc
-                    ? `<img src="${imageSrc}" alt="${prod.title}" loading="lazy">`
+                    ? `<img src="${imageSrc}" alt="${wishTitle}" loading="lazy">`
                     : `<div class="m-right-wishlist-card__placeholder"></div>`
                 }
                 <button
@@ -979,8 +1014,8 @@ class Megamenu {
               </a>
               <div class="m-right-wishlist-card__details">
                 <div class="m-right-wishlist-card__top">
-                  <a href="${prod.url || '#'}" class="m-right-wishlist-card__title">
-                    ${prod.title}
+                  <a href="${prod.url || '#'}" class="m-right-wishlist-card__title notranslate" translate="no">
+                    ${wishTitle}
                   </a>
                   ${variantOptionsHtml}
                 </div>
@@ -1226,6 +1261,8 @@ class Megamenu {
       itemsList.innerHTML = scoredItems
         .map((p) => {
           const img = p.image || p.featured_image || "";
+          const searchHandle = p.handle || (p.url ? p.url.split('/products/')[1]?.split('?')[0] : '');
+          const searchTitle = getLalehOfficialTitle(searchHandle, p.title);
           const priceCents = this.parseSearchPriceToCents(p.price);
           const compPriceCents = p.compare_at_price ? this.parseSearchPriceToCents(p.compare_at_price) : 0;
 
@@ -1238,11 +1275,11 @@ class Megamenu {
           return `
             <div class="m-right-item-card" style="padding-bottom: 12px;">
               <a href="${p.url}" class="m-right-item-card__media" style="width: 70px; height: 90px;">
-                ${img ? `<img src="${img}" alt="${p.title}" loading="lazy">` : `<div style="width:100%;height:100%;background:#f3f3f3;"></div>`}
+                ${img ? `<img src="${img}" alt="${searchTitle}" loading="lazy">` : `<div style="width:100%;height:100%;background:#f3f3f3;"></div>`}
               </a>
               <div class="m-right-item-card__details" style="justify-content: center;">
-                <a href="${p.url}" class="m-right-item-card__title" style="text-decoration: none; font-size: 13px;">
-                  ${p.title}
+                <a href="${p.url}" class="m-right-item-card__title notranslate" translate="no" style="text-decoration: none; font-size: 13px;">
+                  ${searchTitle}
                 </a>
                 <div class="m-right-item-card__price-row" style="margin-top: 4px;">
                   ${comparePriceFormatted}
@@ -1532,5 +1569,45 @@ if (typeof window !== "undefined") {
     document.addEventListener("DOMContentLoaded", initMegamenuInstance);
   } else {
     initMegamenuInstance();
+  }
+
+  // LALEH Brand & Translation Guard for Arabic and French
+  function applyLanguageTextGuards() {
+    const isAr = document.documentElement.lang === "ar" || window.location.pathname.startsWith("/ar");
+    const isFr = document.documentElement.lang === "fr" || window.location.pathname.startsWith("/fr");
+
+    if (isAr) {
+      const brandElements = document.querySelectorAll(
+        "h1, h2, h3, h4, h5, h6, .m-footer--block-title, .m-link, .m-menu__link, .m-luxury-drawer__nav-link, .m-breadcrumb--item, .m-breadcrumb--item-current, .m-richtext__title, .m-content-box__heading"
+      );
+      brandElements.forEach((el) => {
+        if (el.textContent && (el.textContent.includes("لاله") || el.textContent.includes("لالة"))) {
+          el.innerHTML = el.innerHTML.replace(/لماذا\s+لال[هة]/g, "لماذا LALEH")
+                                     .replace(/امرأة\s+لال[هة]/g, "امرأة LALEH")
+                                     .replace(/اكتشفوا\s+لال[هة]/g, "اكتشفوا LALEH")
+                                     .replace(/لال[هة]/g, "LALEH");
+        }
+      });
+    }
+
+    if (isFr) {
+      const faqElements = document.querySelectorAll(
+        "h1, h2, h3, h4, .m-section__heading, .m-page-header__title, .m-breadcrumb--item-current, .m-breadcrumb--item, .m-link, .m-menu__link"
+      );
+      faqElements.forEach((el) => {
+        if (el.textContent && /foire\s+aux\s+questions/i.test(el.textContent)) {
+          el.innerHTML = el.innerHTML.replace(/foire\s+aux\s+questions/gi, "Questions fréquentes");
+        }
+      });
+      if (document.title && /foire\s+aux\s+questions/i.test(document.title)) {
+        document.title = document.title.replace(/foire\s+aux\s+questions/gi, "Questions fréquentes");
+      }
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", applyLanguageTextGuards);
+  } else {
+    applyLanguageTextGuards();
   }
 }

@@ -52,8 +52,16 @@
               {% assign menu = section.settings.footer_bottom_menu %}
               <ul class="m-footer--bottom-menu m-link-lists m-link-lists--inline xl:m:justify-end{% if section.settings.show_menu_item_divider %} show-menu-item-divider{% endif %}">
                 {% for link in linklists[menu].links %}
+                  {% liquid
+                    assign l_title = link.title
+                    if request.locale.iso_code contains 'ar'
+                      assign l_title = l_title | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+                    elsif request.locale.iso_code contains 'fr'
+                      assign l_title = l_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+                    endif
+                  %}
                   <li class="m-footer--bottom-menu-item m-link-lists--item">
-                    <a class="m-link" href="{{ link.url }}">{{ link.title }}</a>
+                    <a class="m-link" href="{{ link.url }}">{{ l_title }}</a>
                   </li>
                 {% endfor %}
               </ul>

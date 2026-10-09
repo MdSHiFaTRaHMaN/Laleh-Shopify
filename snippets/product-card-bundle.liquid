@@ -102,7 +102,7 @@
         </div>
       {% endif %}
       <h3 class="product-bundles__item-title">
-        <a href="{{ product.url }}">{{ product.title }}</a>
+        <a href="{{ product.url }}" class="notranslate" translate="no">{% render 'product-title', product: product %}</a>
       </h3>
       <div class="product-bundles__item-variant">
         {% if product.available %}

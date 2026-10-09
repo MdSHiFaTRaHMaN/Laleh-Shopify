@@ -29,6 +29,11 @@
       assign size_option_index = forloop.index0
     endif
   endfor
+
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
+    assign is_ar = true
+  endif
 %}
 
 <section
@@ -268,7 +273,7 @@
       <!-- View 1: Product Main Details -->
       <div class="m-luxury-product-details-view is-visible" id="m-luxury-product-details-view-{{ section.id }}">
         <!-- Product Title -->
-        <h1 class="m-luxury-product-title">{{ product.title }}</h1>
+        <h1 class="m-luxury-product-title notranslate" translate="no">{% render 'product-title', product: product %}</h1>
 
         <!-- Product Price -->
         <div class="m-luxury-product-price-row" id="Price-{{ section.id }}">
@@ -626,9 +631,19 @@
                     {% if heading_downcase contains 'deliver'
                       or heading_downcase contains 'return'
                       or heading_downcase contains 'shipping'
+                      or heading_downcase contains 'توصيل'
+                      or heading_downcase contains 'إرجاع'
+                      or heading_downcase contains 'شحن'
                     %}
                       <div class="m-luxury-accordion-truncated">
-                        {% if block.settings.content != blank %}
+                        {% if is_ar %}
+                          <p>
+                            شحن مجاني لجميع الطلبات عبر الإنترنت، ويستغرق التوصيل عادةً من 3 إلى 10 أيام عمل.
+                          </p>
+                          <p>
+                            نقبل طلبات الإرجاع خلال 14 يوماً من تاريخ الاستلام.
+                          </p>
+                        {% elsif block.settings.content != blank %}
                           {{ block.settings.content }}
                         {% elsif block.settings.liquid != blank %}
                           {{ block.settings.liquid }}
@@ -741,7 +756,7 @@
                 <div class="m-luxury-accordion-content rte">
                   <div class="m-luxury-accordion-truncated">
                     <p>
-                      <strong>{{ product.title }}</strong>
+                      <strong class="notranslate" translate="no">{% render 'product-title', product: product %}</strong>
                     </p>
                     <p>
                       {{ product.description | strip_html | truncatewords: 30, '' }}
@@ -888,7 +903,7 @@
               <div class="m-luxury-more-tab-pane active" id="m-tab-desc" role="tabpanel">
                 <div class="m-luxury-more-content rte">
                   <p>
-                    <strong>{{ product.title }}</strong>
+                    <strong class="notranslate" translate="no">{% render 'product-title', product: product %}</strong>
                   </p>
                   <ul>
                     <li>43% Silk, 42% Polyester, 10% Polyamide, 5% Nylon</li>
@@ -911,20 +926,32 @@
               <!-- Fallback Tab 2: Delivery & Returns -->
               <div class="m-luxury-more-tab-pane" id="m-tab-delivery" role="tabpanel">
                 <div class="m-luxury-more-content rte">
-                  <p>
-                    We offer complimentary shipping on all online orders, with delivery typically completed within 3-10
-                    business days. You can anticipate a slight delay during December 2026.
-                  </p>
-                  <p>
-                    Please note that you may be subject to additional import duties, taxes, or fees depending on your
-                    delivery destination. While shipping is free, these additional costs may apply and are the
-                    responsibility of the customer.
-                  </p>
-                  <p>
-                    We accept returns within 14 days of delivery. To request a return, please complete the Return Form
-                    using your order number. Items must be returned in their original condition—unworn, unwashed, with
-                    all tags and packaging intact.
-                  </p>
+                  {% if is_ar %}
+                    <p>
+                      شحن مجاني لجميع الطلبات عبر الإنترنت، ويستغرق التوصيل عادةً من 3 إلى 10 أيام عمل.
+                    </p>
+                    <p>
+                      يرجى ملاحظة أن الطلبات قد تخضع لرسوم جمركية أو ضرائب إضافية بحسب بلد التوصيل. ورغم أن الشحن مجاني، فإن هذه الرسوم الإضافية قد تطبق وتقع على عاتق العميل.
+                    </p>
+                    <p>
+                      نقبل طلبات الإرجاع خلال 14 يوماً من تاريخ الاستلام. لتقديم طلب إرجاع، يرجى تعبئة نموذج الإرجاع باستخدام رقم طلبكِ. يجب أن تكون القطع بحالتها الأصلية—غير ملبوسة، غير مغسولة، مع بقاء كافة البطاقات والملصقات والتغليف الأصلي بحالة سليمة.
+                    </p>
+                  {% else %}
+                    <p>
+                      We offer complimentary shipping on all online orders, with delivery typically completed within 3-10
+                      business days. You can anticipate a slight delay during December 2026.
+                    </p>
+                    <p>
+                      Please note that you may be subject to additional import duties, taxes, or fees depending on your
+                      delivery destination. While shipping is free, these additional costs may apply and are the
+                      responsibility of the customer.
+                    </p>
+                    <p>
+                      We accept returns within 14 days of delivery. To request a return, please complete the Return Form
+                      using your order number. Items must be returned in their original condition—unworn, unwashed, with
+                      all tags and packaging intact.
+                    </p>
+                  {% endif %}
                 </div>
               </div>
 

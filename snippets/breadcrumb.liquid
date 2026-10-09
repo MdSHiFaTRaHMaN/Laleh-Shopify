@@ -32,6 +32,31 @@
   endif
 -%}
 
+{%- liquid
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar'
+    assign is_ar = true
+  endif
+  assign is_fr = false
+  if request.locale.iso_code contains 'fr'
+    assign is_fr = true
+  endif
+
+  assign home_text = 'general.breadcrumbs.home' | t
+  assign home_title = 'general.breadcrumbs.home_link_title' | t
+  if is_ar or home_text == 'Home' or home_text contains 'translation missing'
+    if is_ar
+      assign home_text = 'الرئيسية'
+      assign home_title = 'العودة إلى الصفحة الرئيسية'
+    endif
+  endif
+  if is_fr
+    if home_text == 'Home' or home_text contains 'translation missing'
+      assign home_text = 'Accueil'
+      assign home_title = "Retour à la page d'accueil"
+    endif
+  endif
+-%}
 {%- capture separator -%}
     <span aria-hidden="true" class="m-breadcrumb--separator">
       <svg class="m-svg-icon--small m-rlt-reverse-x" fill="currentColor" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path d="M17.525 36.465l-7.071 7.07c-4.686 4.686-4.686 12.284 0 16.971L205.947 256 10.454 451.494c-4.686 4.686-4.686 12.284 0 16.971l7.071 7.07c4.686 4.686 12.284 4.686 16.97 0l211.051-211.05c4.686-4.686 4.686-12.284 0-16.971L34.495 36.465c-4.686-4.687-12.284-4.687-16.97 0z"/></svg>
@@ -39,8 +64,8 @@
 {%- endcapture -%}
 
 {%- capture home -%}
-    <a href="{{ routes.root_url }}" class="m-breadcrumb--item" title="{{ 'general.breadcrumbs.home_link_title' | t }}">
-        {{ 'general.breadcrumbs.home' | t }}
+    <a href="{{ routes.root_url }}" class="m-breadcrumb--item" title="{{ home_title }}">
+        {{ home_text }}
     </a>
 {%- endcapture -%}
 
@@ -48,7 +73,7 @@
   <nav
     class="m-breadcrumb m:w-full {{ class }}{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}"
     role="navigation"
-    aria-label="breadcrumbs"
+    aria-label="{% if is_ar %}مسار التنقل{% elsif is_fr %}fil d'Ariane{% else %}breadcrumbs{% endif %}"
   >
     <div class="{{ container }}">
       <div class="m-breadcrumb--wrapper m:flex m:items-center m:justify-{{ justify | default: 'start' }}">
@@ -87,11 +112,19 @@
                 {{- current_collection.title -}}
               </a>
             {%- else -%}
-              <a href="{{ routes.all_products_collection_url }}" class="m-breadcrumb--item">{{ 'products.product.collection' | t }}</a>
+              {%- liquid
+                assign coll_label = 'products.product.collection' | t
+                if is_ar or coll_label == 'Collection' or coll_label contains 'translation missing'
+                  if is_ar
+                    assign coll_label = 'المجموعة'
+                  endif
+                endif
+              -%}
+              <a href="{{ routes.all_products_collection_url }}" class="m-breadcrumb--item">{{ coll_label }}</a>
             {%- endif -%}
           {%- endif -%}
           {{ separator }}
-          <span class="m-breadcrumb--item-current m-breadcrumb--item">{{ product.title }}</span>
+          <span class="m-breadcrumb--item-current m-breadcrumb--item notranslate" translate="no">{% render 'product-title', product: product %}</span>
 
         {% elsif template.name == 'collection' and collection.handle %}
           {{ separator }}
@@ -120,13 +153,27 @@
 
         {% elsif template == 'customers/addresses' %}
           {{ separator }}
-          <a href="{{ routes.account_url }}" class="m-breadcrumb--item">{{ 'customer.account.page_title' | t }}</a>
+          {%- liquid
+            assign acc_title = 'customer.account.page_title' | t
+            if is_ar
+              assign acc_title = 'حسابي'
+            endif
+          -%}
+          <a href="{{ routes.account_url }}" class="m-breadcrumb--item">{{ acc_title }}</a>
           {{ separator }}
           <span class="m-breadcrumb--item-current m-breadcrumb--item">{{ page_title }}</span>
 
         {% elsif template contains 'page' %}
           {{ separator }}
-          <span class="m-breadcrumb--item-current m-breadcrumb--item">{{ page.title }}</span>
+          {% liquid
+            assign p_display_title = page.title
+            if is_ar
+              assign p_display_title = p_display_title | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+            elsif is_fr
+              assign p_display_title = p_display_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+            endif
+          %}
+          <span class="m-breadcrumb--item-current m-breadcrumb--item">{{ p_display_title }}</span>
 
         {% elsif template contains 'search' %}
           {{ separator }}
@@ -136,7 +183,15 @@
 
         {% else %}
           {{ separator }}
-          <span class="m-breadcrumb--item-current m-breadcrumb--item">{{ page_title }}</span>
+          {% liquid
+            assign pt_display = page_title
+            if is_ar
+              assign pt_display = pt_display | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+            elsif is_fr
+              assign pt_display = pt_display | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+            endif
+          %}
+          <span class="m-breadcrumb--item-current m-breadcrumb--item">{{ pt_display }}</span>
         {% endif %}
       </div>
     </div>

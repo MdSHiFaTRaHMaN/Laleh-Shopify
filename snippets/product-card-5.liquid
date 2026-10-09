@@ -382,9 +382,10 @@
         <h3 class="m-product-card__title">
           <a
             href="{{ product_url }}"
-            class="m-product-card__name{% if settings.uppercase_prd_name %} m:uppercase{% endif %}"
+            class="m-product-card__name notranslate{% if settings.uppercase_prd_name %} m:uppercase{% endif %}"
+            translate="no"
           >
-            {{ product.title }}
+            {% render 'product-title', product: product %}
           </a>
         </h3>
       {% endif %}

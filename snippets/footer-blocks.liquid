@@ -37,6 +37,12 @@
               assign block_title = linklists[block.settings.menu].title
             endif
 
+            if request.locale.iso_code contains 'ar'
+              assign block_title = block_title | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+            elsif request.locale.iso_code contains 'fr'
+              assign block_title = block_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+            endif
+
             assign enable_accordion = block.settings.enable_accordion
             if block_title == blank
               assign enable_accordion = false
@@ -90,9 +96,17 @@
                   {% if menu.links != blank %}
                     <ul class="m-footer--block-content list-unstyled m-link-lists{% if enable_accordion %} m-accordion--item-content{% endif %}">
                       {% for link in menu.links %}
+                        {% liquid
+                          assign l_title = link.title
+                          if request.locale.iso_code contains 'ar'
+                            assign l_title = l_title | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+                          elsif request.locale.iso_code contains 'fr'
+                            assign l_title = l_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+                          endif
+                        %}
                         <li class="m-link-lists--item m:block">
                           <a href="{{ link.url }}" class="m-link">
-                            {{ link.title }}
+                            {{ l_title }}
                           </a>
                         </li>
                       {% endfor %}
@@ -102,7 +116,13 @@
                   <div class="m-footer--block-content m-footer--about-block{% if enable_accordion %} m-accordion--item-content{% endif %}">
                     {% unless block.settings.description == blank %}
                       <div class="m-footer--about-description block-text rte {{ block.settings.text_size | prepend: 'm:' }}">
-                        {{ block.settings.description }}
+                        {% liquid
+                          assign desc_clean = block.settings.description
+                          if request.locale.iso_code contains 'ar'
+                            assign desc_clean = desc_clean | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+                          endif
+                        %}
+                        {{ desc_clean }}
                       </div>
                     {% endunless %}
                     <div class="block-text">

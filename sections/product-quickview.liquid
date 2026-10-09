@@ -16,6 +16,11 @@
         assign size_option_index = forloop.index0
       endif
     endfor
+
+    assign is_ar = false
+    if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
+      assign is_ar = true
+    endif
   %}
 
   <section
@@ -252,8 +257,8 @@
         <!-- View 1: Product Main Details -->
         <div class="m-luxury-product-details-view is-visible" id="m-luxury-product-details-view-{{ section.id }}">
           <!-- Product Title -->
-          <h1 class="m-luxury-product-title">
-            <a href="{{ product.url }}" style="color: inherit; text-decoration: none;">{{ product.title }}</a>
+          <h1 class="m-luxury-product-title notranslate" translate="no">
+            <a href="{{ product.url }}" style="color: inherit; text-decoration: none;">{% render 'product-title', product: product %}</a>
           </h1>
 
           <!-- Product Price -->
@@ -580,14 +585,23 @@
               <div class="m-luxury-accordion-body">
                 <div class="m-luxury-accordion-content rte">
                   <div class="m-luxury-accordion-truncated">
-                    <p>
-                      We offer complimentary shipping on all online orders, with delivery typically completed within
-                      3-10 business days.
-                    </p>
-                    <p>
-                      We accept returns within 30 days of delivery. Items must be returned in their original
-                      condition—unworn, unwashed, with all tags intact.
-                    </p>
+                    {% if is_ar %}
+                      <p>
+                        شحن مجاني لجميع الطلبات عبر الإنترنت، ويستغرق التوصيل عادةً من 3 إلى 10 أيام عمل.
+                      </p>
+                      <p>
+                        نقبل طلبات الإرجاع خلال 14 يوماً من تاريخ الاستلام.
+                      </p>
+                    {% else %}
+                      <p>
+                        We offer complimentary shipping on all online orders, with delivery typically completed within
+                        3-10 business days.
+                      </p>
+                      <p>
+                        We accept returns within 30 days of delivery. Items must be returned in their original
+                        condition—unworn, unwashed, with all tags intact.
+                      </p>
+                    {% endif %}
                   </div>
                   <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="delivery">
                     {{ 'general.accessibility.view_more' | t | default: 'View more' }}
@@ -655,7 +669,7 @@
               <div class="m-luxury-more-tab-pane active" id="m-tab-desc" role="tabpanel">
                 <div class="m-luxury-more-content rte">
                   <p>
-                    <strong>{{ product.title }}</strong>
+                    <strong class="notranslate" translate="no">{% render 'product-title', product: product %}</strong>
                   </p>
                   <ul>
                     <li>Product Code: {{ current_variant.sku | default: 'D1320EP26YA072' }}</li>
@@ -675,19 +689,31 @@
               <!-- Tab 2: Delivery & Returns -->
               <div class="m-luxury-more-tab-pane" id="m-tab-delivery" role="tabpanel">
                 <div class="m-luxury-more-content rte">
-                  <p>
-                    We offer complimentary express shipping on all online orders, with delivery typically completed
-                    within 3-10 business days.
-                  </p>
-                  <p>
-                    Please note that you may be subject to additional import duties, taxes, or fees depending on your
-                    delivery destination.
-                  </p>
-                  <p>
-                    We accept returns within 14 days of delivery. To request a return, please contact our concierge
-                    service with your order number. Items must be returned in their original condition with all tags and
-                    packaging intact.
-                  </p>
+                  {% if is_ar %}
+                    <p>
+                      شحن مجاني لجميع الطلبات عبر الإنترنت، ويستغرق التوصيل عادةً من 3 إلى 10 أيام عمل.
+                    </p>
+                    <p>
+                      يرجى ملاحظة أن الطلبات قد تخضع لرسوم جمركية أو ضرائب إضافية بحسب بلد التوصيل. ورغم أن الشحن مجاني، فإن هذه الرسوم الإضافية قد تطبق وتقع على عاتق العميل.
+                    </p>
+                    <p>
+                      نقبل طلبات الإرجاع خلال 14 يوماً من تاريخ الاستلام. لتقديم طلب إرجاع، يرجى تعبئة نموذج الإرجاع باستخدام رقم طلبكِ. يجب أن تكون القطع بحالتها الأصلية—غير ملبوسة، غير مغسولة، مع بقاء كافة البطاقات والملصقات والتغليف الأصلي بحالة سليمة.
+                    </p>
+                  {% else %}
+                    <p>
+                      We offer complimentary express shipping on all online orders, with delivery typically completed
+                      within 3-10 business days.
+                    </p>
+                    <p>
+                      Please note that you may be subject to additional import duties, taxes, or fees depending on your
+                      delivery destination.
+                    </p>
+                    <p>
+                      We accept returns within 14 days of delivery. To request a return, please contact our concierge
+                      service with your order number. Items must be returned in their original condition with all tags and
+                      packaging intact.
+                    </p>
+                  {% endif %}
                 </div>
               </div>
 

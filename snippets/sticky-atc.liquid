@@ -56,8 +56,8 @@
           {%- endif -%}
         </div>
         <div class="m-sticky-addtocart--title">
-          <h3 class="m:text-base">
-            {{ product.title }}
+          <h3 class="m:text-base notranslate" translate="no">
+            {% render 'product-title', product: product %}
           </h3>
           {% if product.has_only_default_variant %}
             {% render 'product-prices', use_variant: true, product: product %}

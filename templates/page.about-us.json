@@ -17,7 +17,7 @@
     "image_with_text_MpxgWh": {
       "type": "image-with-text",
       "custom_css": [
-        "@media (max-width: 768px) {h3.m-richtext__title.m-content-box__heading.h4 {text-align: center; font-size: 16px; } .m-richtext__description.rte.m-content-box__description.m\\:text-base {text-align: center; font-size: 14px; }}"
+        "@media (max-width: 767px) {h3.m-richtext__title.m-content-box__heading.h4 {text-align: center; font-size: 16px; } .m-richtext__description.rte.m-content-box__description.m\\:text-base {text-align: center; font-size: 14px; }}"
       ],
       "name": "The Story",
       "settings": {
@@ -57,7 +57,7 @@
     "image_with_text_PQb8CF": {
       "type": "image-with-text",
       "custom_css": [
-        "@media (max-width: 768px) {h3.m-richtext__title.m-content-box__heading.h4 {text-align: center; font-size: 16px; } .m-richtext__description.rte.m-content-box__description.m\\:text-base {text-align: center; font-size: 14px; }}"
+        "@media (max-width: 767px) {h3.m-richtext__title.m-content-box__heading.h4 {text-align: center; font-size: 16px; } .m-richtext__description.rte.m-content-box__description.m\\:text-base {text-align: center; font-size: 14px; }}"
       ],
       "name": "Image with text",
       "settings": {
@@ -97,7 +97,7 @@
     "image_with_text_xtHdHT": {
       "type": "image-with-text",
       "custom_css": [
-        "@media (max-width: 768px) {h3.m-richtext__title.m-content-box__heading.h4 {text-align: center; font-size: 16px; } .m-richtext__description.rte.m-content-box__description.m\\:text-base {text-align: center; font-size: 14px; }}"
+        "@media (max-width: 767px) {h3.m-richtext__title.m-content-box__heading.h4 {text-align: center; font-size: 16px; } .m-richtext__description.rte.m-content-box__description.m\\:text-base {text-align: center; font-size: 14px; }}"
       ],
       "name": "Image with text",
       "settings": {
@@ -128,7 +128,7 @@
         "button_link": "",
         "button_style": "m-button--link",
         "button_size": "",
-        "padding_top": 8,
+        "padding_top": 20,
         "padding_bottom": 20,
         "custom_class": "",
         "animations": "inherit"
@@ -164,7 +164,7 @@
         "subheading_wRXp8V"
       ],
       "custom_css": [
-        "@media (max-width: 768px) {h2.m-richtext__title.h4 {font-size: 16px; color: #222222; } .richtext__description p {font-size: 14px; max-width: 500px } .m\\:text-base {font-size: 14px; color: #666666; } p.m-richtext__subtitle.m-scroll-trigger.animate--fade-in-up {font-size: 15px; color: #222222; margin-top: 8px; }}"
+        "@media (max-width: 767px) {h2.m-richtext__title.h4 {font-size: 18px; color: #222222; } .m-richtext__description p {font-size: 14px; max-width: 400px; margin: 0 auto; } .m\\:text-base {font-size: 14px; color: #666666; } p.m-richtext__subtitle.m-scroll-trigger.animate--fade-in-up {font-size: 15px; color: #222222; margin-top: 8px; }}"
       ],
       "name": "Rich text",
       "settings": {
@@ -180,7 +180,7 @@
     "image_with_text_2_JBUUim": {
       "type": "image-with-text-2",
       "custom_css": [
-        "@media (max-width: 786px) {h2.m-hero__title.h2.m\\:text-white.m-scroll-trigger.animate--fade-in-up {font-size: 20px; } span.m-hero__subtitle.h6.m\\:text-white.m-scroll-trigger.animate--fade-in-up {font-size: 12px; }}"
+        "@media (max-width: 767px) {h2.m-hero__title.h2.m\\:text-white.m-scroll-trigger.animate--fade-in-up {font-size: 20px; } span.m-hero__subtitle.h6.m\\:text-white.m-scroll-trigger.animate--fade-in-up {font-size: 12px; }}"
       ],
       "name": "Image with text overlay",
       "settings": {

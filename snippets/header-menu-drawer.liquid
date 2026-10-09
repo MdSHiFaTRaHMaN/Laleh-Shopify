@@ -2,6 +2,11 @@
   assign main_menu = section.settings.main_menu | default: 'main-menu'
   assign instagram_url = section.settings.social_instagram_link | default: settings.social_instagram_link | default: 'https://www.instagram.com/mylaleh.co'
   assign tiktok_url = section.settings.social_tiktok_link | default: settings.social_tiktok_link | default: 'https://www.tiktok.com/@mylaleh.co'
+
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
+    assign is_ar = true
+  endif
 %}
 
 <div id="m-menu-drawer" class="m-luxury-drawer">
@@ -10,11 +15,11 @@
     class="m-luxury-drawer__panel m-gradient m-color-{{ section.settings.color_scheme }}"
     role="dialog"
     aria-modal="true"
-    aria-label="Main Navigation"
+    aria-label="{% if is_ar %}القائمة الرئيسية{% else %}Main Navigation{% endif %}"
   >
     <!-- Top Header: Elegant Minimal Close Button -->
     <div class="m-luxury-drawer__top">
-      <button type="button" class="m-luxury-drawer__close-btn" data-drawer-close aria-label="Close navigation">
+      <button type="button" class="m-luxury-drawer__close-btn" data-drawer-close aria-label="{% if is_ar %}إغلاق القائمة{% else %}Close navigation{% endif %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -28,6 +33,18 @@
         {% if linklists[main_menu].links.size > 0 %}
           <ul class="m-luxury-drawer__nav-list">
             {% for link in linklists[main_menu].links %}
+              {% liquid
+                assign l_title = link.title
+                if is_ar
+                  assign l_clean = l_title | strip
+                  if l_clean == 'Shop All' or l_clean contains 'تسوق الكل'
+                    assign l_title = 'المجموعة'
+                  endif
+                  assign l_title = l_title | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+                elsif request.locale.iso_code contains 'fr'
+                  assign l_title = l_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+                endif
+              %}
               <li class="m-luxury-drawer__nav-item">
                 {% if link.links != blank %}
                   <a
@@ -35,7 +52,7 @@
                     class="m-luxury-drawer__nav-link has-submenu"
                     data-open-submenu="sub-{{ forloop.index }}"
                   >
-                    <span>{{ link.title }}</span>
+                    <span>{{ l_title }}</span>
                     <span class="m-luxury-drawer__chevron" aria-hidden="true">
                       <svg
                         viewBox="0 0 24 24"
@@ -61,13 +78,25 @@
                       >
                         <polyline points="15 18 9 12 15 6"></polyline>
                       </svg>
-                      <span>{{ link.title }}</span>
+                      <span>{{ l_title }}</span>
                     </button>
                     <ul class="m-luxury-drawer__nav-list">
                       {% for child in link.links %}
+                        {% liquid
+                          assign c_title = child.title
+                          if is_ar
+                            assign c_clean = c_title | strip
+                            if c_clean == 'Shop All' or c_clean contains 'تسوق الكل'
+                              assign c_title = 'المجموعة'
+                            endif
+                            assign c_title = c_title | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+                          elsif request.locale.iso_code contains 'fr'
+                            assign c_title = c_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+                          endif
+                        %}
                         <li class="m-luxury-drawer__nav-item">
                           <a href="{{ child.url }}" class="m-luxury-drawer__nav-link">
-                            <span>{{ child.title }}</span>
+                            <span>{{ c_title }}</span>
                           </a>
                         </li>
                       {% endfor %}
@@ -75,7 +104,7 @@
                   </div>
                 {% else %}
                   <a href="{{ link.url }}" class="m-luxury-drawer__nav-link">
-                    <span>{{ link.title }}</span>
+                    <span>{{ l_title }}</span>
                   </a>
                 {% endif %}
               </li>
@@ -87,39 +116,39 @@
             <ul class="m-luxury-drawer__nav-list">
               <li class="m-luxury-drawer__nav-item">
                 <a href="/collections/all" class="m-luxury-drawer__nav-link">
-                  <span>New Collection</span>
+                  <span>{% if is_ar %}المجموعة الجديدة{% else %}New Collection{% endif %}</span>
                 </a>
               </li>
               <li class="m-luxury-drawer__nav-item">
                 <a href="/collections/all" class="m-luxury-drawer__nav-link">
-                  <span>Shop All</span>
+                  <span>{% if is_ar %}المجموعة{% else %}Shop All{% endif %}</span>
                 </a>
               </li>
             </ul>
           </div>
 
           <div class="m-luxury-drawer__nav-section">
-            <span class="m-luxury-drawer__section-title">DISCOVER</span>
+            <span class="m-luxury-drawer__section-title">{% if is_ar %}اكتشفي المزيد{% else %}DISCOVER{% endif %}</span>
             <ul class="m-luxury-drawer__nav-list">
               <li class="m-luxury-drawer__nav-item">
                 <a href="/pages/about-us" class="m-luxury-drawer__nav-link">
-                  <span>About LALEH</span>
+                  <span>{% if is_ar %}عن LALEH{% else %}About LALEH{% endif %}</span>
                 </a>
               </li>
             </ul>
           </div>
 
           <div class="m-luxury-drawer__nav-section">
-            <span class="m-luxury-drawer__section-title">CUSTOMER CARE</span>
+            <span class="m-luxury-drawer__section-title">{% if is_ar %}خدمة العملاء{% else %}CUSTOMER CARE{% endif %}</span>
             <ul class="m-luxury-drawer__nav-list">
               <li class="m-luxury-drawer__nav-item">
                 <a href="/pages/faqs" class="m-luxury-drawer__nav-link">
-                  <span>FAQs</span>
+                  <span>{% if is_ar %}الأسئلة الشائعة{% else %}FAQs{% endif %}</span>
                 </a>
               </li>
               <li class="m-luxury-drawer__nav-item">
                 <a href="/pages/contact" class="m-luxury-drawer__nav-link">
-                  <span>Contact</span>
+                  <span>{% if is_ar %}تواصل معنا{% else %}Contact{% endif %}</span>
                 </a>
               </li>
             </ul>
@@ -131,7 +160,7 @@
     <!-- Drawer Footer: Subtle Socials & Country / Language Selectors -->
     <div class="m-luxury-drawer__footer">
       <div class="m-luxury-drawer__footer-section">
-        <span class="m-luxury-drawer__footer-label">Social Media</span>
+        <span class="m-luxury-drawer__footer-label">{% if is_ar %}تابعونا{% else %}Social Media{% endif %}</span>
         <div class="m-luxury-drawer__socials">
           {% if instagram_url != blank %}
             <a

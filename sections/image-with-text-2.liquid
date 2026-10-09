@@ -154,6 +154,20 @@
         <a href="{{ image_link }}" class="m-hidden-link"></a>
       {% endif %}
 
+      {% liquid
+        assign is_ar = false
+        if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
+          assign is_ar = true
+        endif
+
+        assign display_button_label = section.settings.button_label
+        if is_ar and display_button_label != blank
+          assign btn_clean = display_button_label | strip | upcase
+          if btn_clean == 'DISCOVER THE COLLECTION' or display_button_label contains 'اكتشف المجموعة'
+            assign display_button_label = 'اكتشفي المجموعة'
+          endif
+        endif
+      %}
       <div class="m-hero__inner m-hero__inner--{{ text_vertical_alignment }}-{{ text_horizontal_alignment }} {{ content_container }}{% if color_scheme_inherit %} color-scheme-inherit{% endif %} m-gradient m-color-{{ section.settings.color_scheme }}">
         <div class="m-hero__content m:text-{{ section.settings.text_alignment_mobile }} md:m:text-{{ section.settings.text_alignment }} m-text--{{ text_color }}">
           {% if section.settings.subtitle != blank %}
@@ -171,13 +185,13 @@
               {{ section.settings.text }}
             </div>
           {% endif %}
-          {% if section.settings.button_label != blank %}
+          {% if display_button_label != blank %}
             <div class="m-hero__btn m:justify-{{ section.settings.text_alignment_mobile | replace: 'left', 'start' | replace: 'right', 'end' }} md:m:justify-{{ section.settings.text_alignment | replace: 'left', 'start' | replace: 'right', 'end' }}{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
               <a
                 href="{{ section.settings.button_link }}"
                 class="m-button {{ section.settings.button_style | replace: 'sf__btn-primary', 'm-button--primary' | replace: 'sf__btn-secondary', 'm-button--secondary' | replace: 'sf__btn-link', 'm-button--link' | replace: 'sf__btn-white', 'm-button--white' }} {{ section.settings.button_size }}"
               >
-                {{- section.settings.button_label -}}
+                {{- display_button_label -}}
               </a>
             </div>
           {% endif %}

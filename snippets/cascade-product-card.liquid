@@ -28,10 +28,11 @@
     </div>
     <div class="m-cascading-product-card__content m:text-left">
       <a
-        class="m-cascading-product-card__title"
+        class="m-cascading-product-card__title notranslate"
+        translate="no"
         href="{{ product.url | default: "#" }}"
       >
-        <h4 class="h6">{{ product.title | default: 'Product title' }}</h4>
+        <h4 class="h6">{% render 'product-title', product: product, fallback_title: 'Product title' %}</h4>
       </a>
       <div class="m-cascading-product-card__price">{% render 'product-prices', product: product %}</div>
     </div>

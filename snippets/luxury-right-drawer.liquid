@@ -1,6 +1,19 @@
 {% liquid
   assign cart_count = cart.item_count
   assign featured_collection = collections.all | default: collections.first
+
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
+    assign is_ar = true
+  endif
+
+  if is_ar
+    assign t_add_to_bag = 'أضف إلى السلة'
+    assign t_sold_out = 'نفدت الكمية'
+  else
+    assign t_add_to_bag = 'Add to Bag'
+    assign t_sold_out = 'Sold Out'
+  endif
 %}
 
 <div id="m-right-utility-drawer" class="m-luxury-right-drawer" aria-hidden="true">
@@ -132,10 +145,11 @@
                   <div class="m-right-product-card__info" style="margin-top: 6px;">
                     <a
                       href="{{ product.url }}"
-                      class="m-right-item-card__title"
+                      class="m-right-item-card__title notranslate"
+                      translate="no"
                       style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; text-decoration: none;"
                     >
-                      {{ product.title | escape }}
+                      {% render 'product-title', product: product %}
                     </a>
                     <div class="m-right-item-card__price-row" style="margin-top: 2px;">
                       {%- if product.compare_at_price > product.price -%}
@@ -207,8 +221,8 @@
                   {%- endif -%}
                 </a>
                 <div class="m-right-item-card__details">
-                  <a href="{{ item.url }}" class="m-right-item-card__title" style="text-decoration: none;">
-                    {{ item.product.title | escape }}
+                  <a href="{{ item.url }}" class="m-right-item-card__title notranslate" translate="no" style="text-decoration: none;">
+                    {% render 'product-title', product: item.product, item: item %}
                   </a>
                   {%- unless item.product.has_only_default_variant -%}
                     <div
@@ -360,8 +374,8 @@
                   </div>
 
                   <div class="m-right-coll-card__info">
-                    <a href="{{ product.url }}" class="m-right-coll-card__title">
-                      {{ product.title | escape }}
+                    <a href="{{ product.url }}" class="m-right-coll-card__title notranslate" translate="no">
+                      {% render 'product-title', product: product %}
                     </a>
                     <div class="m-right-coll-card__price-row">
                       {%- if product.compare_at_price > product.price -%}
@@ -418,12 +432,12 @@
                     >
                       {%- if product.available -%}
                         {%- if product.has_only_default_variant -%}
-                          + Add to Bag
+                          + {{ t_add_to_bag }}
                         {%- else -%}
-                          + Add to Bag • {{ default_size_label }}
+                          + {{ t_add_to_bag }} • {{ default_size_label }}
                         {%- endif -%}
                       {%- else -%}
-                        Sold Out
+                        {{ t_sold_out }}
                       {%- endif -%}
                     </button>
                   </div>
@@ -453,8 +467,8 @@
                   </div>
 
                   <div class="m-right-coll-card__info">
-                    <a href="{{ product.url }}" class="m-right-coll-card__title">
-                      {{ product.title | escape }}
+                    <a href="{{ product.url }}" class="m-right-coll-card__title notranslate" translate="no">
+                      {% render 'product-title', product: product %}
                     </a>
                     <div class="m-right-coll-card__price-row">
                       {%- if product.compare_at_price > product.price -%}
@@ -511,12 +525,12 @@
                     >
                       {%- if product.available -%}
                         {%- if product.has_only_default_variant -%}
-                          + Add to Bag
+                          + {{ t_add_to_bag }}
                         {%- else -%}
-                          + Add to Bag • {{ default_size_label }}
+                          + {{ t_add_to_bag }} • {{ default_size_label }}
                         {%- endif -%}
                       {%- else -%}
-                        Sold Out
+                        {{ t_sold_out }}
                       {%- endif -%}
                     </button>
                   </div>

@@ -57,7 +57,7 @@
         "text_transform": "none",
         "padding_vertical": 4,
         "item_gap_desktop": 36,
-        "separator_symbol": "★",
+        "separator_symbol": "none",
         "slide_interval": 3,
         "pause_on_hover": true
       }

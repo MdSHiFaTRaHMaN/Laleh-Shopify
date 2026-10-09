@@ -149,8 +149,8 @@
                               <div class="m-product-card__content m:text-left">
                                 <div class="m-product-card__info">
                                   <h3 class="m-product-card__title">
-                                    <a href="{{ product.url }}" class="m-product-card__name">
-                                      {{ product.title }}
+                                    <a href="{{ product.url }}" class="m-product-card__name notranslate" translate="no">
+                                      {% render 'product-title', product: product %}
                                     </a>
                                   </h3>
                                   <div class="m-product-card__price">
@@ -273,11 +273,19 @@
 
       {% if link.links != blank %}
         <li class="{{ li_class }}" data-index="{{ forloop.index0 }}">
+          {% liquid
+            assign l_title_clean = link.title
+            if request.locale.iso_code contains 'ar'
+              assign l_title_clean = l_title_clean | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+            elsif request.locale.iso_code contains 'fr'
+              assign l_title_clean = l_title_clean | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+            endif
+          %}
           <a
             href="{{ link.url }}"
             class="m-menu__link m-menu__link--main{% if section.settings.uppercase_parent_level %} m:uppercase{% endif %}"
           >
-            {{ link.title }}
+            {{ l_title_clean }}
             <span class="m-menu__arrow">
               <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path fill="currentColor" d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z" class=""></path>
@@ -293,9 +301,17 @@
               <div class="m-mega-menu__inner{% if stretch_width == true %} m-mega-menu__inner--stretch-width{% endif %}">
                 <ul class="m-sub-menu m-sub-menu--level-1{% if is_mega and block_type == blank %} m:w-full m:flex-1{% endif %}">
                   {% for childlink in link.links %}
+                    {% liquid
+                      assign child_title_clean = childlink.title
+                      if request.locale.iso_code contains 'ar'
+                        assign child_title_clean = child_title_clean | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+                      elsif request.locale.iso_code contains 'fr'
+                        assign child_title_clean = child_title_clean | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+                      endif
+                    %}
                     <li class="m-sub-menu__item m-sub-menu__item--level-1">
                       <a href="{{ childlink.url }}" class="m-menu__link">
-                        {{ childlink.title }}
+                        {{ child_title_clean }}
                         {% if is_mega == false and childlink.links != blank %}
                           <span class="m-menu__sub-arrow">
                             <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -308,9 +324,17 @@
                         <div class="m-mega-menu__column">
                           <ul class="m-sub-menu m-sub-menu--level-2">
                             {% for grandlink in childlink.links %}
+                              {% liquid
+                                assign grand_title_clean = grandlink.title
+                                if request.locale.iso_code contains 'ar'
+                                  assign grand_title_clean = grand_title_clean | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+                                elsif request.locale.iso_code contains 'fr'
+                                  assign grand_title_clean = grand_title_clean | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+                                endif
+                              %}
                               <li class="m-sub-menu__item m-sub-menu__item--level-2">
                                 <a href="{{ grandlink.url }}" class="m-menu__link">
-                                  {{ grandlink.title }}
+                                  {{ grand_title_clean }}
                                 </a>
                               </li>
                             {% endfor %}
@@ -331,11 +355,19 @@
         </li>
       {% else %}
         <li class="{{ li_class }}" data-index="{{ forloop.index0 }}">
+          {% liquid
+            assign l_title_clean = link.title
+            if request.locale.iso_code contains 'ar'
+              assign l_title_clean = l_title_clean | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+            elsif request.locale.iso_code contains 'fr'
+              assign l_title_clean = l_title_clean | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+            endif
+          %}
           <a
             href="{{ link.url }}"
             class="m-menu__link m-menu__link--main{% if section.settings.uppercase_parent_level %} m:uppercase{% endif %}"
           >
-            {{ link.title }}
+            {{ l_title_clean }}
             {% if is_mega and block_type != blank %}
               <span class="m-menu__arrow">
                 <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">

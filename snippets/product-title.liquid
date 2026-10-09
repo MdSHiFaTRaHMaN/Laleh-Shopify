@@ -1,0 +1,69 @@
+{%- comment -%}
+  Official product title snippet for LALEH.
+  Ensures product names remain strictly in their official English/Latin script
+  across all languages (including Arabic).
+  Supports:
+    - product: Product object
+    - item: Cart line item
+    - product_handle: String handle
+    - fallback_title: String fallback title
+{%- endcomment -%}
+{%- liquid
+  assign raw_handle = ''
+  if product_handle != blank
+    assign raw_handle = product_handle
+  elsif product != blank and product.handle != blank
+    assign raw_handle = product.handle
+  elsif item != blank
+    if item.product != blank and item.product.handle != blank
+      assign raw_handle = item.product.handle
+    elsif item.handle != blank
+      assign raw_handle = item.handle
+    endif
+  endif
+
+  assign official_title = ''
+  case raw_handle
+    when 'obsidian-touch'
+      assign official_title = 'OBSIDIAN TOUCH'
+    when 'structured-silence'
+      assign official_title = 'STRUCTURED SILENCE'
+    when 'vermeil'
+      assign official_title = 'VERMEIL'
+    when 'crimson-poise'
+      assign official_title = 'CRIMSON POISE'
+    when 'iris-pearl'
+      assign official_title = 'IRIS PEARL'
+    when 'lilac-verse'
+      assign official_title = 'LILAC VERSE'
+    else
+      if raw_handle != blank and raw_handle != 'all'
+        assign official_title = raw_handle | replace: '-', ' ' | upcase
+      endif
+  endcase
+
+  if official_title == blank
+    assign check_text = fallback_title | default: product.title | default: item.product.title | default: item.title | downcase
+    if check_text contains 'obsidian'
+      assign official_title = 'OBSIDIAN TOUCH'
+    elsif check_text contains 'structured' or check_text contains 'silence'
+      assign official_title = 'STRUCTURED SILENCE'
+    elsif check_text contains 'vermeil'
+      assign official_title = 'VERMEIL'
+    elsif check_text contains 'crimson' or check_text contains 'poise'
+      assign official_title = 'CRIMSON POISE'
+    elsif check_text contains 'iris' or check_text contains 'pearl'
+      assign official_title = 'IRIS PEARL'
+    elsif check_text contains 'lilac' or check_text contains 'verse'
+      assign official_title = 'LILAC VERSE'
+    elsif fallback_title != blank
+      assign official_title = fallback_title
+    elsif product != blank and product.title != blank
+      assign official_title = product.title
+    elsif item != blank
+      assign official_title = item.product.title | default: item.title
+    endif
+  endif
+
+  echo official_title
+-%}

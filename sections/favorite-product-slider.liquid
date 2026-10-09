@@ -112,7 +112,7 @@
             {% if section.settings.heading != blank %}
               {{ section.settings.heading }}
             {% else %}
-              {{ product.title }}
+              <span class="notranslate" translate="no">{% render 'product-title', product: product %}</span>
             {% endif %}
           </h2>
           {% if section.settings.description != blank %}

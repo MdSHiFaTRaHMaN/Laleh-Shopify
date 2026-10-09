@@ -1,2 +1,1569 @@
-.grecaptcha-badge{display:none}.section__flush-top .m-section-my{margin-top:0}.section__flush-bottom .m-section-my{margin-bottom:0}.sf__text-stroke{-webkit-text-stroke:.5px #dfdfdf;letter-spacing:10px;text-transform:uppercase;font-size:110px;font-style:italic;color:rgba(0,0,0,0);font-weight:bold}.sf__text-stroke.text-stroke-1{font-size:48px;line-height:56px;font-style:normal;-webkit-text-stroke:1px dimgray;letter-spacing:0}.sf__text-scroll{font-size:48px;line-height:56px}.m-scroll{display:flex;width:100%;height:165px;position:relative;margin:auto;overflow:hidden}.m-scroll__title{white-space:nowrap;transition:all 1s ease}.m-scroll__title>div{display:flex;animation:scrollText var(--speed, 22s) infinite linear;position:absolute}.sf__scrolling-text .sf__scrolling-text-inner{width:100%;height:auto;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;overflow:hidden;white-space:nowrap;vertical-align:baseline}.sf__scrolling-text .sf__scrolling-text-inner:hover>*{animation-play-state:paused}.sf__scrolling-text .sf__scrolling-text-inner>*{margin:0;animation-duration:var(--speed, 15s)}.sf__scrolling-text .sf__scrolling-text-inner a{color:inherit;text-decoration:none}.sf__scrolling-text .sf__scrolling-text-inner a em{font-style:normal}.sf__scrolling-text .sf__scrolling-text-inner span.custom{padding:0 1em;display:inline-block;vertical-align:middle}.sf__scrolling-text .sf__scrolling-text-inner span.custom[data-scale=medium]{padding:0 1em;transform:scale(0.5)}.sf__scrolling-text .sf__scrolling-text-inner span.custom[data-scale=large]{padding:0 2em}.sf__scrolling-text[data-s-dir=ltr] .sf__scrolling-text-inner>*{transform:translateX(-20%) translateZ(0);animation:sf-scrolling-text-animation linear infinite 15s}.sf__scrolling-text[data-s-dir=rtl]{direction:rtl}.sf__scrolling-text[data-s-dir=rtl] .sf__scrolling-text-inner>*{transform:translateX(20%) translateZ(0);animation:sf-scrolling-text-animation-reverse linear infinite 15s}.sf__scrolling-text[data-s-speed=lowest] .sf__scrolling-text-inner>*{animation-duration:15s}.sf__scrolling-text[data-s-speed=medium] .sf__scrolling-text-inner>*{animation-duration:7s}.sf__scrolling-text[data-s-speed=fast] .sf__scrolling-text-inner>*{animation-duration:4s}.sf__scrolling-text[data-style=text-outline] em{-webkit-text-stroke-color:inherit;-webkit-text-fill-color:rgba(0,0,0,0)}.sf__scrolling-text[data-style=text-outline][data-outline-thickness=thin] em{-webkit-text-stroke-width:.015em}.sf__scrolling-text[data-style=text-outline][data-outline-thickness=thick] em{-webkit-text-stroke-width:.03em}.sf__scrolling-text[data-style=text-outline] a:hover em{-webkit-text-fill-color:initial;-webkit-text-stroke-width:0}.sf__scrolling-text.font_size_11vh *{font-size:11vh;line-height:1.2em}.sf__tab-item{width:100%;color:#fff;overflow:hidden;margin-bottom:40px}.sf__tab-item input{position:absolute;opacity:0;z-index:-1}.sf__tab-item-label{display:flex;justify-content:space-between;padding:1em 0;font-weight:bold;cursor:pointer;color:#000;border-bottom:1px solid #ededed;position:relative}.sf__tab-item-label::after,.sf__tab-item-label::before{position:absolute;content:"";text-align:center;transition:all var(--m-duration-default, 0.25s);transform:translateY(-50%);top:50%;background:#000}.sf__tab-item-label::after{width:11px;height:1px;right:0}.sf__tab-item-label::before{width:1px;height:11px;right:4.5px}.sf__tab-item-content{max-height:0;padding:0;color:#000;transition:all var(--m-duration-default, 0.25s)}.sf__tab-item input:checked+.sf__tab-item-label{border-bottom-color:#000}.sf__tab-item input:checked+.sf__tab-item-label::before{display:none}.sf__tab-item input:checked~.sf__tab-item-content{max-height:100vh;padding:20px 0 0}.ssw-faveiticon{position:relative !important;display:flex;align-items:center}.ssw-socialconnect{display:flex;align-items:center;justify-content:space-between}.ssw-social-login-widget .ssw-socialconnect>div>a{display:inline-flex !important;justify-content:center;align-items:center;height:44px !important}.ssw-social-login-widget .ssw-socialconnect>div>a i[class*=ssw-icon]{transform:none !important}.ssw-stars>i{font-size:16px !important}@media screen and (min-width: 768px){.hide-on-desk{display:none !important}}@media screen and (max-width: 767px){.hide-on-mobile{display:none !important}.hidden-br-mobile br{display:none}}
-.shopify-policy__container{max-width:1440px !important;margin:0 auto 4rem !important; font-size: 12px }.shopify-policy__title h1{font-size:1.875rem;line-height:2.25rem;padding:32px 16px}@media screen and (min-width: 1024px){.shopify-policy__title h1{font-size:2.25rem;line-height:2.5rem;padding-top:64px;padding-bottom:64px}}.m-menu-badge{position:relative;height:100%}.m-menu-badge::before{content:var(--badge);position:absolute;top:-4px;left:6px;font-size:12px;text-transform:capitalize;width:42px;height:20px;font-weight:500;border-radius:11px;display:flex;align-items:center;justify-content:center}.m-menu-badge--hot::before{background-color:#ffe7e7;color:#da3f3f}.m-menu-badge--new::before{background-color:#d5fbef;color:#3a9076}.flex{display:flex}.grid{display:grid}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-between{justify-content:space-between}.flex-wrap{flex-wrap:wrap}.flex-1{flex:1 1 0%}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.gap-4{gap:16px}.col-span-2{grid-column:span 2/span 2}.font-medium{font-weight:500}.font-semibold{font-weight:600}.text-base{font-size:1rem;line-height:1.5rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.mt-0{margin-top:0 !important}.mt-10{margin-top:10px}.mb-0{margin-bottom:0}.text-2xl{font-size:1.5rem;line-height:2rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.leading-7{line-height:1.75rem}.leading-6{line-height:1.5rem}.pl-8{padding-left:32px}.px-3{padding-left:12px;padding-right:12px}.mt-6{margin-top:24px}.mt-8{margin-top:32px}.mt-10{margin-top:40px}.mb-10{margin-bottom:40px}.mb-6{margin-bottom:24px}.mb-4{margin-bottom:16px}.mb-2\.5{margin-bottom:10px}.mb-2{margin-bottom:8px}.mr-5{margin-right:20px}.mx-auto{margin-left:auto;margin-right:auto}.list-disc{list-style-type:disc}.w-full{width:100%}.text-color-subtext{color:rgb(var(--color-foreground-secondary))}.w-\[20px\]{width:20px}.h-\[20px\]{height:20px}.-mx-4{margin:0 -16px}.px-4{padding:0 16px}.mb-14{margin-bottom:56px}.mt-4{margin-top:16px}.px-12{padding:0 48px}.w-4{width:1rem}.h-4{height:1rem}.w-36{width:9rem}.ml-2{margin-left:8px}.grid{display:grid}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}@media screen and (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:pr-4{padding-right:16px}.md\:pl-12{padding-left:48px}.md\:pr-10{padding-right:40px}.md\:gap-7{gap:28px}.md\:mb-6{margin-bottom:24px}}@media screen and (min-width: 1280px){.xl\:items-center{align-items:center}.xl\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}}@media screen and (max-width: 767px){.img-ctn{margin-bottom:24px}}
+.grecaptcha-badge {
+  display: none
+}
+
+.section__flush-top .m-section-my {
+  margin-top: 0
+}
+
+.section__flush-bottom .m-section-my {
+  margin-bottom: 0
+}
+
+.sf__text-stroke {
+  -webkit-text-stroke: .5px #dfdfdf;
+  letter-spacing: 10px;
+  text-transform: uppercase;
+  font-size: 110px;
+  font-style: italic;
+  color: rgba(0, 0, 0, 0);
+  font-weight: bold
+}
+
+.sf__text-stroke.text-stroke-1 {
+  font-size: 48px;
+  line-height: 56px;
+  font-style: normal;
+  -webkit-text-stroke: 1px dimgray;
+  letter-spacing: 0
+}
+
+.sf__text-scroll {
+  font-size: 48px;
+  line-height: 56px
+}
+
+.m-scroll {
+  display: flex;
+  width: 100%;
+  height: 165px;
+  position: relative;
+  margin: auto;
+  overflow: hidden
+}
+
+.m-scroll__title {
+  white-space: nowrap;
+  transition: all 1s ease
+}
+
+.m-scroll__title>div {
+  display: flex;
+  animation: scrollText var(--speed, 22s) infinite linear;
+  position: absolute
+}
+
+.sf__scrolling-text .sf__scrolling-text-inner {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: baseline
+}
+
+.sf__scrolling-text .sf__scrolling-text-inner:hover>* {
+  animation-play-state: paused
+}
+
+.sf__scrolling-text .sf__scrolling-text-inner>* {
+  margin: 0;
+  animation-duration: var(--speed, 15s)
+}
+
+.sf__scrolling-text .sf__scrolling-text-inner a {
+  color: inherit;
+  text-decoration: none
+}
+
+.sf__scrolling-text .sf__scrolling-text-inner a em {
+  font-style: normal
+}
+
+.sf__scrolling-text .sf__scrolling-text-inner span.custom {
+  padding: 0 1em;
+  display: inline-block;
+  vertical-align: middle
+}
+
+.sf__scrolling-text .sf__scrolling-text-inner span.custom[data-scale=medium] {
+  padding: 0 1em;
+  transform: scale(0.5)
+}
+
+.sf__scrolling-text .sf__scrolling-text-inner span.custom[data-scale=large] {
+  padding: 0 2em
+}
+
+.sf__scrolling-text[data-s-dir=ltr] .sf__scrolling-text-inner>* {
+  transform: translateX(-20%) translateZ(0);
+  animation: sf-scrolling-text-animation linear infinite 15s
+}
+
+.sf__scrolling-text[data-s-dir=rtl] {
+  direction: rtl
+}
+
+.sf__scrolling-text[data-s-dir=rtl] .sf__scrolling-text-inner>* {
+  transform: translateX(20%) translateZ(0);
+  animation: sf-scrolling-text-animation-reverse linear infinite 15s
+}
+
+.sf__scrolling-text[data-s-speed=lowest] .sf__scrolling-text-inner>* {
+  animation-duration: 15s
+}
+
+.sf__scrolling-text[data-s-speed=medium] .sf__scrolling-text-inner>* {
+  animation-duration: 7s
+}
+
+.sf__scrolling-text[data-s-speed=fast] .sf__scrolling-text-inner>* {
+  animation-duration: 4s
+}
+
+.sf__scrolling-text[data-style=text-outline] em {
+  -webkit-text-stroke-color: inherit;
+  -webkit-text-fill-color: rgba(0, 0, 0, 0)
+}
+
+.sf__scrolling-text[data-style=text-outline][data-outline-thickness=thin] em {
+  -webkit-text-stroke-width: .015em
+}
+
+.sf__scrolling-text[data-style=text-outline][data-outline-thickness=thick] em {
+  -webkit-text-stroke-width: .03em
+}
+
+.sf__scrolling-text[data-style=text-outline] a:hover em {
+  -webkit-text-fill-color: initial;
+  -webkit-text-stroke-width: 0
+}
+
+.sf__scrolling-text.font_size_11vh * {
+  font-size: 11vh;
+  line-height: 1.2em
+}
+
+.sf__tab-item {
+  width: 100%;
+  color: #fff;
+  overflow: hidden;
+  margin-bottom: 40px
+}
+
+.sf__tab-item input {
+  position: absolute;
+  opacity: 0;
+  z-index: -1
+}
+
+.sf__tab-item-label {
+  display: flex;
+  justify-content: space-between;
+  padding: 1em 0;
+  font-weight: bold;
+  cursor: pointer;
+  color: #000;
+  border-bottom: 1px solid #ededed;
+  position: relative
+}
+
+.sf__tab-item-label::after,
+.sf__tab-item-label::before {
+  position: absolute;
+  content: "";
+  text-align: center;
+  transition: all var(--m-duration-default, 0.25s);
+  transform: translateY(-50%);
+  top: 50%;
+  background: #000
+}
+
+.sf__tab-item-label::after {
+  width: 11px;
+  height: 1px;
+  right: 0
+}
+
+.sf__tab-item-label::before {
+  width: 1px;
+  height: 11px;
+  right: 4.5px
+}
+
+.sf__tab-item-content {
+  max-height: 0;
+  padding: 0;
+  color: #000;
+  transition: all var(--m-duration-default, 0.25s)
+}
+
+.sf__tab-item input:checked+.sf__tab-item-label {
+  border-bottom-color: #000
+}
+
+.sf__tab-item input:checked+.sf__tab-item-label::before {
+  display: none
+}
+
+.sf__tab-item input:checked~.sf__tab-item-content {
+  max-height: 100vh;
+  padding: 20px 0 0
+}
+
+.ssw-faveiticon {
+  position: relative !important;
+  display: flex;
+  align-items: center
+}
+
+.ssw-socialconnect {
+  display: flex;
+  align-items: center;
+  justify-content: space-between
+}
+
+.ssw-social-login-widget .ssw-socialconnect>div>a {
+  display: inline-flex !important;
+  justify-content: center;
+  align-items: center;
+  height: 44px !important
+}
+
+.ssw-social-login-widget .ssw-socialconnect>div>a i[class*=ssw-icon] {
+  transform: none !important
+}
+
+.ssw-stars>i {
+  font-size: 16px !important
+}
+
+@media screen and (min-width: 768px) {
+  .hide-on-desk {
+    display: none !important
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .hide-on-mobile {
+    display: none !important
+  }
+
+  .hidden-br-mobile br {
+    display: none
+  }
+}
+
+.m-menu-badge {
+  position: relative;
+  height: 100%
+}
+
+.m-menu-badge::before {
+  content: var(--badge);
+  position: absolute;
+  top: -4px;
+  left: 6px;
+  font-size: 12px;
+  text-transform: capitalize;
+  width: 42px;
+  height: 20px;
+  font-weight: 500;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+
+.m-menu-badge--hot::before {
+  background-color: #ffe7e7;
+  color: #da3f3f
+}
+
+.m-menu-badge--new::before {
+  background-color: #d5fbef;
+  color: #3a9076
+}
+
+.flex {
+  display: flex
+}
+
+.grid {
+  display: grid
+}
+
+.flex-col {
+  flex-direction: column
+}
+
+.items-center {
+  align-items: center
+}
+
+.justify-between {
+  justify-content: space-between
+}
+
+.flex-wrap {
+  flex-wrap: wrap
+}
+
+.flex-1 {
+  flex: 1 1 0%
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr))
+}
+
+.gap-4 {
+  gap: 16px
+}
+
+.col-span-2 {
+  grid-column: span 2/span 2
+}
+
+.font-medium {
+  font-weight: 500
+}
+
+.font-semibold {
+  font-weight: 600
+}
+
+.text-base {
+  font-size: 1rem;
+  line-height: 1.5rem
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem
+}
+
+.mt-0 {
+  margin-top: 0 !important
+}
+
+.mt-10 {
+  margin-top: 10px
+}
+
+.mb-0 {
+  margin-bottom: 0
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem
+}
+
+.leading-7 {
+  line-height: 1.75rem
+}
+
+.leading-6 {
+  line-height: 1.5rem
+}
+
+.pl-8 {
+  padding-left: 32px
+}
+
+.px-3 {
+  padding-left: 12px;
+  padding-right: 12px
+}
+
+.mt-6 {
+  margin-top: 24px
+}
+
+.mt-8 {
+  margin-top: 32px
+}
+
+.mt-10 {
+  margin-top: 40px
+}
+
+.mb-10 {
+  margin-bottom: 40px
+}
+
+.mb-6 {
+  margin-bottom: 24px
+}
+
+.mb-4 {
+  margin-bottom: 16px
+}
+
+.mb-2\.5 {
+  margin-bottom: 10px
+}
+
+.mb-2 {
+  margin-bottom: 8px
+}
+
+.mr-5 {
+  margin-right: 20px
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto
+}
+
+.list-disc {
+  list-style-type: disc
+}
+
+.w-full {
+  width: 100%
+}
+
+.text-color-subtext {
+  color: rgb(var(--color-foreground-secondary))
+}
+
+.w-\[20px\] {
+  width: 20px
+}
+
+.h-\[20px\] {
+  height: 20px
+}
+
+.-mx-4 {
+  margin: 0 -16px
+}
+
+.px-4 {
+  padding: 0 16px
+}
+
+.mb-14 {
+  margin-bottom: 56px
+}
+
+.mt-4 {
+  margin-top: 16px
+}
+
+.px-12 {
+  padding: 0 48px
+}
+
+.w-4 {
+  width: 1rem
+}
+
+.h-4 {
+  height: 1rem
+}
+
+.w-36 {
+  width: 9rem
+}
+
+.ml-2 {
+  margin-left: 8px
+}
+
+.grid {
+  display: grid
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr))
+}
+
+@media screen and (min-width: 768px) {
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+  }
+
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr))
+  }
+
+  .md\:grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr))
+  }
+
+  .md\:pr-4 {
+    padding-right: 16px
+  }
+
+  .md\:pl-12 {
+    padding-left: 48px
+  }
+
+  .md\:pr-10 {
+    padding-right: 40px
+  }
+
+  .md\:gap-7 {
+    gap: 28px
+  }
+
+  .md\:mb-6 {
+    margin-bottom: 24px
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .xl\:items-center {
+    align-items: center
+  }
+
+  .xl\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr))
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .img-ctn {
+    margin-bottom: 24px
+  }
+}
+
+/* ==========================================================================
+   UNIFIED STORE TYPOGRAPHY SYSTEM
+   Harmonizes typography across the entire store:
+   - Shipping & Returns
+   - Privacy Policy
+   - Terms of Service
+   - Frequently Asked Questions (FAQ)
+   - Contact Us
+   ========================================================================== */
+
+/* --- 1. Main Page Titles (H1) --- */
+.shopify-policy__title h1,
+.m-page-header__title,
+.template-page .m-page-header h1,
+.m-page-header--template-page h1,
+.template-page-contact .m-page-header h1,
+.template-page-faqs .m-section__heading,
+.m-faqs-section__content>h1 {
+  font-family: var(--font-stack-header), "Playfair Display", Didot, "Bodoni MT", Georgia, serif !important;
+  font-weight: 400 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 2px !important;
+  line-height: 1.25 !important;
+  color: rgb(var(--color-heading, 26, 26, 26)) !important;
+  text-align: center !important;
+  font-size: 34px !important;
+  margin-bottom: 0 !important;
+}
+
+@media screen and (max-width: 1023px) {
+
+  .shopify-policy__title h1,
+  .m-page-header__title,
+  .template-page .m-page-header h1,
+  .m-page-header--template-page h1,
+  .template-page-contact .m-page-header h1,
+  .template-page-faqs .m-section__heading,
+  .m-faqs-section__content>h1 {
+    font-size: 28px !important;
+    letter-spacing: 2px !important;
+  }
+}
+
+@media screen and (max-width: 767px) {
+
+  .shopify-policy__title h1,
+  .m-page-header__title,
+  .template-page .m-page-header h1,
+  .m-page-header--template-page h1,
+  .template-page-contact .m-page-header h1,
+  .template-page-faqs .m-section__heading,
+  .m-faqs-section__content>h1 {
+    font-size: 22px !important;
+    letter-spacing: 1.5px !important;
+  }
+}
+
+/* --- 2. Container Reading Widths (Policies & Editorial Standard Pages) --- */
+.shopify-policy__container {
+  max-width: 880px !important;
+  margin: 0 auto 4rem !important;
+  padding: 0 24px !important;
+  box-sizing: border-box !important;
+}
+
+.shopify-policy__title {
+  padding: 40px 0 24px !important;
+  text-align: center !important;
+}
+
+@media screen and (min-width: 1024px) {
+  .shopify-policy__title {
+    padding: 60px 0 32px !important;
+  }
+}
+
+.m-page-content {
+  max-width: 880px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-bottom: 3.5rem !important;
+}
+
+/* --- 3. Body Text (Paragraphs, Content, RTE) --- */
+.shopify-policy__container,
+.shopify-policy__body,
+.shopify-policy__body .rte,
+.shopify-policy__body p,
+.m-page-content,
+.m-page-content.rte,
+.m-page-content p,
+.m-page-content.rte p,
+.m-collapsible--content__inner,
+.m-collapsible--content__inner p,
+.m-contact-form__description,
+.m-contact-form__description p,
+.m-info-box__content,
+.m-info-box__content p,
+.m-contact-email-link span {
+  font-family: var(--font-stack-body), "Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 15.5px !important;
+  line-height: 1.75 !important;
+  letter-spacing: 0.15px !important;
+  color: #383838 !important;
+}
+
+@media screen and (max-width: 1023px) {
+
+  .shopify-policy__container,
+  .shopify-policy__body,
+  .shopify-policy__body .rte,
+  .shopify-policy__body p,
+  .m-page-content,
+  .m-page-content.rte,
+  .m-page-content p,
+  .m-page-content.rte p,
+  .m-collapsible--content__inner,
+  .m-collapsible--content__inner p,
+  .m-contact-form__description,
+  .m-contact-form__description p,
+  .m-info-box__content,
+  .m-info-box__content p,
+  .m-contact-email-link span {
+    font-size: 15px !important;
+    line-height: 1.7 !important;
+  }
+}
+
+@media screen and (max-width: 767px) {
+
+  .shopify-policy__container,
+  .shopify-policy__body,
+  .shopify-policy__body .rte,
+  .shopify-policy__body p,
+  .m-page-content,
+  .m-page-content.rte,
+  .m-page-content p,
+  .m-page-content.rte p,
+  .m-collapsible--content__inner,
+  .m-collapsible--content__inner p,
+  .m-contact-form__description,
+  .m-contact-form__description p,
+  .m-info-box__content,
+  .m-info-box__content p,
+  .m-contact-email-link span {
+    font-size: 14.5px !important;
+    line-height: 1.65 !important;
+  }
+}
+
+/* Margin spacing for body paragraphs */
+.shopify-policy__body p,
+.m-page-content p,
+.m-collapsible--content__inner p,
+.m-contact-form__description p {
+  margin-top: 0 !important;
+  margin-bottom: 1.25rem !important;
+}
+
+.shopify-policy__body p:last-child,
+.m-page-content p:last-child,
+.m-collapsible--content__inner p:last-child,
+.m-contact-form__description p:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* --- 4. Subheadings inside Content (H2, H3, H4) --- */
+.shopify-policy__body h2,
+.m-page-content h2,
+.m-page-content.rte h2 {
+  font-family: var(--font-stack-header), "Playfair Display", Didot, "Bodoni MT", Georgia, serif !important;
+  font-weight: 400 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.5px !important;
+  line-height: 1.35 !important;
+  color: rgb(var(--color-heading, 26, 26, 26)) !important;
+  font-size: 22px !important;
+  margin-top: 2.25rem !important;
+  margin-bottom: 1rem !important;
+}
+
+@media screen and (max-width: 1023px) {
+
+  .shopify-policy__body h2,
+  .m-page-content h2,
+  .m-page-content.rte h2 {
+    font-size: 20px !important;
+    margin-top: 1.85rem !important;
+    margin-bottom: 0.85rem !important;
+  }
+}
+
+@media screen and (max-width: 767px) {
+
+  .shopify-policy__body h2,
+  .m-page-content h2,
+  .m-page-content.rte h2 {
+    font-size: 18px !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+}
+
+.shopify-policy__body h3,
+.m-page-content h3,
+.m-page-content.rte h3 {
+  font-family: var(--font-stack-body), "Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+  line-height: 1.4 !important;
+  color: rgb(var(--color-heading, 26, 26, 26)) !important;
+  font-size: 17px !important;
+  margin-top: 1.75rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+@media screen and (max-width: 767px) {
+
+  .shopify-policy__body h3,
+  .m-page-content h3,
+  .m-page-content.rte h3 {
+    font-size: 15.5px !important;
+  }
+}
+
+.shopify-policy__body h4,
+.m-page-content h4,
+.m-page-content.rte h4 {
+  font-family: var(--font-stack-body), "Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.2px !important;
+  line-height: 1.4 !important;
+  color: rgb(var(--color-heading, 26, 26, 26)) !important;
+  font-size: 15.5px !important;
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* Bold / Strong emphasis in body */
+.shopify-policy__body strong,
+.shopify-policy__body b,
+.m-page-content strong,
+.m-page-content b,
+.m-collapsible--content__inner strong,
+.m-collapsible--content__inner b {
+  font-weight: 600 !important;
+  color: rgb(var(--color-heading, 26, 26, 26)) !important;
+}
+
+/* --- 5. Lists (Unordered & Ordered) --- */
+.shopify-policy__body ul,
+.shopify-policy__body ol,
+.m-page-content.rte ul,
+.m-page-content.rte ol,
+.m-collapsible--content__inner ul,
+.m-collapsible--content__inner ol {
+  padding-left: 24px !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 1.25rem !important;
+}
+
+.shopify-policy__body li,
+.m-page-content.rte li,
+.m-collapsible--content__inner li {
+  font-family: var(--font-stack-body), "Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 15.5px !important;
+  line-height: 1.75 !important;
+  letter-spacing: 0.15px !important;
+  color: #383838 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+@media screen and (max-width: 1023px) {
+
+  .shopify-policy__body li,
+  .m-page-content.rte li,
+  .m-collapsible--content__inner li {
+    font-size: 15px !important;
+    line-height: 1.7 !important;
+  }
+}
+
+@media screen and (max-width: 767px) {
+
+  .shopify-policy__body li,
+  .m-page-content.rte li,
+  .m-collapsible--content__inner li {
+    font-size: 14.5px !important;
+    line-height: 1.65 !important;
+  }
+}
+
+/* --- 6. Links in Body Content --- */
+.shopify-policy__body a,
+.m-page-content.rte a,
+.m-collapsible--content__inner a {
+  color: rgb(var(--color-heading, 26, 26, 26)) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px !important;
+  transition: opacity 0.2s ease !important;
+}
+
+.shopify-policy__body a:hover,
+.m-page-content.rte a:hover,
+.m-collapsible--content__inner a:hover {
+  opacity: 0.7 !important;
+}
+
+/* --- 7. FAQ Accordion Titles --- */
+.m-faqs-section .m-collapsible--button {
+  font-family: var(--font-stack-body), "Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.2px !important;
+  color: rgb(var(--color-heading, 26, 26, 26)) !important;
+  font-size: 16.5px !important;
+  line-height: 1.5 !important;
+}
+
+@media screen and (max-width: 1023px) {
+  .m-faqs-section .m-collapsible--button {
+    font-size: 15.5px !important;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .m-faqs-section .m-collapsible--button {
+    font-size: 15px !important;
+  }
+}
+
+/* --- 8. Contact Form Specific Typography --- */
+/* --- 8. Contact Form Specific Typography & Compact Layout --- */
+.m-contact-form {
+  padding-top: 12px !important;
+  padding-bottom: 36px !important;
+}
+
+.m-contact-form .container {
+  max-width: 900px !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+.m-contact-form__main {
+  max-width: 520px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.m-contact-form__heading {
+  font-family: var(--font-stack-header), "Playfair Display", Didot, "Bodoni MT", Georgia, serif !important;
+  font-weight: 400 !important;
+  letter-spacing: 1.5px !important;
+  line-height: 1.3 !important;
+  color: rgb(var(--color-heading, 26, 26, 26)) !important;
+  font-size: 24px !important;
+  margin-bottom: 8px !important;
+  text-align: center !important;
+}
+
+.m-contact-form__description {
+  font-family: var(--font-stack-body), "Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  color: #555555 !important;
+  text-align: center !important;
+  max-width: 460px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-bottom: 20px !important;
+}
+
+.m-contact-form__description p {
+  margin-bottom: 0 !important;
+}
+
+/* Proportional & Properly Aligned Name & Email */
+.m-contact-form__form-fields {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 14px !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+}
+
+.m-contact-form__name,
+.m-contact-form__email {
+  flex: 1 1 calc(50% - 7px) !important;
+  width: calc(50% - 7px) !important;
+  max-width: calc(50% - 7px) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.m-contact-form__phone {
+  flex: 1 1 100% !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.m-contact-form .form-field--input {
+  width: 100% !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  background-color: #ffffff !important;
+  border-radius: 2px !important;
+  padding: 9px 13px !important;
+  font-size: 13.5px !important;
+  line-height: 1.4 !important;
+  color: #222222 !important;
+  box-sizing: border-box !important;
+  font-family: var(--font-stack-body), "Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.m-contact-form input.form-field--input {
+  height: 40px !important;
+}
+
+.m-contact-form .form-field--input::placeholder {
+  font-size: 13px !important;
+  color: #888888 !important;
+  opacity: 1 !important;
+}
+
+.m-contact-form .form-field--input:focus {
+  border-color: #1a1a1a !important;
+  box-shadow: 0 0 0 1px #1a1a1a !important;
+  outline: none !important;
+}
+
+/* Compact Message Box & Perfect Edge Alignment */
+.m-contact-form__message {
+  width: 100% !important;
+  margin-top: 14px !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+}
+
+.m-contact-form__message textarea {
+  height: 86px !important;
+  min-height: 86px !important;
+  max-height: 150px !important;
+  resize: vertical !important;
+  line-height: 1.45 !important;
+  padding: 10px 13px !important;
+}
+
+/* Submit Button */
+.m-contact-form__submit-wrapper {
+  display: flex !important;
+  justify-content: center !important;
+  width: 100% !important;
+  margin-top: 18px !important;
+}
+
+.m-contact-form__submit-btn {
+  padding: 8px 30px !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  letter-spacing: 1.2px !important;
+  text-transform: uppercase !important;
+  line-height: 1.2 !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  width: fit-content !important;
+  max-width: max-content !important;
+  border-radius: 2px !important;
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+  border: 1px solid #1a1a1a !important;
+  cursor: pointer !important;
+  transition: background-color 0.25s ease, opacity 0.25s ease !important;
+}
+
+.m-contact-form__submit-btn:hover {
+  background-color: #383838 !important;
+  border-color: #383838 !important;
+  opacity: 0.95 !important;
+}
+
+.m-info-box__title {
+  font-family: var(--font-stack-header), "Playfair Display", Didot, "Bodoni MT", Georgia, serif !important;
+  font-weight: 400 !important;
+  letter-spacing: 1.2px !important;
+  text-transform: uppercase !important;
+  line-height: 1.3 !important;
+  color: rgb(var(--color-heading, 26, 26, 26)) !important;
+  font-size: 15px !important;
+  margin-bottom: 6px !important;
+}
+
+/* Desktop View (>= 1024px) */
+@media screen and (min-width: 1024px) {
+  .m-contact-form .m-row {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+    gap: 50px !important;
+    max-width: 820px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .m-contact-form__main {
+    max-width: 500px !important;
+    flex: 1 1 500px !important;
+    margin: 0 !important;
+  }
+
+  .m-contact-form__heading,
+  .m-contact-form__description {
+    text-align: left !important;
+    margin-left: 0 !important;
+  }
+
+  .m-contact-form__submit-wrapper {
+    justify-content: flex-start !important;
+  }
+
+  .m-contact-form__info {
+    flex: 0 0 230px !important;
+    width: 230px !important;
+    padding-top: 8px !important;
+    padding-left: 36px !important;
+    border-left: 1px solid rgba(0, 0, 0, 0.08) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    margin: 0 !important;
+  }
+
+  .m-contact-form__info .m-info-box {
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* Tablet View (768px - 1023px, iPad portrait and landscape) */
+@media screen and (max-width: 1023px) {
+  .m-contact-form .m-row {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    max-width: 520px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .m-contact-form__main {
+    max-width: 520px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+  }
+
+  .m-contact-form__heading,
+  .m-contact-form__description {
+    text-align: center !important;
+  }
+
+  .m-contact-form__message textarea {
+    height: 84px !important;
+    min-height: 84px !important;
+  }
+
+  .m-contact-form__info {
+    width: 100% !important;
+    max-width: 520px !important;
+    margin-top: 28px !important;
+    padding-top: 20px !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 24px !important;
+    padding-left: 0 !important;
+    border-left: none !important;
+  }
+
+  .m-contact-form__info .m-info-box {
+    width: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+}
+
+/* Mobile View (<= 575px) */
+@media screen and (max-width: 575px) {
+  .m-contact-form__form-fields {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .m-contact-form__name,
+  .m-contact-form__email {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .m-contact-form__message textarea {
+    height: 80px !important;
+    min-height: 80px !important;
+  }
+
+  .m-contact-form__info {
+    flex-direction: column !important;
+    gap: 14px !important;
+    margin-top: 22px !important;
+    padding-top: 18px !important;
+  }
+}
+
+/* ==========================================================================
+   COMPREHENSIVE STOREWIDE MOBILE OPTIMIZATION (<= 767px)
+   - Reduced white space & tighter vertical page length
+   - Balanced padding and margins across all sections
+   - Structured typography (Headings, Subheadings, Paragraphs)
+   - Refined, ergonomic mobile button sizing
+   - Clean, professional, user-friendly mobile layout
+   ========================================================================== */
+@media screen and (max-width: 767px) {
+
+  /* --- 1. Global Section & Container Spacing (Less White Space & Shorter Page Height) --- */
+  .m-section-py {
+    padding-top: 22px !important;
+    padding-bottom: 22px !important;
+  }
+
+  .m-section-my {
+    margin-top: 18px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .section__flush-top .m-section-py,
+  .m-section-py.section__flush-top {
+    padding-top: 0 !important;
+  }
+
+  .section__flush-bottom .m-section-py,
+  .m-section-py.section__flush-bottom {
+    padding-bottom: 0 !important;
+  }
+
+  .container,
+  .container-fluid {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  /* Section Header & Subheading Margins */
+  .m-section__header {
+    margin-bottom: 14px !important;
+  }
+
+  .m-section__subheading {
+    font-size: 11px !important;
+    letter-spacing: 1.5px !important;
+    text-transform: uppercase !important;
+    margin-bottom: 5px !important;
+    font-weight: 500 !important;
+  }
+
+  .m-section__description {
+    font-size: 13.5px !important;
+    line-height: 1.55 !important;
+    margin-top: 6px !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Page Header (About Us, Contact, Policies, FAQ, Collection) */
+  .m-page-header {
+    padding-top: 18px !important;
+    padding-bottom: 4px !important;
+  }
+
+  .m-page-header .m-breadcrumb {
+    margin-top: 6px !important;
+  }
+
+  /* --- 2. Mobile Heading Typography Hierarchy --- */
+  h1,
+  .h1,
+  .m-page-header__title,
+  .shopify-policy__title h1 {
+    font-size: 21px !important;
+    line-height: 1.25 !important;
+    letter-spacing: 1.4px !important;
+    margin-bottom: 8px !important;
+  }
+
+  h2,
+  .h2,
+  .m-section__heading.h2,
+  .m-slide__title,
+  .m-image-with-text .h2,
+  .m-rich-text .h2 {
+    font-size: 19px !important;
+    line-height: 1.28 !important;
+    letter-spacing: 1.1px !important;
+    margin-bottom: 7px !important;
+  }
+
+  h3,
+  .h3,
+  .m-section__heading,
+  .m-section__heading.h3 {
+    font-size: 17px !important;
+    line-height: 1.32 !important;
+    letter-spacing: 0.8px !important;
+    margin-bottom: 6px !important;
+  }
+
+  h4,
+  .h4 {
+    font-size: 15px !important;
+    line-height: 1.35 !important;
+    letter-spacing: 0.5px !important;
+    margin-bottom: 6px !important;
+  }
+
+  h5,
+  .h5 {
+    font-size: 13.5px !important;
+    line-height: 1.4 !important;
+    margin-bottom: 4px !important;
+  }
+
+  h6,
+  .h6 {
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+    letter-spacing: 1px !important;
+  }
+
+  /* --- 3. Mobile Paragraph & Body Text (Compact & Readable) --- */
+  p,
+  .rte p,
+  .m-page-content p,
+  .shopify-policy__body p,
+  .m-collapsible--content__inner p,
+  .m-content-box__description,
+  .m-rich-text__text {
+    font-size: 13.5px !important;
+    line-height: 1.55 !important;
+    margin-top: 0 !important;
+    margin-bottom: 9px !important;
+    color: #383838 !important;
+  }
+
+  p:last-child,
+  .rte p:last-child,
+  .m-page-content p:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  /* Content Lists */
+  ul,
+  ol,
+  .rte ul,
+  .rte ol {
+    padding-left: 20px !important;
+    margin-top: 6px !important;
+    margin-bottom: 10px !important;
+  }
+
+  li,
+  .rte li {
+    font-size: 13.5px !important;
+    line-height: 1.55 !important;
+    margin-bottom: 4px !important;
+  }
+
+  /* --- 4. Mobile Button System (Touch-Friendly, Compact & Elegant) --- */
+  .m-button,
+  button.m-button,
+  a.m-button,
+  .shopify-payment-button__button,
+  .shopify-payment-button__button--unbranded,
+  input[type="submit"].m-button {
+    padding: 9px 22px !important;
+    min-height: 39px !important;
+    height: auto !important;
+    font-size: 11.5px !important;
+    letter-spacing: 1px !important;
+    line-height: 1.2 !important;
+    border-radius: 2px !important;
+    text-transform: uppercase !important;
+    font-weight: 500 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .m-button.m-button--small,
+  .m-button--small {
+    padding: 7px 16px !important;
+    min-height: 33px !important;
+    font-size: 10.5px !important;
+  }
+
+  .m-button.m-button--large,
+  .m-button--large {
+    padding: 10px 24px !important;
+    min-height: 41px !important;
+    font-size: 12px !important;
+  }
+
+  /* Link & Blank style buttons */
+  .m-button.m-button--link,
+  .m-button--link,
+  .m-link-underline,
+  .m-button--blank {
+    min-height: unset !important;
+    height: auto !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    font-size: 12px !important;
+    display: inline !important;
+  }
+
+  .m-button-group,
+  .m-hero__button,
+  .m-slide__button {
+    margin-top: 12px !important;
+  }
+
+  /* --- 5. Component Spacing Reductions on Mobile --- */
+  /* Hero Slider & Banner */
+  .m-slide__content {
+    padding: 18px 14px !important;
+  }
+
+  .m-slider .m-richtext {
+    row-gap: 8px !important;
+  }
+
+  /* Product Cards & Grids on Mobile */
+  .m-product-card,
+  .m-product-item {
+    margin-bottom: 12px !important;
+  }
+
+  .m-product-card .m-product-card__title,
+  .m-product-item .m-product-title,
+  .m-product-card__name {
+    font-size: 12.5px !important;
+    line-height: 1.35 !important;
+    margin-bottom: 3px !important;
+  }
+
+  .m-product-card .m-price,
+  .m-product-item .m-price {
+    font-size: 12.5px !important;
+    margin-top: 2px !important;
+  }
+
+  .m-product-list {
+    row-gap: 12px !important;
+  }
+
+  /* Image with Text */
+  .m-image-with-text .m-image-with-text__content {
+    padding-top: 16px !important;
+    padding-bottom: 12px !important;
+  }
+
+  .m-image-with-text .m-content-box {
+    padding: 0 !important;
+  }
+
+  .m-image-with-text .m-content-box__title {
+    font-size: 19px !important;
+    line-height: 1.28 !important;
+    margin-bottom: 7px !important;
+  }
+
+  .m-image-with-text .m-content-box__description {
+    margin-bottom: 12px !important;
+  }
+
+  /* Newsletter Section */
+  .m-newsletter-section {
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+  }
+
+  .m-newsletter-section__heading {
+    font-size: 19px !important;
+    margin-bottom: 5px !important;
+  }
+
+  .m-newsletter-section__description {
+    font-size: 13px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .m-newsletter-form {
+    max-width: 320px !important;
+    margin: 0 auto !important;
+  }
+
+  .m-newsletter-form input {
+    height: 38px !important;
+    font-size: 13px !important;
+  }
+
+  .m-newsletter-form button {
+    height: 38px !important;
+    font-size: 11px !important;
+    padding: 0 18px !important;
+  }
+
+  /* FAQ Section on Mobile */
+  .m-faqs-section .m-collapsible--button {
+    font-size: 14.5px !important;
+    padding-top: 9px !important;
+    padding-bottom: 9px !important;
+    line-height: 1.4 !important;
+  }
+
+  .m-collapsible--content__inner {
+    padding-bottom: 10px !important;
+  }
+
+  /* Product Detail Page on Mobile */
+  .template-product .m-main-product {
+    margin-bottom: 14px !important;
+    margin-top: 8px !important;
+  }
+
+  .template-product .main-product__block+.main-product__block {
+    margin-top: 12px !important;
+  }
+
+  .template-product .main-product__block .m-product-title,
+  .template-product .main-product__block-title h1 {
+    font-size: 19px !important;
+    line-height: 1.25 !important;
+    margin-bottom: 4px !important;
+  }
+
+  .template-product .main-product__block-price {
+    margin-top: 4px !important;
+    font-size: 14.5px !important;
+  }
+
+  .template-product .m-product-form--buttons {
+    margin-top: 12px !important;
+  }
+
+  .template-product .m-product-form--buttons .m-button {
+    height: 42px !important;
+    min-height: 42px !important;
+    font-size: 12px !important;
+  }
+
+  /* Footer on Mobile */
+  .m-footer {
+    padding-top: 22px !important;
+    padding-bottom: 20px !important;
+  }
+
+  .m-footer--block {
+    margin-bottom: 14px !important;
+  }
+
+  .m-footer--block-title {
+    font-size: 14px !important;
+    margin-bottom: 7px !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase;
+  }
+
+  .m-footer--middle {
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+
+  .m-footer--bottom {
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
+  }
+
+  /* Policy & Legal Pages on Mobile */
+  .shopify-policy__container {
+    margin-bottom: 2rem !important;
+    padding: 0 16px !important;
+  }
+
+  .shopify-policy__title {
+    padding: 24px 0 16px !important;
+  }
+
+  .m-page-content {
+    padding-bottom: 2rem !important;
+  }
+}
+
+/* Product Names Consistency: Always maintain Latin script formatting and isolation across all locales */
+.m-luxury-product-title,
+.m-product-card__name,
+.m-cart-item__title,
+.m-right-item-card__title,
+.m-right-coll-card__title,
+.m-right-wishlist-card__title,
+.m-search-item--title,
+[data-role="product-title"],
+.m-product-title,
+.product-bundles__item-title {
+  unicode-bidi: isolate;
+  text-transform: uppercase;
+}

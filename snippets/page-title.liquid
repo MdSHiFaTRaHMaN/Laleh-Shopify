@@ -56,9 +56,17 @@
   endif
 -%}
 {% if title != nil %}
+  {% liquid
+    assign clean_page_title = title
+    if request.locale.iso_code contains 'ar'
+      assign clean_page_title = clean_page_title | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+    elsif request.locale.iso_code contains 'fr'
+      assign clean_page_title = clean_page_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+    endif
+  %}
   <div class="{{ classes }}{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
     <div class="{{ container }}">
-      <h1 class="m-page-header__title">{{ title }}</h1>
+      <h1 class="m-page-header__title">{{ clean_page_title }}</h1>
       {% if description %}<div class="m-page-header__description rte">{{ description }}</div>{% endif %}
     </div>
     {% if show_breadcrumb %}

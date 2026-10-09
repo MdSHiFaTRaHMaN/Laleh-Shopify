@@ -27,11 +27,26 @@
   class="m-section m-rich-text{% if show_image %} m-rich-text--show-images{% endif %} m-gradient m-color-{{ section.settings.color_scheme }} {{ section.settings.custom_class }}"
 >
   <div class="{{ section.settings.container }} m-section-my m-section-py">
+    {% liquid
+      assign is_ar = false
+      if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
+        assign is_ar = true
+      endif
+    %}
     <div class="m-richtext m:text-{{ section.settings.content_alignment }}">
       {%- for block in section.blocks -%}
         {% case block.type %}
           {%- when 'heading' -%}
-            {%- if block.settings.heading != blank -%}
+            {% liquid
+              assign block_heading = block.settings.heading
+              if is_ar
+                assign clean_h = block_heading | strip | upcase
+                if clean_h == 'THIS IS JUST THE BEGINNING' or clean_h contains 'مجرد البداية'
+                  assign block_heading = 'هذه مجرد البداية'
+                endif
+              endif
+            %}
+            {%- if block_heading != blank -%}
               <h2
                 class="m-richtext__title {{ block.settings.heading_size }}{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}"
                 {% if animated %}
@@ -40,11 +55,19 @@
                 {% endif %}
                 {{ block.shopify_attributes }}
               >
-                {{ block.settings.heading }}
+                {{ block_heading }}
               </h2>
             {% endif %}
           {%- when 'subheading' -%}
-            {%- if block.settings.subheading != blank -%}
+            {% liquid
+              assign block_subheading = block.settings.subheading
+              if is_ar
+                if block_subheading contains 'Made to be remembered' or block_subheading contains 'لتُذكر' or block_subheading contains 'تذكر' or block_subheading contains 'الذاكرة'
+                  assign block_subheading = 'صُممت لتبقى في الذاكرة.'
+                endif
+              endif
+            %}
+            {%- if block_subheading != blank -%}
               <p
                 class="m-richtext__subtitle{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}"
                 {% if animated %}
@@ -53,11 +76,19 @@
                 {% endif %}
                 {{ block.shopify_attributes }}
               >
-                {{ block.settings.subheading }}
+                {{ block_subheading }}
               </p>
             {% endif %}
           {%- when 'text' -%}
-            {%- if block.settings.text != blank -%}
+            {% liquid
+              assign block_text = block.settings.text
+              if is_ar
+                if block_text contains 'LALEH begins with a first collection' or block_text contains 'مجموعة أولى' or block_text contains 'فصل جديد' or block_text contains 'مجموعتنا الأولى' or block_text contains 'بمجموعتها الأولى'
+                  assign block_text = '<p>تبدأ LALEH بمجموعتها الأولى وبرؤية واضحة، ليأتي كل فصل جديد امتداداً طبيعياً لما سبقه.</p>'
+                endif
+              endif
+            %}
+            {%- if block_text != blank -%}
               <div
                 class="m-richtext__description rte {{ block.settings.text_size | prepend: 'm:' }} {% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}"
                 {% if animated %}
@@ -66,7 +97,7 @@
                 {% endif %}
                 {{ block.shopify_attributes }}
               >
-                {{ block.settings.text }}
+                {{ block_text }}
               </div>
             {% endif %}
           {%- when 'button' -%}
