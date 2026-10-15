@@ -545,9 +545,15 @@
           {% assign footer_menu = linklists[section.settings.menu] %}
           {% if footer_menu.links.size > 0 %}
             {% for link in footer_menu.links %}
+              {% liquid
+                assign footer_l_title = link.title
+                if request.locale.iso_code contains 'fr'
+                  assign footer_l_title = footer_l_title | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
+                endif
+              %}
               <li class="m-clean-footer-{{ section_id }}__nav-item">
                 <a href="{{ link.url }}" class="m-clean-footer-{{ section_id }}__nav-link">
-                  {{ link.title }}
+                  {{ footer_l_title }}
                 </a>
               </li>
             {% endfor %}
@@ -1010,7 +1016,9 @@
     <!-- 6. Copyright & Policy Information -->
     <div class="m-clean-footer-{{ section_id }}__copyright">
       <span>
-        {% if section.settings.copyright_text != blank %}
+        {% if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar' %}
+          <span dir="rtl">© {{ 'now' | date: '%Y' }} <span dir="ltr">LALEH</span>. جميع الحقوق محفوظة.</span>
+        {% elsif section.settings.copyright_text != blank %}
           {{ section.settings.copyright_text }}
         {% else %}
           &copy;{{ 'now' | date: '%Y' }} {{ shop.name }}. All rights reserved.
@@ -1025,6 +1033,9 @@
             {% if clean_legal != blank %}
               {% assign legal_parts = clean_legal | split: '|' %}
               {% assign legal_title = legal_parts[0] | strip %}
+              {% if request.locale.iso_code contains 'fr' %}
+                {% assign legal_title = legal_title | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation" %}
+              {% endif %}
               {% assign legal_url = legal_parts[1] | default: '#' | strip %}
               <a href="{{ legal_url }}">{{ legal_title }}</a>
             {% endif %}

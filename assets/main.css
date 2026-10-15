@@ -2,7 +2,8 @@
 .m\:flex {
   margin-left: max(-15px, var(--column-gap-mobile, var(--column-gap))/-2);
   margin-right: max(-15px, var(--column-gap-mobile, var(--column-gap))/-2);
-  row-gap: var(--row-gap-mobile, var(--column-gap-mobile, var(--column-gap)))
+  row-gap: 0px
+    /* row-gap: var(--row-gap-mobile, var(--column-gap-mobile, var(--column-gap))) */
 }
 
 @media screen and (min-width: 768px) {
@@ -9819,6 +9820,35 @@ shopify-account::part(signed-out-avatar) {
   text-transform: uppercase;
   letter-spacing: 0.8px;
 }
+
+.m-newsletter-form .notification.success,
+.m-newsletter-section .notification.success {
+  background-color: #f2eeeb !important;
+  color: #927e63 !important;
+  font-weight: 500;
+}
+
+.m-newsletter-form .notification.show.success,
+.m-newsletter-section .notification.show.success {
+  border: 1px solid rgba(146, 126, 99, 0.35) !important;
+}
+
+.m-newsletter-form .notification.hide.success,
+.m-newsletter-section .notification.hide.success {
+  border-color: transparent !important;
+}
+
+.m-newsletter-form .notification.success svg,
+.m-newsletter-section .notification.success svg {
+  color: #927e63 !important;
+  stroke: #927e63 !important;
+}
+
+.m-newsletter-form .notification.success .notification--error-message,
+.m-newsletter-section .notification.success .notification--error-message {
+  color: #927e63 !important;
+}
+
 
 @media screen and (max-width: 749px) {
   .m-newsletter-form__input::placeholder {

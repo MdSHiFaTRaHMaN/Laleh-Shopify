@@ -7,6 +7,11 @@
   if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
     assign is_ar = true
   endif
+
+  assign is_fr = false
+  if request.locale.iso_code contains 'fr' or localization.language.iso_code contains 'fr'
+    assign is_fr = true
+  endif
 %}
 
 <div id="m-menu-drawer" class="m-luxury-drawer">
@@ -15,11 +20,12 @@
     class="m-luxury-drawer__panel m-gradient m-color-{{ section.settings.color_scheme }}"
     role="dialog"
     aria-modal="true"
-    aria-label="{% if is_ar %}القائمة الرئيسية{% else %}Main Navigation{% endif %}"
+    aria-label="{% if is_ar %}القائمة الرئيسية{% elsif is_fr %}Navigation principale{% else %}Main Navigation{% endif %}"
+    {% if is_ar %}dir="rtl"{% endif %}
   >
     <!-- Top Header: Elegant Minimal Close Button -->
     <div class="m-luxury-drawer__top">
-      <button type="button" class="m-luxury-drawer__close-btn" data-drawer-close aria-label="{% if is_ar %}إغلاق القائمة{% else %}Close navigation{% endif %}">
+      <button type="button" class="m-luxury-drawer__close-btn" data-drawer-close aria-label="{% if is_ar %}إغلاق القائمة{% elsif is_fr %}Fermer le menu{% else %}Close navigation{% endif %}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -37,12 +43,16 @@
                 assign l_title = link.title
                 if is_ar
                   assign l_clean = l_title | strip
-                  if l_clean == 'Shop All' or l_clean contains 'تسوق الكل'
+                  if l_clean == 'Shop All' or l_clean contains 'تسوق الكل' or l_clean contains 'تسوقي المجموعة' or l_clean contains 'تسوق المجموعة'
                     assign l_title = 'المجموعة'
                   endif
-                  assign l_title = l_title | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
-                elsif request.locale.iso_code contains 'fr'
-                  assign l_title = l_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+                  assign l_title = l_title | replace: 'تسوقي المجموعة', 'المجموعة' | replace: 'تسوق المجموعة', 'المجموعة' | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+                elsif is_fr
+                  assign l_clean = l_title | strip
+                  if l_clean == 'Shop All' or l_clean contains 'Tout voir' or l_clean contains 'tout voir'
+                    assign l_title = 'Voir toute la collection'
+                  endif
+                  assign l_title = l_title | replace: 'Tout voir', 'Voir toute la collection' | replace: 'tout voir', 'voir toute la collection' | replace: 'Expédition et retours', 'Livraison et retours' | replace: 'expédition et retours', 'livraison et retours' | replace: 'Expéditions et retours', 'Livraison et retours' | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes' | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
                 endif
               %}
               <li class="m-luxury-drawer__nav-item">
@@ -67,7 +77,7 @@
                   </a>
 
                   <!-- Submenu Slide Panel -->
-                  <div id="sub-{{ forloop.index }}" class="m-luxury-drawer__submenu-panel">
+                  <div id="sub-{{ forloop.index }}" class="m-luxury-drawer__submenu-panel"{% if is_ar %} dir="rtl"{% endif %}>
                     <button type="button" class="m-luxury-drawer__back-btn" data-close-submenu>
                       <svg
                         viewBox="0 0 24 24"
@@ -86,12 +96,16 @@
                           assign c_title = child.title
                           if is_ar
                             assign c_clean = c_title | strip
-                            if c_clean == 'Shop All' or c_clean contains 'تسوق الكل'
+                            if c_clean == 'Shop All' or c_clean contains 'تسوق الكل' or c_clean contains 'تسوقي المجموعة' or c_clean contains 'تسوق المجموعة'
                               assign c_title = 'المجموعة'
                             endif
-                            assign c_title = c_title | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
-                          elsif request.locale.iso_code contains 'fr'
-                            assign c_title = c_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+                            assign c_title = c_title | replace: 'تسوقي المجموعة', 'المجموعة' | replace: 'تسوق المجموعة', 'المجموعة' | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+                          elsif is_fr
+                            assign c_clean = c_title | strip
+                            if c_clean == 'Shop All' or c_clean contains 'Tout voir' or c_clean contains 'tout voir'
+                              assign c_title = 'Voir toute la collection'
+                            endif
+                            assign c_title = c_title | replace: 'Tout voir', 'Voir toute la collection' | replace: 'tout voir', 'voir toute la collection' | replace: 'Expédition et retours', 'Livraison et retours' | replace: 'expédition et retours', 'livraison et retours' | replace: 'Expéditions et retours', 'Livraison et retours' | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes' | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
                           endif
                         %}
                         <li class="m-luxury-drawer__nav-item">
@@ -116,39 +130,39 @@
             <ul class="m-luxury-drawer__nav-list">
               <li class="m-luxury-drawer__nav-item">
                 <a href="/collections/all" class="m-luxury-drawer__nav-link">
-                  <span>{% if is_ar %}المجموعة الجديدة{% else %}New Collection{% endif %}</span>
+                  <span>{% if is_ar %}المجموعة الجديدة{% elsif is_fr %}Nouvelle collection{% else %}New Collection{% endif %}</span>
                 </a>
               </li>
               <li class="m-luxury-drawer__nav-item">
                 <a href="/collections/all" class="m-luxury-drawer__nav-link">
-                  <span>{% if is_ar %}المجموعة{% else %}Shop All{% endif %}</span>
+                  <span>{% if is_ar %}المجموعة{% elsif is_fr %}Voir toute la collection{% else %}Shop All{% endif %}</span>
                 </a>
               </li>
             </ul>
           </div>
 
           <div class="m-luxury-drawer__nav-section">
-            <span class="m-luxury-drawer__section-title">{% if is_ar %}اكتشفي المزيد{% else %}DISCOVER{% endif %}</span>
+            <span class="m-luxury-drawer__section-title">{% if is_ar %}اكتشفي المزيد{% elsif is_fr %}DÉCOUVRIR{% else %}DISCOVER{% endif %}</span>
             <ul class="m-luxury-drawer__nav-list">
               <li class="m-luxury-drawer__nav-item">
                 <a href="/pages/about-us" class="m-luxury-drawer__nav-link">
-                  <span>{% if is_ar %}عن LALEH{% else %}About LALEH{% endif %}</span>
+                  <span>{% if is_ar %}عن LALEH{% elsif is_fr %}À propos de LALEH{% else %}About LALEH{% endif %}</span>
                 </a>
               </li>
             </ul>
           </div>
 
           <div class="m-luxury-drawer__nav-section">
-            <span class="m-luxury-drawer__section-title">{% if is_ar %}خدمة العملاء{% else %}CUSTOMER CARE{% endif %}</span>
+            <span class="m-luxury-drawer__section-title">{% if is_ar %}خدمة العملاء{% elsif is_fr %}SERVICE CLIENT{% else %}CUSTOMER CARE{% endif %}</span>
             <ul class="m-luxury-drawer__nav-list">
               <li class="m-luxury-drawer__nav-item">
                 <a href="/pages/faqs" class="m-luxury-drawer__nav-link">
-                  <span>{% if is_ar %}الأسئلة الشائعة{% else %}FAQs{% endif %}</span>
+                  <span>{% if is_ar %}الأسئلة الشائعة{% elsif is_fr %}Questions fréquentes{% else %}FAQs{% endif %}</span>
                 </a>
               </li>
               <li class="m-luxury-drawer__nav-item">
                 <a href="/pages/contact" class="m-luxury-drawer__nav-link">
-                  <span>{% if is_ar %}تواصل معنا{% else %}Contact{% endif %}</span>
+                  <span>{% if is_ar %}تواصل معنا{% elsif is_fr %}Contact{% else %}Contact{% endif %}</span>
                 </a>
               </li>
             </ul>
@@ -160,7 +174,15 @@
     <!-- Drawer Footer: Subtle Socials & Country / Language Selectors -->
     <div class="m-luxury-drawer__footer">
       <div class="m-luxury-drawer__footer-section">
-        <span class="m-luxury-drawer__footer-label">{% if is_ar %}تابعونا{% else %}Social Media{% endif %}</span>
+        <span class="m-luxury-drawer__footer-label">
+          {%- if is_ar -%}
+            وسائل التواصل الاجتماعي
+          {%- elsif is_fr -%}
+            RÉSEAUX SOCIAUX
+          {%- else -%}
+            Social Media
+          {%- endif -%}
+        </span>
         <div class="m-luxury-drawer__socials">
           {% if instagram_url != blank %}
             <a
@@ -194,7 +216,15 @@
       </div>
 
       <div class="m-luxury-drawer__footer-section">
-        <span class="m-luxury-drawer__footer-label">Region &amp; Currency</span>
+        <span class="m-luxury-drawer__footer-label">
+          {%- if is_ar -%}
+            البلد والعملة
+          {%- elsif is_fr -%}
+            PAYS ET DEVISE
+          {%- else -%}
+            Region &amp; Currency
+          {%- endif -%}
+        </span>
         <div class="m-luxury-drawer__localization">
           {% render 'country-selector', pos: 'top', box_size: 'm-drawer-country' %}
           {% render 'language-switcher', pos: 'top', box_size: 'm-drawer-language' %}

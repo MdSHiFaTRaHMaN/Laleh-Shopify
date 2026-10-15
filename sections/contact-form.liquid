@@ -14,6 +14,14 @@
   if container == 'w-full'
     assign container = 'container-full'
   endif
+
+  assign is_ar = false
+  assign is_fr = false
+  if request.locale.iso_code == 'ar'
+    assign is_ar = true
+  elsif request.locale.iso_code == 'fr'
+    assign is_fr = true
+  endif
 -%}
 <style>
   #m-section--{{ section.id }} {
@@ -453,6 +461,12 @@
                     assign block_title = 'تابعينا'
                   elsif block_title == 'Address' or block_title contains 'العنوان'
                     assign block_title = 'العنوان'
+                  endif
+                elsif is_fr and block_title != blank
+                  if block_title contains 'Social Media' or block_title contains 'Social'
+                    assign block_title = 'RÉSEAUX SOCIAUX'
+                  elsif block_title == 'Address' or block_title contains 'Adresse'
+                    assign block_title = 'ADRESSE'
                   endif
                 endif
               %}

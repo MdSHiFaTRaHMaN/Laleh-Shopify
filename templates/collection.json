@@ -146,7 +146,7 @@
         "enable_flashsale": false,
         "show_countdown": false,
         "product_to_show": 8,
-        "items_per_row": 2,
+        "items_per_row": 3,
         "item_gap": 10,
         "pcard_layout": "",
         "pcard_image_ratio": "",

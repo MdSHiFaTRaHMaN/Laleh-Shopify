@@ -108,6 +108,11 @@ m-section m-image-with-text {{ section.settings.custom_class }} m-section-{{ sec
           assign is_ar = true
         endif
 
+        assign is_fr = false
+        if request.locale.iso_code contains 'fr' or localization.language.iso_code contains 'fr'
+          assign is_fr = true
+        endif
+
         assign display_sub_title = section.settings.sub_title
         assign display_title = section.settings.title
         assign display_text = section.settings.text
@@ -115,10 +120,10 @@ m-section m-image-with-text {{ section.settings.custom_class }} m-section-{{ sec
 
         if is_ar
           assign title_clean = display_title | strip | upcase
-          if title_clean == 'THE STORY' or title_clean == 'القصة' or display_text contains 'Middle Eastern woman' or display_text contains 'سويسرا'
-            if display_text contains 'Growing between two cultures' or display_text contains 'ثقافتين'
+          if title_clean == 'THE STORY' or title_clean == 'القصة' or title_clean == 'قصتنا' or display_text contains 'Middle Eastern woman' or display_text contains 'سويسرا'
+            if display_text contains 'Growing up between two cultures' or display_text contains 'Growing between two cultures' or display_text contains 'ثقافتين'
               assign display_title = 'قصتنا'
-              assign display_text = '<p>تأسست دار LALEH برؤية سيدة من الشرق الأوسط نشأت في سويسرا، لتجسد تلاقي الأناقة الخالدة والأنوثة الراقية مع لمسة عصرية متجددة.</p><p><br/>ألهمها العيش بين ثقافتين تقديراً عميقاً لتنوع مفاهيم الأناقة والجمال. ومن هنا انطلقت LALEH، بشغف صياغة تلك الرؤية في تصاميم تنبض بالرقي، وتعكس حضوراً واثقاً وأنوثة متفردة.</p>'
+              assign display_text = '<p>تأسست <bdi>LALEH</bdi> على يد امرأة من أصول شرق أوسطية نشأت في سويسرا، لتجمع بين الأناقة الخالدة والأنوثة والرؤية العصرية.</p><p><br/>نشأت بين ثقافتين، مما شكل رؤيتها الخاصة لمختلف تعبيرات الأناقة والأنوثة. ومن هذه الرؤية ولدت <bdi>LALEH</bdi> لتقدم تصاميم راقية تعكس الثقة بالنفس والأنوثة بأسلوب مميز.</p>'
             elsif display_title contains 'Born from two worlds' or title_clean contains 'عالمين' or display_sub_title contains 'ABOUT US' or display_sub_title contains 'من نحن'
               assign display_sub_title = 'عن الدار'
               assign display_title = 'ولدت من تلاقي عالمين، وصيغت برؤية واحدة.'
@@ -127,16 +132,37 @@ m-section m-image-with-text {{ section.settings.custom_class }} m-section-{{ sec
                 assign display_button_label = 'اكتشفي قصتنا'
               endif
             endif
-          elsif title_clean == 'WHY LALEH' or title_clean contains 'لماذا لاله' or title_clean contains 'لماذا LALEH' or display_title contains 'لماذا' or display_text contains 'considered, refined and effortless' or display_text contains 'بفكرة بسيطة' or display_text contains 'ابتكار قطع' or display_text contains 'مدروسة وراقية'
+          elsif title_clean == 'WHY LALEH' or title_clean contains 'لماذا لاله' or title_clean contains 'لماذا LALEH' or display_title contains 'لماذا' or display_text contains 'effortless to wear' or display_text contains 'elegant, refined pieces' or display_text contains 'considered, refined and effortless' or display_text contains 'بفكرة بسيطة' or display_text contains 'ابتكار قطع' or display_text contains 'مدروسة وراقية'
             assign display_title = 'لماذا LALEH'
-            assign display_text = '<p>انطلقت LALEH برؤية واضحة: إبداع تصاميم مدروسة وراقية، تمنحكِ حضوراً آسراً وأناقة تنساب دون عناء.<br/></p><p><br/>يُصاغ كل تصميم بعناية فائقة تراعي توازن الأبعاد ودقة التفاصيل وانسيابية القصّة، لنمنحكِ قطعاً تتسم بحضور استثنائي وتألق يدوم عبر الزمن.</p>'
-          elsif title_clean == 'THE LALEH WOMAN' or title_clean == 'امرأة لاله' or title_clean == 'امرأة LALEH' or display_title contains 'امرأة' or display_text contains 'feminine, confident and intentional' or display_text contains 'أنثوية وواثقة' or display_text contains 'قصدية'
+            assign display_text = '<p>ولدت <bdi>LALEH</bdi> من فكرة بسيطة: ابتكار قطع أنيقة وراقية يسهل ارتداؤها كل يوم.</p><p><br/>صُممت كل قطعة بعناية فائقة، مع اهتمام خاص بالتناسق والتفاصيل والقصات، لتمنحكِ أناقة خالدة وإطلالة مميزة.</p>'
+          elsif title_clean == 'THE LALEH WOMAN' or title_clean == 'امرأة لاله' or title_clean == 'امرأة LALEH' or display_title contains 'امرأة' or display_text contains 'feminine, confident and intentional' or display_text contains 'chooses timeless pieces' or display_text contains 'أنثوية وواثقة' or display_text contains 'واثقة من نفسها'
             assign display_title = 'امرأة LALEH'
-            assign display_text = '<p>تتألق بأنوثة آسرة، وثقة هادئة، وخيارات واعية مدروسة.</p><p><br/>تُقدّر الرقي دون تكلف، وتنتقي تصاميمها بذوق أصيل لا تُمليه صيحات الموضة العابرة. صُممت LALEH لتكون جزءاً لا يتجزأ من أناقتها، ومناسباتها الخاصة، وأجمل اللحظات التي تخلد في ذاكرتها.</p>'
+            assign display_text = '<p>هي امرأة أنيقة، واثقة من نفسها، وتعرف ما تريد.</p><p><br/>تقدر الأناقة الراقية دون مبالغة، وتختار التصاميم الخالدة بعيداً عن صيحات الموضة العابرة. صُممت <bdi>LALEH</bdi> لترافقها في تفاصيل يومها، ومناسباتها الخاصة، ولحظاتها التي تبقى في الذاكرة.</p>'
           endif
 
           assign display_title = display_title | replace: 'لماذا لاله', 'لماذا LALEH' | replace: 'امرأة لاله', 'امرأة LALEH' | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
           assign display_text = display_text | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+        elsif is_fr
+          assign title_clean = display_title | strip | upcase
+          if title_clean == 'THE STORY' or title_clean == 'NOTRE HISTOIRE' or display_text contains 'Middle Eastern woman' or display_text contains 'ayant grandi en Suisse' or display_text contains 'Moyen-Orient'
+            if display_text contains 'Growing up between two cultures' or display_text contains 'Growing between two cultures' or display_text contains 'Grandir entre deux cultures'
+              assign display_title = 'NOTRE HISTOIRE'
+              assign display_text = '<p>Fondée par une femme originaire du Moyen-Orient ayant grandi en Suisse, LALEH allie élégance intemporelle, féminité et vision contemporaine.</p><p><br/>Grandir entre deux cultures a façonné une sensibilité particulière aux différentes expressions du style et de la féminité. LALEH est née du désir de donner vie à cette vision à travers des créations raffinées, affirmées et résolument féminines.</p>'
+            elsif display_title contains 'Born from two worlds' or display_sub_title contains 'ABOUT US' or display_sub_title contains 'À PROPOS'
+              assign display_sub_title = 'À PROPOS'
+              assign display_title = 'Née de deux mondes, façonnée par une vision.'
+              assign display_text = '<p>Fondée par une femme originaire du Moyen-Orient ayant grandi en Suisse, LALEH allie élégance intemporelle, féminité et vision contemporaine.</p>'
+              if display_button_label != blank
+                assign display_button_label = 'Découvrir notre histoire'
+              endif
+            endif
+          elsif title_clean == 'WHY LALEH' or title_clean contains 'POURQUOI LALEH' or display_text contains 'effortless to wear' or display_text contains 'elegant, refined pieces' or display_text contains 'considered, refined and effortless' or display_text contains 'pièces élégantes'
+            assign display_title = 'POURQUOI LALEH'
+            assign display_text = "<p>LALEH est née d'une idée simple : créer des pièces élégantes, raffinées et faciles à porter au quotidien.</p><p><br/>Chaque création est pensée avec une attention particulière aux proportions, aux détails et à la coupe, pour offrir une élégance intemporelle et une allure distinctive.</p>"
+          elsif title_clean == 'THE LALEH WOMAN' or title_clean contains 'LA FEMME LALEH' or display_text contains 'feminine, confident and intentional' or display_text contains 'chooses timeless pieces' or display_text contains 'féminine, confiante'
+            assign display_title = 'LA FEMME LALEH'
+            assign display_text = "<p>Elle est féminine, confiante et affirmée.</p><p><br/>Elle apprécie l'élégance sans excès et privilégie les pièces intemporelles aux tendances éphémères. LALEH l'accompagne au quotidien, lors d'occasions particulières et dans les moments qui deviennent des souvenirs inoubliables.</p>"
+          endif
         endif
       %}
       <div
