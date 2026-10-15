@@ -32,6 +32,11 @@
       if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
         assign is_ar = true
       endif
+
+      assign is_fr = false
+      if request.locale.iso_code contains 'fr' or localization.language.iso_code contains 'fr'
+        assign is_fr = true
+      endif
     %}
     <div class="m-richtext m:text-{{ section.settings.content_alignment }}">
       {%- for block in section.blocks -%}
@@ -42,7 +47,12 @@
               if is_ar
                 assign clean_h = block_heading | strip | upcase
                 if clean_h == 'THIS IS JUST THE BEGINNING' or clean_h contains 'مجرد البداية'
-                  assign block_heading = 'هذه مجرد البداية'
+                  assign block_heading = 'وهذه مجرد البداية'
+                endif
+              elsif is_fr
+                assign clean_h = block_heading | strip | upcase
+                if clean_h == 'THIS IS JUST THE BEGINNING' or clean_h contains 'DÉBUT' or clean_h contains 'DEBUT'
+                  assign block_heading = "CE N'EST QUE LE DÉBUT"
                 endif
               endif
             %}
@@ -62,8 +72,12 @@
             {% liquid
               assign block_subheading = block.settings.subheading
               if is_ar
-                if block_subheading contains 'Made to be remembered' or block_subheading contains 'لتُذكر' or block_subheading contains 'تذكر' or block_subheading contains 'الذاكرة'
-                  assign block_subheading = 'صُممت لتبقى في الذاكرة.'
+                if block_subheading contains 'Made to be remembered' or block_subheading contains 'لتُذكر' or block_subheading contains 'تذكر' or block_subheading contains 'الذاكرة' or block_subheading contains 'أثراً'
+                  assign block_subheading = 'صُممت لتترك أثراً لا يُنسى.'
+                endif
+              elsif is_fr
+                if block_subheading contains 'Made to be remembered' or block_subheading contains 'impression durable'
+                  assign block_subheading = 'Créée pour laisser une impression durable.'
                 endif
               endif
             %}
@@ -83,8 +97,12 @@
             {% liquid
               assign block_text = block.settings.text
               if is_ar
-                if block_text contains 'LALEH begins with a first collection' or block_text contains 'مجموعة أولى' or block_text contains 'فصل جديد' or block_text contains 'مجموعتنا الأولى' or block_text contains 'بمجموعتها الأولى'
-                  assign block_text = '<p>تبدأ LALEH بمجموعتها الأولى وبرؤية واضحة، ليأتي كل فصل جديد امتداداً طبيعياً لما سبقه.</p>'
+                if block_text contains 'LALEH begins' or block_text contains 'مجموعة أولى' or block_text contains 'فصل جديد' or block_text contains 'مجموعتنا الأولى' or block_text contains 'بمجموعتها الأولى' or block_text contains 'تبدأ رحلة'
+                  assign block_text = '<p>تبدأ رحلة <bdi>LALEH</bdi> بمجموعتها الأولى، برؤية واضحة وهوية مميزة. وستواصل كل مجموعة جديدة هذه الرحلة، محافظة على الأناقة والأنوثة اللتين تشكلان جوهر العلامة.</p>'
+                endif
+              elsif is_fr
+                if block_text contains 'LALEH begins' or block_text contains 'dévoile sa première collection'
+                  assign block_text = "<p>LALEH dévoile sa première collection, portée par une vision claire. Chaque nouvelle collection s'inscrira dans la continuité de la précédente, fidèle à l'élégance et à la féminité qui définissent la marque.</p>"
                 endif
               endif
             %}

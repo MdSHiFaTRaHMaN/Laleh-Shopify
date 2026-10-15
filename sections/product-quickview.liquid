@@ -12,7 +12,7 @@
       assign downcased_name = option.name | downcase
       if downcased_name contains 'color' or downcased_name contains 'colour'
         assign color_option_index = forloop.index0
-      elsif downcased_name contains 'size' or downcased_name contains 'taille' or downcased_name contains 'talla' or downcased_name contains 'größe'
+      elsif downcased_name contains 'size' or downcased_name contains 'taille' or downcased_name contains 'talla' or downcased_name contains 'größe' or downcased_name contains 'مقاس' or downcased_name contains 'المقاس' or downcased_name contains 'حجم' or downcased_name contains 'الحجم'
         assign size_option_index = forloop.index0
       endif
     endfor
@@ -20,6 +20,31 @@
     assign is_ar = false
     if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
       assign is_ar = true
+    endif
+
+    assign is_fr = false
+    if request.locale.iso_code contains 'fr' or localization.language.iso_code contains 'fr'
+      assign is_fr = true
+    endif
+
+    assign select_size_label = 'products.product.select_size' | t
+    if is_ar or request.locale.iso_code contains 'ar'
+      assign select_size_label = 'اختاري المقاس'
+    elsif is_fr or request.locale.iso_code contains 'fr'
+      assign select_size_label = 'Sélectionner la taille'
+    elsif select_size_label contains 'translation missing' or select_size_label == blank
+      assign select_size_label = 'Select Size'
+    endif
+
+    assign custom_product_desc = product.description
+    if is_fr and product.handle == 'vermeil'
+      if custom_product_desc contains 'corsage structuré' or custom_product_desc contains 'corsage structure' or custom_product_desc contains 'Corsage structuré' or custom_product_desc contains 'Corsage structure'
+        assign custom_product_desc = custom_product_desc | replace: 'corsage structuré', 'haut structuré' | replace: 'Corsage structuré', 'Haut structuré' | replace: 'corsage structure', 'haut structuré' | replace: 'Corsage structure', 'Haut structuré'
+      elsif custom_product_desc contains 'structured bodice'
+        assign custom_product_desc = "<p>Une expression raffinée d'une élégance intemporelle, Vermeil est confectionné dans un tweed vert pâle aux reflets subtils. Son haut structuré, sa taille marquée et ses délicats détails perlés créent une silhouette magnifiquement féminine. Des poignets évasés et une longueur midi flatteuse complètent ce modèle, apportant une sophistication naturelle à chaque occasion.</p>"
+      endif
+    else
+      assign custom_product_desc = custom_product_desc | replace: 'corsage structuré', 'haut structuré' | replace: 'Corsage structuré', 'Haut structuré' | replace: 'corsage structure', 'haut structuré' | replace: 'Corsage structure', 'Haut structuré'
     endif
   %}
 
@@ -354,7 +379,7 @@
             {% assign size_option = product.options_with_values[size_option_index] %}
             <div class="m-luxury-size-section">
               <div class="m-luxury-size-header-row">
-                <span class="size-v-title">{{ 'products.product.select_size' | t | default: 'Select Size' }}</span>
+                <span class="size-v-title">{{ select_size_label }}</span>
                 <button type="button" class="m-luxury-size-guide-trigger-btn" data-open-sizeguide>
                   {{ 'products.product.size_guide' | t | default: 'Size guide' }}
                 </button>
@@ -401,29 +426,10 @@
               {% for option in product.options_with_values %}
                 {% unless forloop.index0 == color_option_index %}
                   <div class="m-luxury-size-header-row">
-                    <div class="m-luxury-size-system-dropdown">
-                      <select
-                        class="m-luxury-size-system-select"
-                        aria-label="{{ 'products.product.select_size' | t | default: 'Select Sizing standard' }}"
-                      >
-                        <option value="AU" selected>{{ 'products.product.size_au' | t | default: 'Size AU' }}</option>
-                        <option value="FR">{{ 'products.product.size_fr' | t | default: 'Size FR' }}</option>
-                        <option value="US">{{ 'products.product.size_us' | t | default: 'Size US' }}</option>
-                        <option value="UK">{{ 'products.product.size_uk' | t | default: 'Size UK' }}</option>
-                        <option value="IT">{{ 'products.product.size_it' | t | default: 'Size IT' }}</option>
-                      </select>
-                      <svg
-                        class="m-luxury-size-system-chevron"
-                        viewBox="0 0 10 6"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <polyline points="1 1 5 5 9 1"></polyline>
-                      </svg>
-                    </div>
+                    <span class="size-v-title">{{ select_size_label }}</span>
+                    <button type="button" class="m-luxury-size-guide-trigger-btn" data-open-sizeguide>
+                      {{ 'products.product.size_guide' | t | default: 'Size guide' }}
+                    </button>
                   </div>
                   <div class="m-luxury-sizes-grid" data-option-index="{{ forloop.index0 }}">
                     {% for value in option.values %}
@@ -488,6 +494,7 @@
                   type="button"
                   class="m-wishlist-button m-luxury-wishlist-btn in-prod-page"
                   data-product-handle="{{ product.handle }}"
+                  data-keep-text="true"
                   aria-label="{{ 'products.product.add_to_wishlist' | t | default: 'Add to Wishlist' }}"
                 >
                   <span class="m-luxury-wishlist-icon m-luxury-wishlist-icon--default">
@@ -520,7 +527,7 @@
                   </span>
                   <span
                     class="m-wishlist-button-text"
-                    data-revert-text="{{ 'products.product.remove_from_wishlist' | t | default: 'Remove from Wishlist' }}"
+                    data-revert-text="{{ 'products.product.add_to_wishlist' | t | default: 'Add to Wishlist' }}"
                   >
                     {{- 'products.product.add_to_wishlist' | t | default: 'Add to Wishlist' -}}
                   </span>
@@ -549,19 +556,14 @@
               </button>
               <div class="m-luxury-accordion-body">
                 <div class="m-luxury-accordion-content rte">
-                  <div class="m-luxury-accordion-truncated">
-                    {% if product.description != blank %}
-                      {{ product.description }}
-                    {% else %}
-                      <p>
-                        Sculpted midi dress in noble couture fabric. An ode to elegance sculpted in form and texture
-                        with subtle shine and refined finish.
-                      </p>
-                    {% endif %}
-                  </div>
-                  <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="desc">
-                    {{ 'general.accessibility.view_more' | t | default: 'View more' }}
-                  </button>
+                  {% if custom_product_desc != blank %}
+                    {{ custom_product_desc }}
+                  {% else %}
+                    <p>
+                      Sculpted midi dress in noble couture fabric. An ode to elegance sculpted in form and texture
+                      with subtle shine and refined finish.
+                    </p>
+                  {% endif %}
                 </div>
               </div>
             </div>
@@ -584,28 +586,30 @@
               </button>
               <div class="m-luxury-accordion-body">
                 <div class="m-luxury-accordion-content rte">
-                  <div class="m-luxury-accordion-truncated">
-                    {% if is_ar %}
-                      <p>
-                        شحن مجاني لجميع الطلبات عبر الإنترنت، ويستغرق التوصيل عادةً من 3 إلى 10 أيام عمل.
-                      </p>
-                      <p>
-                        نقبل طلبات الإرجاع خلال 14 يوماً من تاريخ الاستلام.
-                      </p>
-                    {% else %}
-                      <p>
-                        We offer complimentary shipping on all online orders, with delivery typically completed within
-                        3-10 business days.
-                      </p>
-                      <p>
-                        We accept returns within 30 days of delivery. Items must be returned in their original
-                        condition—unworn, unwashed, with all tags intact.
-                      </p>
-                    {% endif %}
-                  </div>
-                  <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="delivery">
-                    {{ 'general.accessibility.view_more' | t | default: 'View more' }}
-                  </button>
+                  {% if is_ar %}
+                    <p>
+                      شحن مجاني لجميع الطلبات عبر الإنترنت، ويستغرق التوصيل عادةً من 3 إلى 10 أيام عمل.
+                    </p>
+                    <p>
+                      نقبل طلبات الإرجاع خلال 14 يوماً من تاريخ الاستلام.
+                    </p>
+                  {% elsif is_fr %}
+                    <p>
+                      Livraison offerte sur toutes les commandes en ligne, avec une expédition généralement effectuée sous 3 à 10 jours ouvrés.
+                    </p>
+                    <p>
+                      Nous acceptons les retours dans les 14 jours suivant la livraison.
+                    </p>
+                  {% else %}
+                    <p>
+                      We offer complimentary shipping on all online orders, with delivery typically completed within
+                      3-10 business days.
+                    </p>
+                    <p>
+                      We accept returns within 14 days of delivery. Items must be returned in their original
+                      condition—unworn, unwashed, with all tags intact.
+                    </p>
+                  {% endif %}
                 </div>
               </div>
             </div>

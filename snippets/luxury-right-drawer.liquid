@@ -577,84 +577,269 @@
   (function() {
     window._LalehPredictiveSearchActive = true;
 
-    const catalogKeywords = {
-      'crimson-poise': [
-        'crimson', 'poise', 'crim', 'pink', 'crimson pink', 'red', 'rose', 
-        'dress', 'dresses', 'lace', 'lace dress', 'peplum', 'midi', 'evening', 
-        'party', 'long sleeves', 'luxury', 'gown'
-      ],
-      'vermeil': [
-        'vermeil', 'ver', 'green', 'pale green', 'sage', 'mint', 'emerald', 
-        'tweed', 'tweed dress', 'dress', 'dresses', 'midi', 
-        'gold', 'two-piece', 'flared cuffs', 'luxury', 'gown'
-      ],
-      'lilac-verse': [
-        'lilac', 'verse', 'lavender', 'purple', 'violet', 'dress', 'dresses', 
-        'lace', 'lace dress', 'midi', 'romantic', 'evening', 'high collar', 
-        'paisley', 'luxury', 'gown'
-      ],
-      'iris-pearl': [
-        'iris', 'pearl', 'mauve', 'purple', 'soft mauve', 'pearls', 'dress', 
-        'dresses', 'midi', 'puffed sleeves', 'evening', 'sheen', 'luxury', 'gown',
-        'white', 'cream'
-      ],
-      'obsidian-touch': [
-        'obsidian', 'touch', 'black', 'dark', 'noir', 'dress', 'dresses', 
-        'midi', 'tailored', 'embellished', 'evening', 'gold buttons', 
-        'sleeveless', 'cocktail', 'luxury', 'gown'
-      ],
-      'structured-silence': [
-        'structured', 'silence', 'sand', 'beige', 'sand-beige', 'tan', 'cream', 
-        'taupe', 'neutral', 'suit', 'dress', 'dresses', 'skirt', 'pencil skirt', 
-        'tailored', 'sharp lapels', 'gold buttons', 'evening', 'luxury', 'gown'
-      ]
+    const officialTitles = {
+      'obsidian-touch': 'OBSIDIAN TOUCH',
+      'structured-silence': 'STRUCTURED SILENCE',
+      'vermeil': 'VERMEIL',
+      'crimson-poise': 'CRIMSON POISE',
+      'iris-pearl': 'IRIS PEARL',
+      'lilac-verse': 'LILAC VERSE'
     };
 
-    function scoreProduct(p, rawQuery) {
-      const q = (rawQuery || '').toLowerCase().trim();
-      if (!q) return 0;
-      const tokens = q.split(/\s+/).filter(Boolean);
-      const handle = p.handle || '';
-      const title = (p.title || '').toLowerCase();
-      const titleWords = title.split(/\s+/);
-      const keywords = (catalogKeywords[handle] || []).map(function(k) { return k.toLowerCase(); });
-
-      let score = 0;
-      if (title === q) {
-        score += 10000;
-      } else if (title.startsWith(q)) {
-        score += 5000;
-      } else if (titleWords.some(function(w) { return w.startsWith(q); })) {
-        score += 3000;
-      } else if (titleWords.some(function(w) { return w === q; }) || (q.length >= 4 && title.includes(q))) {
-        score += 1500;
+    function getOfficialTitle(handle, fallback) {
+      if (handle && officialTitles[handle]) return officialTitles[handle];
+      const normHandle = String(handle || '').toLowerCase();
+      for (const [k, v] of Object.entries(officialTitles)) {
+        if (normHandle.includes(k) || k.includes(normHandle)) return v;
       }
-
-      for (let i = 0; i < keywords.length; i++) {
-        const kw = keywords[i];
-        const kwWords = kw.split(/\s+/);
-        if (kw === q) {
-          score += 2500;
-        } else if (kw.startsWith(q)) {
-          score += 1500;
-        } else if (kwWords.some(function(w) { return w === q || (q.length >= 4 && w.startsWith(q)); })) {
-          score += 1000;
-        }
-      }
-
-      const allTokensMatch = tokens.every(function(tok) {
-        if (titleWords.some(function(w) { return w.startsWith(tok) || (tok.length >= 4 && w.includes(tok)); })) return true;
-        for (let j = 0; j < keywords.length; j++) {
-          const kw = keywords[j];
-          if (kw === tok || kw.startsWith(tok)) return true;
-          if (kw.split(/\s+/).some(function(w) { return w === tok || (tok.length >= 4 && w.startsWith(tok)); })) return true;
-        }
-        return false;
-      });
-
-      if (!allTokensMatch || score === 0) return 0;
-      return score;
+      return fallback || '';
     }
+
+    {% liquid
+      assign drawer_search_catalog = collections.all.products
+      if drawer_search_catalog == blank or drawer_search_catalog.size == 0
+        assign drawer_search_catalog = collections['favorite-laleh'].products
+      endif
+    %}
+
+    const localCatalog = [
+      {%- for p in drawer_search_catalog limit: 12 -%}
+        {%- capture p_off_title -%}{% render 'product-title', product: p %}{%- endcapture -%}
+        {
+          id: {{ p.id | json }},
+          handle: {{ p.handle | json }},
+          title: {{ p_off_title | strip | json }},
+          url: {{ p.url | json }},
+          image: {{ p.featured_image | image_url: width: 350 | json }},
+          price: {{ p.price | json }},
+          compare_at_price: {{ p.compare_at_price | default: 0 | json }},
+          available: {{ p.available | json }}
+        }{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    ];
+
+    window._LalehCatalog = localCatalog;
+
+    const productAttributes = {
+      'obsidian-touch': {
+        colors: ['black', 'dark', 'jet black', 'onyx', 'noir', 'noire', 'noires', 'sombre', 'obsidienne', 'اسود', 'سوداء', 'سودا', 'داكن'],
+        names: ['obsidian touch', 'obsidian', 'touch', 'toucher d obsidienne', 'obsidienne', 'اوبسيديان تاتش', 'اوبسيديان', 'تاتش', 'لمسة', 'لمسه'],
+        uniqueKeywords: ['cocktail', 'cocktail dress', 'sleeveless', 'sans manches', 'بدون اكمام', 'بدون أكمام', 'كوكتيل']
+      },
+      'vermeil': {
+        colors: ['green', 'pale green', 'sage', 'mint', 'emerald', 'pastel green', 'vert', 'verte', 'vertes', 'vert pale', 'sauge', 'menthe', 'emeraude', 'اخضر', 'خضراء', 'خضرا', 'ميرميه', 'ميرمية', 'نعناعي', 'زمرد', 'زمردي'],
+        names: ['vermeil', 'فيرميل'],
+        uniqueKeywords: ['tweed', 'robe en tweed', 'تويد', 'فستان تويد', 'flared cuffs', 'deux pieces', 'deux pièces', 'ensemble', 'قطعتين', 'أكمام واسعة', 'اكمام واسعة']
+      },
+      'crimson-poise': {
+        colors: ['crimson', 'red', 'pink', 'rose', 'raspberry', 'cramoisi', 'rouge', 'rose', 'framboise', 'قرمزي', 'احمر', 'حمراء', 'حمرا', 'وردي', 'زهري'],
+        names: ['crimson poise', 'crimson', 'poise', 'equilibre cramoisi', 'équilibre cramoisi', 'cramoisi', 'كرمسون بويز', 'كرمسون', 'بويز'],
+        uniqueKeywords: ['peplum', 'بيبلوم', 'lace', 'dentelle', 'دانتيل', 'long sleeves', 'manches longues', 'أكمام طويلة', 'اكمام طويلة', 'party', 'fete', 'fête', 'حفلات']
+      },
+      'lilac-verse': {
+        colors: ['lilac', 'lavender', 'purple', 'violet', 'soft purple', 'lilas', 'lavande', 'pourpre', 'ليلاك', 'لافندر', 'بنفسجي', 'ارجواني', 'أرجواني'],
+        names: ['lilac verse', 'verse', 'vers lilas', 'ليلاك فيرس', 'فيرس'],
+        uniqueKeywords: ['high collar', 'col montant', 'ياقة عالية', 'lace', 'dentelle', 'دانتيل', 'paisley', 'بيزلي', 'romantic', 'romantique', 'رومانسي']
+      },
+      'iris-pearl': {
+        colors: ['pearl', 'pearls', 'mauve', 'soft mauve', 'sheen', 'perle', 'perles', 'بيرل', 'لؤلؤ', 'لؤلؤي', 'لولو', 'موف', 'موف ناعم'],
+        names: ['iris pearl', 'iris', 'perle', 'ايريس بيرل', 'ايريس'],
+        uniqueKeywords: ['satin', 'robe en satin', 'ساتان', 'فستان ساتان', 'puffed sleeves', 'manches bouffantes', 'أكمام منفوخة', 'اكمام منفوخة']
+      },
+      'structured-silence': {
+        colors: ['sand', 'beige', 'sand-beige', 'tan', 'cream', 'taupe', 'neutral', 'sable', 'creme', 'crème', 'neutre', 'رملي', 'بيج', 'كريمي'],
+        names: ['structured silence', 'structured', 'silence', 'silence structure', 'silence structuré', 'structure', 'ستركتشر سايلنس', 'ستركتشر', 'سايلنس', 'صمت', 'منظم'],
+        uniqueKeywords: ['suit', 'skirt', 'pencil skirt', 'sharp lapels', 'costume', 'tailleur', 'jupe', 'jupe crayon', 'revers pointus', 'طقم', 'بدلة', 'بدله', 'تنورة', 'تنوره', 'تنورة قلم', 'ياقة حادة']
+      }
+    };
+
+    const genericDressTerms = [
+      'dress', 'dresses', 'gown', 'gowns', 'midi', 'evening', 'luxury',
+      'robe', 'robes', 'soiree', 'soirée', 'luxe',
+      'فستان', 'فساتين', 'ثوب', 'ميدي', 'سهرة', 'فاخر',
+      'laleh', 'لاليه', 'لاله', 'collection', 'women', 'femme', 'نساء', 'نسائي'
+    ];
+
+    const typoMap = {
+      'dross': 'dress',
+      'dres': 'dress',
+      'dresse': 'dress',
+      'drss': 'dress',
+      'drees': 'dress',
+      'dreses': 'dresses',
+      'gwon': 'gown',
+      'robr': 'robe',
+      'robee': 'robe',
+      'فستن': 'فستان',
+      'فستانن': 'فستان',
+      'blck': 'black',
+      'balck': 'black',
+      'blak': 'black',
+      'blac': 'black',
+      'gren': 'green',
+      'geen': 'green',
+      'grn': 'green',
+      'pnk': 'pink',
+      'pik': 'pink',
+      'purpel': 'purple',
+      'purp': 'purple',
+      'purpl': 'purple',
+      'lavendar': 'lavender',
+      'beig': 'beige',
+      'begie': 'beige',
+      'mauv': 'mauve',
+      'noie': 'noir',
+      'noitr': 'noir',
+      'vertte': 'verte',
+      'obsidien': 'obsidian',
+      'obsidion': 'obsidian',
+      'obsidan': 'obsidian',
+      'crimsn': 'crimson',
+      'vermil': 'vermeil',
+      'peral': 'pearl'
+    };
+
+    function normalizeArabic(str) {
+      return (str || '')
+        .replace(/[\u064B-\u065F\u0670]/g, '')
+        .replace(/[إأآٱ]/g, 'ا')
+        .replace(/[ى]/g, 'ي')
+        .replace(/[ؤئ]/g, 'ء')
+        .replace(/ة/g, 'ه');
+    }
+
+    function normalizeQuery(str) {
+      if (!str) return '';
+      let s = String(str).toLowerCase().trim();
+      s = s.replace(/[«»"'`’‘.,;:!?#@$%^&*()_+=\-\[\]{}|\\/]/g, ' ');
+      s = normalizeArabic(s);
+      const rawTokens = s.split(/\s+/).filter(Boolean);
+      const normalizedTokens = rawTokens.map(function(tok) { return typoMap[tok] || tok; });
+      return normalizedTokens.join(' ');
+    }
+
+    const normalizedAttrCache = {};
+    for (const [handle, attrs] of Object.entries(productAttributes)) {
+      const normColors = attrs.colors.map(function(c) { return normalizeArabic(c.toLowerCase()); });
+      const normNames = attrs.names.map(function(n) { return normalizeArabic(n.toLowerCase()); });
+      const normUniques = attrs.uniqueKeywords.map(function(u) { return normalizeArabic(u.toLowerCase()); });
+      normalizedAttrCache[handle] = {
+        colors: normColors,
+        names: normNames,
+        uniqueKeywords: normUniques,
+        allSpecific: [].concat(normColors, normNames, normUniques)
+      };
+    }
+
+    const normGenericDress = genericDressTerms.map(function(d) { return normalizeArabic(d.toLowerCase()); });
+
+    function getProductHandle(p) {
+      if (!p) return '';
+      if (p.handle) return p.handle;
+      if (p.url) {
+        const parts = p.url.split('/products/');
+        if (parts[1]) return parts[1].split('?')[0].split('#')[0];
+      }
+      return '';
+    }
+
+    function scoreAndFilterProducts(rawQuery, candidateList) {
+      const q = normalizeQuery(rawQuery);
+      if (!q || q.length < 2) return [];
+
+      const tokens = q.split(/\s+/).filter(Boolean);
+      const foundQualifiersByProduct = {};
+      let totalQualifiersFound = 0;
+
+      for (const [handle, attrs] of Object.entries(normalizedAttrCache)) {
+        foundQualifiersByProduct[handle] = [];
+
+        for (let i = 0; i < attrs.allSpecific.length; i++) {
+          const spec = attrs.allSpecific[i];
+          if (spec.includes(' ') && q.includes(spec)) {
+            foundQualifiersByProduct[handle].push({ term: spec, weight: 10000 });
+            totalQualifiersFound++;
+          }
+        }
+
+        for (let t = 0; t < tokens.length; t++) {
+          const tok = tokens[t];
+          if (tok.length < 2) continue;
+          if (normGenericDress.includes(tok)) continue;
+
+          for (let i = 0; i < attrs.allSpecific.length; i++) {
+            const spec = attrs.allSpecific[i];
+            if (spec === tok) {
+              foundQualifiersByProduct[handle].push({ term: spec, weight: 8000 });
+              totalQualifiersFound++;
+              break;
+            } else if (tok.length >= 4 && (spec.startsWith(tok) || tok.startsWith(spec))) {
+              foundQualifiersByProduct[handle].push({ term: spec, weight: 4000 });
+              totalQualifiersFound++;
+              break;
+            }
+          }
+        }
+      }
+
+      for (const [handle, offTitle] of Object.entries(officialTitles)) {
+        const normTitle = offTitle.toLowerCase();
+        if (normTitle === q) {
+          if (!foundQualifiersByProduct[handle]) foundQualifiersByProduct[handle] = [];
+          foundQualifiersByProduct[handle].push({ term: normTitle, weight: 15000 });
+          totalQualifiersFound++;
+        } else if (normTitle.includes(q) && q.length >= 3) {
+          if (!foundQualifiersByProduct[handle]) foundQualifiersByProduct[handle] = [];
+          foundQualifiersByProduct[handle].push({ term: normTitle, weight: 9000 });
+          totalQualifiersFound++;
+        }
+      }
+
+      const isGenericQuery = tokens.some(function(t) { return normGenericDress.includes(t); }) ||
+                             normGenericDress.some(function(d) { return q.includes(d); });
+
+      const scored = [];
+
+      for (let i = 0; i < candidateList.length; i++) {
+        const p = candidateList[i];
+        const handle = getProductHandle(p);
+        const qualifiers = foundQualifiersByProduct[handle] || [];
+        let score = 0;
+
+        for (let k = 0; k < qualifiers.length; k++) {
+          score += qualifiers[k].weight;
+        }
+
+        if (totalQualifiersFound > 0) {
+          if (qualifiers.length === 0) {
+            score = 0;
+          } else if (isGenericQuery) {
+            score += 2000;
+          }
+        } else if (isGenericQuery) {
+          score = 5000;
+        }
+
+        if (score > 0) {
+          scored.push({ product: p, score: score });
+        }
+      }
+
+      scored.sort(function(a, b) { return b.score - a.score; });
+
+      if (scored.length > 0) {
+        const topScore = scored[0].score;
+        if (topScore >= 7000) {
+          return scored.filter(function(item) { return item.score >= topScore * 0.4; }).map(function(item) { return item.product; });
+        }
+      }
+
+      return scored.map(function(item) { return item.product; });
+    }
+
+    window._scoreAndFilterProducts = scoreAndFilterProducts;
+    window._normalizeSearchQuery = normalizeQuery;
+
 
     function parseSearchPriceToCents(val) {
       if (val == null) return 0;
@@ -676,6 +861,22 @@
       return (cents / 100).toFixed(2);
     }
 
+    function getNoProductsFoundMessage(rawQuery) {
+      const lang = (document.documentElement.lang || '').toLowerCase();
+      const path = window.location.pathname;
+      const isFr = lang.startsWith('fr') || path.startsWith('/fr');
+      const isAr = lang.startsWith('ar') || path.startsWith('/ar');
+      const safeQuery = String(rawQuery || '').trim();
+
+      if (isFr) {
+        return 'Aucun produit trouvé pour « ' + safeQuery + ' ».';
+      }
+      if (isAr) {
+        return 'لم يتم العثور على منتجات لـ "' + safeQuery + '".';
+      }
+      return 'No products found for "' + safeQuery + '".';
+    }
+
     let debounceTimer = null;
 
     async function handlePredictiveSearch(query) {
@@ -690,9 +891,19 @@
       itemsList.innerHTML = '<div style="text-align: center; padding: 20px 0; color: rgba(var(--color-foreground), 0.6); font-size: 13px;">' + searchingText + '</div>';
 
       try {
-        const res = await fetch('/search/suggest.json?q=' + encodeURIComponent(query) + '&resources[type]=product&resources[limit]=10&resources[options][unavailable_products]=last');
-        const data = await res.json();
-        const products = data?.resources?.results?.products || [];
+        const suggestBase = '{{ routes.predictive_search_url }}' || '/search/suggest.json';
+        const searchUrl = suggestBase + '?q=' + encodeURIComponent(query) + '&resources[type]=product&resources[limit]=10&resources[options][unavailable_products]=last';
+
+        let products = [];
+        try {
+          const res = await fetch(searchUrl);
+          if (res.ok) {
+            const data = await res.json();
+            products = data?.resources?.results?.products || [];
+          }
+        } catch(e) {
+          console.warn("Suggest endpoint fallback:", e);
+        }
 
         if (!window._LalehLocalizedPrices) window._LalehLocalizedPrices = {};
         products.forEach(function(p) {
@@ -704,21 +915,37 @@
           }
         });
 
-        const scoredItems = products
-          .map(function(p) { return { product: p, score: scoreProduct(p, query) }; })
-          .filter(function(item) { return item.score > 0; })
-          .sort(function(a, b) { return b.score - a.score; })
-          .map(function(item) { return item.product; });
+        const candidateMap = new Map();
+        (products || []).forEach(function(p) {
+          const h = getProductHandle(p);
+          if (h) candidateMap.set(h, p);
+        });
+        (localCatalog || []).forEach(function(p) {
+          const h = getProductHandle(p);
+          if (h) {
+            if (!candidateMap.has(h)) {
+              candidateMap.set(h, p);
+            } else {
+              const existing = candidateMap.get(h);
+              if (!existing.image && p.image) existing.image = p.image;
+              if (!existing.url && p.url) existing.url = p.url;
+            }
+          }
+        });
+        const candidatePool = Array.from(candidateMap.values());
+        const scoredItems = scoreAndFilterProducts(query, candidatePool);
 
         if (scoredItems.length === 0) {
-          const noFoundTemplate = window.MinimogStrings?.noProductsFound || 'No products found for "{{ query }}"';
-          const noFoundText = noFoundTemplate.replace('{{ query }}', query);
-          itemsList.innerHTML = '<div style="text-align: center; padding: 24px 0; color: rgba(var(--color-foreground), 0.6); font-size: 13px;">' + noFoundText + '</div>';
+          itemsList.innerHTML = '<div style="text-align: center; padding: 28px 12px; color: rgba(var(--color-foreground), 0.65); font-size: 13px; line-height: 1.5;">' +
+            getNoProductsFoundMessage(query) +
+          '</div>';
           return;
         }
 
         itemsList.innerHTML = scoredItems.map(function(p) {
           const img = p.image || p.featured_image || "";
+          const handle = p.handle || (p.url ? p.url.split('/products/')[1]?.split('?')[0] : '');
+          const officialTitle = getOfficialTitle(handle, p.title);
           const priceCents = parseSearchPriceToCents(p.price);
           const compPriceCents = p.compare_at_price ? parseSearchPriceToCents(p.compare_at_price) : 0;
           const priceFormatted = formatMoneyStr(priceCents);
@@ -726,11 +953,11 @@
 
           return '<div class="m-right-item-card" style="padding-bottom: 12px;">' +
             '<a href="' + p.url + '" class="m-right-item-card__media" style="width: 70px; height: 90px;">' +
-              (img ? '<img src="' + img + '" alt="' + (p.title || '') + '" loading="lazy">' : '<div style="width:100%;height:100%;background:#f3f3f3;"></div>') +
+              (img ? '<img src="' + img + '" alt="' + officialTitle + '" loading="lazy">' : '<div style="width:100%;height:100%;background:#f3f3f3;"></div>') +
             '</a>' +
             '<div class="m-right-item-card__details" style="justify-content: center;">' +
-              '<a href="' + p.url + '" class="m-right-item-card__title" style="text-decoration: none; font-size: 13px;">' +
-                p.title +
+              '<a href="' + p.url + '" class="m-right-item-card__title notranslate" translate="no" style="text-decoration: none; font-size: 13px; font-weight: 500; text-transform: uppercase;">' +
+                officialTitle +
               '</a>' +
               '<div class="m-right-item-card__price-row" style="margin-top: 4px;">' +
                 compareFormatted +
@@ -745,7 +972,9 @@
         }
       } catch(err) {
         console.error("Predictive search error:", err);
-        itemsList.innerHTML = '<div style="text-align: center; padding: 20px 0; color: rgba(var(--color-foreground), 0.6); font-size: 13px;">Error fetching search results.</div>';
+        itemsList.innerHTML = '<div style="text-align: center; padding: 24px 12px; color: rgba(var(--color-foreground), 0.65); font-size: 13px;">' +
+          getNoProductsFoundMessage(query) +
+        '</div>';
       }
     }
 
@@ -767,6 +996,34 @@
       debounceTimer = setTimeout(function() {
         handlePredictiveSearch(query);
       }, 150);
+    });
+
+    document.addEventListener("submit", function(e) {
+      const form = e.target.closest(".m-right-search-box");
+      if (!form) return;
+      const input = form.querySelector("[data-luxury-search-input]");
+      if (!input) return;
+      const query = input.value.trim();
+      if (!query) return;
+
+      const candidateList = (localCatalog && localCatalog.length > 0) ? localCatalog : [];
+      const matches = scoreAndFilterProducts(query, candidateList);
+
+      // If exactly 1 product matched (e.g. "black dross" -> Obsidian Touch), go directly to it
+      if (matches.length === 1 && matches[0].url) {
+        e.preventDefault();
+        window.location.href = matches[0].url;
+        return;
+      }
+
+      // If typo was normalized, redirect to search page with normalized query
+      const normQ = normalizeQuery(query);
+      if (normQ && normQ !== query.toLowerCase().trim()) {
+        e.preventDefault();
+        const action = form.getAttribute("action") || "/search";
+        window.location.href = action + "?q=" + encodeURIComponent(normQ);
+        return;
+      }
     });
   })();
 </script>

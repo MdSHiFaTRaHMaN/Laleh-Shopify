@@ -1,7 +1,9 @@
 {% liquid
   assign enable_rtl = settings.enable_rtl
   assign language_support_rtl = settings.language_support_rtl
-  if enable_rtl and language_support_rtl != blank
+  if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
+    assign enable_rtl = true
+  elsif enable_rtl and language_support_rtl != blank
     assign shop_locale = localization.language.iso_code
     assign language_support_rtl_list = language_support_rtl | split: ','
     assign is_rtl = language_support_rtl_list | where: shop_locale
@@ -42,8 +44,14 @@
       <link rel="shortcut icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
     {%- endif -%}
 
+    {%- liquid
+      assign clean_page_title_tag = page_title
+      if request.locale.iso_code contains 'fr'
+        assign clean_page_title_tag = clean_page_title_tag | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
+      endif
+    -%}
     <title>
-      {{- page_title -}}
+      {{- clean_page_title_tag -}}
       {%- if current_tags -%}
         {%- assign meta_tags = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags -}}
       {%- endif -%}

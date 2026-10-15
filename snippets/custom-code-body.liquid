@@ -2,3 +2,304 @@
   Custom code before </body>
   All custom code in this file will be kept when updating the theme
 {%- endcomment -%}
+
+<script>
+  (function() {
+    function updateFrenchTerms() {
+      const isFr = (document.documentElement.lang && document.documentElement.lang.toLowerCase().startsWith('fr')) ||
+                   window.location.pathname.startsWith('/fr') ||
+                   window.location.pathname.includes('/fr/');
+      if (!isFr) return;
+
+      const targetOld = ["Conditions d'utilisation", "Conditions d’utilisation", "conditions d'utilisation", "conditions d’utilisation"];
+      const targetNew = "Conditions générales de vente et d'utilisation";
+
+      // 1. Policy page title heading
+      const policyH1 = document.querySelector('.shopify-policy__title h1');
+      if (policyH1) {
+        const text = policyH1.textContent.trim();
+        if (targetOld.includes(text)) {
+          policyH1.textContent = targetNew;
+        }
+      }
+
+      // 2. Document title
+      if (document.title) {
+        targetOld.forEach(function(oldText) {
+          if (document.title.includes(oldText)) {
+            document.title = document.title.split(oldText).join(targetNew);
+          }
+        });
+      }
+
+      // 3. Any policy anchor links on the page
+      const links = document.querySelectorAll('a');
+      links.forEach(function(link) {
+        const text = link.textContent.trim();
+        if (targetOld.includes(text)) {
+          link.textContent = targetNew;
+        }
+      });
+    }
+
+    function removeLeakedInstructions() {
+      const leakedSnippets = [
+        "keep the text slightly smaller on mobile",
+        "avoid very long lines/large spacing",
+        "reducing the text size on mobile",
+        "instruction for you, not part of the website content",
+        "réduire légèrement la taille du texte sur mobile",
+        "espacements importants afin que la page soit plus épurée",
+        "يرجى جعل النص أصغر قليلاً على الهاتف المحمول",
+        "الأسطر الطويلة جداً أو التباعد الكبير",
+        "تعليمات موجهة إليك"
+      ];
+      const candidates = document.querySelectorAll('.m-page-content p, .shopify-policy__body p, .rte p, p');
+      const subheadings = new Set([
+        "SHIPPING", "RETURNS", "EXCHANGES",
+        "EXPÉDITION", "RETOURS", "ÉCHANGES",
+        "الشحن", "الإرجاع", "الاستبدال"
+      ]);
+      candidates.forEach(function(p) {
+        const text = (p.textContent || '').trim();
+        for (let i = 0; i < leakedSnippets.length; i++) {
+          if (text.includes(leakedSnippets[i])) {
+            p.remove();
+            return;
+          }
+        }
+        if (subheadings.has(text)) {
+          p.classList.add('m-page-subheading');
+        }
+      });
+    }
+
+    function polishShippingAndReturns() {
+      const lang = (document.documentElement.lang || '').toLowerCase();
+      const isAr = lang.startsWith('ar') || document.documentElement.dir === 'rtl' || window.location.pathname.startsWith('/ar') || window.location.pathname.includes('/ar/');
+      const isFr = lang.startsWith('fr') || window.location.pathname.startsWith('/fr') || window.location.pathname.includes('/fr/');
+
+      const pageContent = document.querySelectorAll('.m-page-content, .shopify-policy__body, .rte');
+      if (!pageContent || pageContent.length === 0) return;
+
+      pageContent.forEach(function(container) {
+        if (isFr) {
+          container.querySelectorAll('h1, h2, h3, h4, p').forEach(function(el) {
+            let html = el.innerHTML;
+            if (html.includes('Emirats arabes unis')) {
+              html = html.replace(/Emirats arabes unis/g, 'Émirats arabes unis');
+            }
+            if (html.includes('LALEH. si vous')) {
+              html = html.replace(/LALEH\.\s*si vous/g, 'LALEH. Si vous');
+            }
+            if (html.includes('satisfait (e)')) {
+              html = html.replace(/satisfait\s*\(e\)/g, 'satisfait(e)');
+            }
+            if (/^\s*ECHANGES\s*$/i.test(el.textContent.trim())) {
+              el.textContent = 'ÉCHANGES';
+            }
+            if (html.includes('Une fois votre article retourné reçu et inspecté')) {
+              html = html.replace(/Une fois votre article retourné reçu et inspecté/g, 'Une fois votre retour reçu et inspecté');
+            }
+            if (el.tagName === 'P' && (html.includes('Les articles doivent être non portés') || html.includes('Toutes les étiquettes d\'origine'))) {
+              const ul = document.createElement('ul');
+              ul.className = 'm-page-bullet-list';
+              ul.innerHTML = '<li>Les articles doivent être non portés, inutilisés et dans leur état d\'origine.</li><li>Toutes les étiquettes d\'origine doivent rester attachées.</li><li>Les articles doivent être retournés dans leur emballage d\'origine dans la mesure du possible.</li>';
+              el.replaceWith(ul);
+              return;
+            }
+            el.innerHTML = html;
+          });
+        } else if (isAr) {
+          container.setAttribute('dir', 'rtl');
+          container.querySelectorAll('h1, h2, h3, h4, p').forEach(function(el) {
+            el.setAttribute('dir', 'rtl');
+            let html = el.innerHTML;
+            if (html.includes('بستعرق') || html.includes('يستعرق') || html.includes('بستغرق')) {
+              html = html.replace(/(بستعرق|يستعرق|بستغرق)/g, 'يستغرق');
+            }
+            if (html.includes('علق العميل') || html.includes('عائق العميل')) {
+              html = html.replace(/(علق العميل|عائق العميل)/g, 'على عاتق العميل');
+            }
+            if (html.includes('يتم إعداد جميع الطلبات') && html.includes('الإمارات العربية المتحدة')) {
+              html = 'يتم إعداد جميع الطلبات بعناية وشحنها من دولة الإمارات العربية المتحدة. يستغرق التوصيل عادةً من 3 إلى 10 أيام عمل، اعتماداً على الوجهة. بمجرد إرسال طلبكِ، ستتلقين بريداً إلكترونياً يحتوي على معلومات التتبع الخاصة بكِ.';
+            }
+            if (html.includes('نأمل أن تنال') && (html.includes('LALEH') || html.includes('لاله'))) {
+              html = 'نأمل أن تنال قطعة <span class="m-brand-ltr" dir="ltr">LALEH</span> إعجابكِ. إذا لم تكوني راضيةً تماماً، يمكنكِ طلب إرجاع المنتج في غضون 14 يوماً من استلام طلبكِ.';
+            }
+            if (el.tagName === 'P' && (html.includes('يجب أن تكون القطع غير ملبوسة') || html.includes('العلامات الأصلية مرفقة'))) {
+              const ul = document.createElement('ul');
+              ul.className = 'm-page-bullet-list';
+              ul.setAttribute('dir', 'rtl');
+              ul.innerHTML = '<li>يجب أن تكون القطع غير ملبوسة وغير مستخدمة وفي حالتها الأصلية.</li><li>يجب أن تظل جميع العلامات الأصلية مرفقة بالمنتج.</li><li>يجب إرجاع القطع في عبواتها الأصلية كلما أمكن ذلك.</li>';
+              el.replaceWith(ul);
+              return;
+            }
+            el.innerHTML = html;
+          });
+        } else {
+          container.querySelectorAll('p').forEach(function(el) {
+            let html = el.innerHTML;
+            if (html.includes('Items must be unworn') || html.includes('All original tags must remain attached')) {
+              const ul = document.createElement('ul');
+              ul.className = 'm-page-bullet-list';
+              ul.innerHTML = '<li>Items must be unworn, unused, and in their original condition.</li><li>All original tags must remain attached.</li><li>Items must be returned in their original packaging whenever possible.</li>';
+              el.replaceWith(ul);
+            }
+          });
+        }
+      });
+    }
+
+    function updateFaqAndAnnouncements() {
+      const lang = (document.documentElement.lang || '').toLowerCase();
+      const isAr = lang.startsWith('ar') || document.documentElement.dir === 'rtl' || window.location.pathname.startsWith('/ar') || window.location.pathname.includes('/ar/');
+      const isFr = lang.startsWith('fr') || window.location.pathname.startsWith('/fr') || window.location.pathname.includes('/fr/');
+
+      if (isAr) {
+        const faqSec = document.querySelector('.m-faqs-section');
+        if (faqSec) faqSec.setAttribute('dir', 'rtl');
+
+        document.querySelectorAll('.m-faqs-section .m-collapsible--button > span:first-child').forEach(function(span) {
+          span.setAttribute('dir', 'rtl');
+          const btn = span.closest('.m-collapsible--button');
+          if (btn) btn.setAttribute('dir', 'rtl');
+          const txt = (span.textContent || '').trim();
+          if (
+            span.closest("[data-block-id*='accordion_7fKgjR']") ||
+            txt.includes('التواصل مع') ||
+            txt.includes('الاتصال ب') ||
+            /contact\s+laleh/i.test(txt) ||
+            (txt.includes('كيف') && (txt.includes('LALEH') || txt.includes('لاله') || txt.includes('لالة')))
+          ) {
+            span.innerHTML = 'كيف يمكنني التواصل مع <span class="m-faq-brand-ltr" dir="ltr">LALEH</span>';
+          }
+        });
+
+        document.querySelectorAll('.m-announcement-bar__desktop-item span, .m-announcement-bar__desktop-item a, .m-announcement-bar__slide span, .m-announcement-bar__slide a').forEach(function(el) {
+          const txt = (el.textContent || '').trim();
+          if (
+            txt.includes('3–10') ||
+            txt.includes('3-10') ||
+            txt.includes('3—10') ||
+            txt.includes('10–3') ||
+            txt.includes('10-3') ||
+            txt.includes('أيام عمل') ||
+            /business\s+days/i.test(txt)
+          ) {
+            el.setAttribute('dir', 'rtl');
+            el.textContent = 'التوصيل خلال 3 إلى 10 أيام عمل';
+          }
+        });
+      }
+
+      if (isFr) {
+        document.querySelectorAll('.m-breadcrumb--item').forEach(function(el) {
+          if (el.textContent && /^maison$/i.test(el.textContent.trim())) {
+            el.textContent = 'Accueil';
+          }
+        });
+        document.querySelectorAll('.m-faqs-section .m-collapsible--button > span:first-child').forEach(function(span) {
+          const txt = (span.textContent || '').trim();
+          if (span.closest("[data-block-id*='accordion-1']") || /expédiez-vous\s+vos\s+produits/i.test(txt)) {
+            span.textContent = "D'où sont expédiées vos commandes?";
+          } else if (span.closest("[data-block-id*='accordion-2']") || /combien\s+de\s+temps\s+prend\s+la\s+livraison/i.test(txt)) {
+            span.textContent = 'Quels sont les délais de livraison?';
+          } else if (span.closest("[data-block-id*='accordion-4']") || /quelle\s+est\s+votre\s+politique\s+de\s+retour/i.test(txt)) {
+            span.textContent = 'Quelles sont les conditions de retour ?';
+          }
+        });
+      }
+    }
+
+    function fixVermeilFrenchDescription() {
+      const isFr = (document.documentElement.lang && document.documentElement.lang.toLowerCase().startsWith('fr')) ||
+                   window.location.pathname.startsWith('/fr') ||
+                   window.location.pathname.includes('/fr/');
+      if (!isFr) return;
+
+      const elements = document.querySelectorAll('.m-luxury-accordion-content, .product__description, .rte');
+      elements.forEach(function(el) {
+        if (/corsage\s+structur[eé]/i.test(el.innerHTML)) {
+          el.innerHTML = el.innerHTML
+            .replace(/corsage structuré/g, 'haut structuré')
+            .replace(/Corsage structuré/g, 'Haut structuré')
+            .replace(/corsage structure/g, 'haut structuré')
+            .replace(/Corsage structure/g, 'Haut structuré');
+        }
+      });
+    }
+
+    function ensureArabicSelectSize() {
+      const lang = (document.documentElement.lang || '').toLowerCase();
+      const isAr = lang.startsWith('ar') || document.documentElement.dir === 'rtl' || window.location.pathname.startsWith('/ar') || window.location.pathname.includes('/ar/');
+      if (!isAr) return;
+
+      const sizeTitles = document.querySelectorAll('.size-v-title');
+      sizeTitles.forEach(function(title) {
+        const txt = (title.textContent || '').trim().toLowerCase();
+        if (!txt || txt === 'select size' || txt === 'select size:') {
+          title.textContent = 'اختاري المقاس';
+        }
+      });
+
+      const sizeGrids = document.querySelectorAll('.m-luxury-sizes-grid');
+      sizeGrids.forEach(function(grid) {
+        const prevRow = grid.previousElementSibling;
+        if (!prevRow || !prevRow.classList.contains('m-luxury-size-header-row')) {
+          const headerRow = document.createElement('div');
+          headerRow.className = 'm-luxury-size-header-row';
+          headerRow.innerHTML = '<span class="size-v-title">اختاري المقاس</span>';
+          grid.parentNode.insertBefore(headerRow, grid);
+        } else {
+          const title = prevRow.querySelector('.size-v-title');
+          if (title && (!title.textContent.trim() || title.textContent.trim().toLowerCase() === 'select size')) {
+            title.textContent = 'اختاري المقاس';
+          }
+        }
+      });
+    }
+
+    function enforceWishlistAddText() {
+      document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.m-luxury-wishlist-btn, .in-prod-page');
+        if (!btn) return;
+        setTimeout(function() {
+          const textSpan = btn.querySelector('.m-wishlist-button-text');
+          if (textSpan) {
+            const lang = (document.documentElement.lang || '').toLowerCase();
+            let addText = 'Add to Wishlist';
+            if (lang.startsWith('fr') || window.location.pathname.startsWith('/fr')) {
+              addText = 'Ajouter aux favoris';
+            } else if (lang.startsWith('ar') || window.location.pathname.startsWith('/ar')) {
+              addText = 'إضافة إلى قائمة الرغبات';
+            }
+            if (/remove|supprimer|إزالة/i.test(textSpan.textContent)) {
+              textSpan.textContent = addText;
+            }
+          }
+        }, 50);
+      }, true);
+    }
+
+    enforceWishlistAddText();
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        updateFrenchTerms();
+        removeLeakedInstructions();
+        polishShippingAndReturns();
+        updateFaqAndAnnouncements();
+        fixVermeilFrenchDescription();
+        ensureArabicSelectSize();
+      });
+    } else {
+      updateFrenchTerms();
+      removeLeakedInstructions();
+      polishShippingAndReturns();
+      updateFaqAndAnnouncements();
+      fixVermeilFrenchDescription();
+      ensureArabicSelectSize();
+    }
+  })();
+</script>

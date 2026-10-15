@@ -276,9 +276,9 @@
           {% liquid
             assign l_title_clean = link.title
             if request.locale.iso_code contains 'ar'
-              assign l_title_clean = l_title_clean | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+              assign l_title_clean = l_title_clean | replace: 'تسوقي المجموعة', 'المجموعة' | replace: 'تسوق المجموعة', 'المجموعة' | replace: 'تسوق الكل', 'المجموعة' | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
             elsif request.locale.iso_code contains 'fr'
-              assign l_title_clean = l_title_clean | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+              assign l_title_clean = l_title_clean | replace: 'Tout voir', 'Voir toute la collection' | replace: 'tout voir', 'voir toute la collection' | replace: 'Expédition et retours', 'Livraison et retours' | replace: 'expédition et retours', 'livraison et retours' | replace: 'Expéditions et retours', 'Livraison et retours' | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes' | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
             endif
           %}
           <a
@@ -304,9 +304,9 @@
                     {% liquid
                       assign child_title_clean = childlink.title
                       if request.locale.iso_code contains 'ar'
-                        assign child_title_clean = child_title_clean | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+                        assign child_title_clean = child_title_clean | replace: 'تسوقي المجموعة', 'المجموعة' | replace: 'تسوق المجموعة', 'المجموعة' | replace: 'تسوق الكل', 'المجموعة' | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
                       elsif request.locale.iso_code contains 'fr'
-                        assign child_title_clean = child_title_clean | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+                        assign child_title_clean = child_title_clean | replace: 'Tout voir', 'Voir toute la collection' | replace: 'tout voir', 'voir toute la collection' | replace: 'Expédition et retours', 'Livraison et retours' | replace: 'expédition et retours', 'livraison et retours' | replace: 'Expéditions et retours', 'Livraison et retours' | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes' | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
                       endif
                     %}
                     <li class="m-sub-menu__item m-sub-menu__item--level-1">
@@ -327,9 +327,9 @@
                               {% liquid
                                 assign grand_title_clean = grandlink.title
                                 if request.locale.iso_code contains 'ar'
-                                  assign grand_title_clean = grand_title_clean | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+                                  assign grand_title_clean = grand_title_clean | replace: 'تسوقي المجموعة', 'المجموعة' | replace: 'تسوق المجموعة', 'المجموعة' | replace: 'تسوق الكل', 'المجموعة' | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
                                 elsif request.locale.iso_code contains 'fr'
-                                  assign grand_title_clean = grand_title_clean | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+                                  assign grand_title_clean = grand_title_clean | replace: 'Tout voir', 'Voir toute la collection' | replace: 'tout voir', 'voir toute la collection' | replace: 'Expédition et retours', 'Livraison et retours' | replace: 'expédition et retours', 'livraison et retours' | replace: 'Expéditions et retours', 'Livraison et retours' | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes' | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
                                 endif
                               %}
                               <li class="m-sub-menu__item m-sub-menu__item--level-2">
@@ -358,9 +358,9 @@
           {% liquid
             assign l_title_clean = link.title
             if request.locale.iso_code contains 'ar'
-              assign l_title_clean = l_title_clean | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+              assign l_title_clean = l_title_clean | replace: 'تسوقي المجموعة', 'المجموعة' | replace: 'تسوق المجموعة', 'المجموعة' | replace: 'تسوق الكل', 'المجموعة' | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
             elsif request.locale.iso_code contains 'fr'
-              assign l_title_clean = l_title_clean | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+              assign l_title_clean = l_title_clean | replace: 'Tout voir', 'Voir toute la collection' | replace: 'tout voir', 'voir toute la collection' | replace: 'Expédition et retours', 'Livraison et retours' | replace: 'expédition et retours', 'livraison et retours' | replace: 'Expéditions et retours', 'Livraison et retours' | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes' | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
             endif
           %}
           <a

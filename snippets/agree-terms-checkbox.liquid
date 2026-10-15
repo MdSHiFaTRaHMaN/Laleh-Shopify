@@ -1,7 +1,13 @@
 <div class="m-terms-conditons">
+  {% liquid
+    assign agree_label = settings.agree_text
+    if request.locale.iso_code contains 'fr'
+      assign agree_label = agree_label | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
+    endif
+  %}
   <label class="form-field--checkbox">
     <input type="checkbox" name="agree_terms" value="yes" required>
-    <span class="form-field--checkbox__label">{{ settings.agree_text }}</span>
+    <span class="form-field--checkbox__label">{{ agree_label }}</span>
     <span class="form-field--checkbox__icon">
       <svg class="m-svg-icon--medium" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" fill="none" viewBox="0 0 20 20">
         <path d="M18.5 1.5H1.5L1.5 18.5H18.5V1.5ZM1.5 0.5C0.947715 0.5 0.5 0.947715 0.5 1.5V18.5C0.5 19.0523 0.947715 19.5 1.5 19.5H18.5C19.0523 19.5 19.5 19.0523 19.5 18.5V1.5C19.5 0.947715 19.0523 0.5 18.5 0.5H1.5Z" fill-rule="evenodd" fill="currentColor"/>
