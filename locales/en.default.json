@@ -71,7 +71,7 @@
       "products": "Products"
     },
     "newsletter_form": {
-      "confirmation": "Welcome to the LALEH List"
+      "confirmation": "Thank you for joining LALEH."
     },
     "payment": {
       "options": "Payment options"
@@ -85,7 +85,9 @@
     },
     "tooltip": {
       "not_found": "Tooltip type not found"
-    }
+    },
+    "terms_of_service": "Terms of Service",
+    "terms_and_conditions": "Terms & Conditions"
   },
   "sections": {
     "video": {

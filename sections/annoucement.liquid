@@ -193,21 +193,29 @@
       }
     </style>
 
+    {%- liquid
+      assign is_ar = false
+      if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
+        assign is_ar = true
+      endif
+    -%}
     <section
       id="m-announcement--{{ section.id }}"
       data-section-id="{{ section.id }}"
       data-section-type="announcement"
       class="m-announcement-bar"
+      {% if is_ar %}dir="rtl" style="--ab-ls: 0px;"{% endif %}
     >
       <m-announcement-bar
         class="m-announcement-bar__custom"
         data-pause-hover="{{ pause_on_hover }}"
         data-slide-interval="{{ slide_interval | times: 1000 }}"
+        {% if is_ar %}dir="rtl"{% endif %}
       >
         <div class="m-announcement-bar__custom-inner {{ container }}">
 
           <!-- Desktop Static Row Layout -->
-          <div class="m-announcement-bar__desktop-view">
+          <div class="m-announcement-bar__desktop-view"{% if is_ar %} dir="rtl"{% endif %}>
             {% for block in section.blocks %}
               {%- assign raw_msg = block.settings.message -%}
               {%- assign current_country_name = localization.country.name | default: 'Switzerland' -%}
@@ -225,13 +233,24 @@
               {%- elsif raw_msg contains 'Switzerland' -%}
                 {%- assign dynamic_msg = raw_msg | replace: 'Switzerland', dynamic_country_span -%}
               {%- endif -%}
-              <div class="m-announcement-bar__desktop-item" {{ block.shopify_attributes }}>
+              {%- if is_ar -%}
+                {%- if block.id == 'item_erDYNG' or raw_msg contains '3–10' or raw_msg contains '3-10' or raw_msg contains '3—10' or raw_msg contains '10–3' or raw_msg contains '10-3' or raw_msg contains 'أيام عمل' or raw_msg contains 'business days' -%}
+                  {%- assign dynamic_msg = 'التوصيل خلال 3 إلى 10 أيام عمل' -%}
+                {%- elsif block.id == 'item_RHJEnp' or raw_msg contains '14 days' or raw_msg contains '14 يوم' -%}
+                  {%- assign dynamic_msg = 'نقبل الإرجاع خلال 14 يوماً' -%}
+                {%- elsif block.id == 'item_Rh8wGK' and raw_msg contains 'We ship to' -%}
+                  {%- capture dynamic_msg -%}نشحن إلى {{ dynamic_country_span }}{%- endcapture -%}
+                {%- else -%}
+                  {%- assign dynamic_msg = dynamic_msg | replace: '3–10', '3 إلى 10' | replace: '3-10', '3 إلى 10' | replace: '3—10', '3 إلى 10' | replace: '10–3', '3 إلى 10' | replace: '10-3', '3 إلى 10' -%}
+                {%- endif -%}
+              {%- endif -%}
+              <div class="m-announcement-bar__desktop-item"{% if is_ar %} dir="rtl"{% endif %} {{ block.shopify_attributes }}>
                 {% if block.settings.message_link != blank %}
-                  <a href="{{ block.settings.message_link }}">
+                  <a href="{{ block.settings.message_link }}"{% if is_ar %} dir="rtl"{% endif %}>
                     {{ dynamic_msg }}
                   </a>
                 {% else %}
-                  <span>{{ dynamic_msg }}</span>
+                  <span{% if is_ar %} dir="rtl"{% endif %}>{{ dynamic_msg }}</span>
                 {% endif %}
               </div>
               {% unless forloop.last %}
@@ -245,7 +264,7 @@
           </div>
 
           <!-- Mobile Fade Slider Layout -->
-          <div class="m-announcement-bar__mobile-view" aria-label="Announcement slider">
+          <div class="m-announcement-bar__mobile-view" aria-label="Announcement slider"{% if is_ar %} dir="rtl"{% endif %}>
             <div class="m-announcement-bar__slider">
               {% for block in section.blocks %}
                 {%- assign raw_msg = block.settings.message -%}
@@ -264,16 +283,28 @@
                 {%- elsif raw_msg contains 'Switzerland' -%}
                   {%- assign dynamic_msg = raw_msg | replace: 'Switzerland', dynamic_country_span -%}
                 {%- endif -%}
+                {%- if is_ar -%}
+                  {%- if block.id == 'item_erDYNG' or raw_msg contains '3–10' or raw_msg contains '3-10' or raw_msg contains '3—10' or raw_msg contains '10–3' or raw_msg contains '10-3' or raw_msg contains 'أيام عمل' or raw_msg contains 'business days' -%}
+                    {%- assign dynamic_msg = 'التوصيل خلال 3 إلى 10 أيام عمل' -%}
+                  {%- elsif block.id == 'item_RHJEnp' or raw_msg contains '14 days' or raw_msg contains '14 يوم' -%}
+                    {%- assign dynamic_msg = 'نقبل الإرجاع خلال 14 يوماً' -%}
+                  {%- elsif block.id == 'item_Rh8wGK' and raw_msg contains 'We ship to' -%}
+                    {%- capture dynamic_msg -%}نشحن إلى {{ dynamic_country_span }}{%- endcapture -%}
+                  {%- else -%}
+                    {%- assign dynamic_msg = dynamic_msg | replace: '3–10', '3 إلى 10' | replace: '3-10', '3 إلى 10' | replace: '3—10', '3 إلى 10' | replace: '10–3', '3 إلى 10' | replace: '10-3', '3 إلى 10' -%}
+                  {%- endif -%}
+                {%- endif -%}
                 <div
                   class="m-announcement-bar__slide{% if forloop.first %} is-active{% endif %}"
+                  {% if is_ar %}dir="rtl"{% endif %}
                   {{ block.shopify_attributes }}
                 >
                   {% if block.settings.message_link != blank %}
-                    <a href="{{ block.settings.message_link }}">
+                    <a href="{{ block.settings.message_link }}"{% if is_ar %} dir="rtl"{% endif %}>
                       {{ dynamic_msg }}
                     </a>
                   {% else %}
-                    <span>{{ dynamic_msg }}</span>
+                    <span{% if is_ar %} dir="rtl"{% endif %}>{{ dynamic_msg }}</span>
                   {% endif %}
                 </div>
               {% endfor %}

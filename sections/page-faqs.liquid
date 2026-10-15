@@ -14,8 +14,17 @@
     assign classes = classes | append: ' ' | append: section.settings.custom_class
   endif
   assign classes = classes | append: ' m-gradient' | append: ' m-color-' | append: section.settings.color_scheme
+
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
+    assign is_ar = true
+  endif
+  assign is_fr = false
+  if request.locale.iso_code contains 'fr' or localization.language.iso_code contains 'fr'
+    assign is_fr = true
+  endif
 -%}
-<section class="{{ classes }}" data-section-id="{{ section.id }}" data-section-type="page-faqs">
+<section class="{{ classes }}" data-section-id="{{ section.id }}" data-section-type="page-faqs"{% if is_ar %} dir="rtl"{% endif %}>
   <div class="{{ container }}">
     <div class="m-row">
       {% if section.settings.menu != blank %}
@@ -27,9 +36,9 @@
           </ul>
         </div>
       {% endif %}
-      <div class="m-faqs-section__content{% if section.settings.menu != blank %} lg:m:w-9/12{% else %} m:w-full{% endif %}{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
+      <div class="m-faqs-section__content{% if section.settings.menu != blank %} lg:m:w-9/12{% else %} m:w-full{% endif %}{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}"{% if is_ar %} dir="rtl"{% endif %}>
         {% for block in section.blocks %}
-          <div class="m-faqs-section__block m-faqs-section__block-{{ block.type }}">
+          <div class="m-faqs-section__block m-faqs-section__block-{{ block.type }}"{% if is_ar %} dir="rtl"{% endif %}>
             {% case block.type %}
               {% when 'content' %}
                 {% if block.settings.content != blank %}
@@ -37,22 +46,73 @@
                 {% endif %}
               {% else %}
                 {% if block.settings.title != blank and block.settings.content != blank %}
+                  {%- liquid
+                    assign faq_title = block.settings.title
+                    assign faq_content = block.settings.content
+
+                    if is_ar
+                      if block.id == 'accordion-1' or faq_title contains 'Where do you ship from' or faq_title contains 'من أين'
+                        assign faq_title = 'من أين يتم شحن الطلبات؟'
+                        assign faq_content = '<p dir="rtl">يتم تحضير جميع الطلبات بعناية وشحنها من دولة الإمارات العربية المتحدة.</p>'
+                      elsif block.id == 'accordion-2' or faq_title contains 'How long does shipping take' or faq_title contains 'كم يستغرق الشحن' or faq_title contains 'كم تستغرق' or faq_title contains 'مدة الشحن' or faq_title contains 'التوصيل'
+                        assign faq_title = 'كم يستغرق التوصيل؟'
+                        assign faq_content = '<p dir="rtl">يستغرق التوصيل عادةً من 3 إلى 10 أيام عمل، وذلك حسب وجهتكِ. وبمجرد شحن طلبكِ، ستتلقين رسالة عبر البريد الإلكتروني تحتوي على رقم التتبع.</p>'
+                      elsif block.id == 'accordion-3' or faq_title contains 'Can I track my order' or faq_title contains 'تتبع طلبي'
+                        assign faq_title = 'هل يمكنني تتبع طلبي؟'
+                        assign faq_content = '<p dir="rtl">نعم. بمجرد شحن طلبكِ، ستتلقين رسالة عبر البريد الإلكتروني تتضمن معلومات تتبع الشحنة.</p>'
+                      elsif block.id == 'accordion-4' or faq_title contains 'What is your return policy' or faq_title contains 'سياسة الإرجاع' or faq_title contains 'سياسة الاسترجاع'
+                        assign faq_title = 'ما هي سياسة الإرجاع لديكم؟'
+                        assign refund_url = routes.root_url | append: '/policies/refund-policy' | replace: '//', '/'
+                        assign faq_content = '<p dir="rtl">يمكنكِ إرجاع القطع المؤهلة خلال 14 يوماً من تاريخ الاستلام.<br><a href="' | append: refund_url | append: '" title="سياسة الإرجاع" class="m-faq-policy-link"><strong>اقرئي سياسة الإرجاع الكاملة</strong></a></p>'
+                      elsif block.id == 'accordion-5' or faq_title contains 'Do you offer exchanges' or faq_title contains 'الاستبدال' or faq_title contains 'استبدال'
+                        assign faq_title = 'هل توفرون خدمة الاستبدال؟'
+                        assign faq_content = '<p dir="rtl">نحن لا نوفر خدمة الاستبدال، ونقبل الإرجاع فقط وفقاً لسياسة الإرجاع المعتمدة لدينا. إذا كنتِ ترغبين في مقاس أو تصميم آخر، يرجى إرجاع القطعة المؤهلة لاسترداد المبلغ وتقديم طلب جديد.</p>'
+                      elsif block.id == 'accordion_KAr8gh' or faq_title contains 'How do I choose the right size' or faq_title contains 'المقاس المناسب'
+                        assign faq_title = 'كيف أختار المقاس المناسب؟'
+                        assign faq_content = '<p dir="rtl">تتضمن كل صفحة منتج دليل مقاسات مفصلاً لمساعدتكِ في اختيار المقاس المثالي. وإذا كنتِ بحاجة إلى مزيد من المساعدة، يسعدنا دائماً تواصلكِ معنا.</p>'
+                      elsif block.id == 'accordion_m7UqUy' or faq_title contains 'Will sold-out items be restocked' or faq_title contains 'إعادة توفير'
+                        assign faq_title = 'هل سيتم إعادة توفير القطع التي نفدت؟'
+                        assign faq_content = '<p dir="rtl">قد تتم إعادة توفير بعض التصاميم، بينما يتم إصدار تصاميم أخرى بكميات محدودة.<br>تابعينا على <a href="https://www.instagram.com/mylaleh.co" target="_blank" title="Instagram"><strong dir="ltr">Instagram</strong></a> لمعرفة آخر التحديثات.</p>'
+                      elsif block.id == 'accordion_7fKgjR' or faq_title contains 'How can I contact' or faq_title contains 'التواصل مع' or faq_title contains 'الاتصال' or faq_title contains 'LALEH' or faq_title contains 'لاله' or faq_title contains 'لالة'
+                        assign faq_title = 'كيف يمكنني التواصل مع <span class="m-faq-brand-ltr" dir="ltr">LALEH</span>'
+                        assign faq_content = '<p dir="rtl">لأي استفسارات بخصوص طلبكِ أو مجموعتنا، يرجى التواصل معنا عبر البريد الإلكتروني: <a href="mailto:contact@mylaleh.com" dir="ltr" class="m-ltr-inline">contact@mylaleh.com</a></p>'
+                      elsif block.id == 'accordion_4df6HU' or faq_title contains 'international shipping' or faq_title contains 'الشحن الدولي'
+                        assign faq_title = 'هل توفرون الشحن الدولي؟'
+                        assign faq_content = '<p dir="rtl">نعم، نوفر الشحن الدولي إلى وجهات مختارة. يتم احتساب خيارات الشحن المتاحة والتكاليف عند إتمام الطلب.</p>'
+                      elsif block.id == 'accordion_KbCwBh' or faq_title contains 'customs duties' or faq_title contains 'الرسوم الجمركية'
+                        assign faq_title = 'هل الرسوم الجمركية أو الضرائب مشمولة؟'
+                        assign faq_content = '<p dir="rtl">قد تخضع الطلبات الدولية لرسوم جمركية أو ضرائب استيراد أو رسوم إضافية حسب بلد الوجهة. هذه الرسوم غير مشمولة في سعر الشراء وتكون على عاتق العميل.</p>'
+                      else
+                        assign faq_title = faq_title | replace: 'لاله', '<span dir="ltr">LALEH</span>' | replace: 'لالة', '<span dir="ltr">LALEH</span>' | replace: '?', '؟'
+                        assign faq_content = faq_content | replace: '3—10', '3 إلى 10' | replace: '3–10', '3 إلى 10' | replace: '3-10', '3 إلى 10' | replace: '10—3', '3 إلى 10' | replace: '10–3', '3 إلى 10' | replace: '10-3', '3 إلى 10' | replace: 'لاله', '<span dir="ltr">LALEH</span>' | replace: 'لالة', '<span dir="ltr">LALEH</span>' | replace: 'contact@mylaleh.com', '<span dir="ltr">contact@mylaleh.com</span>'
+                      endif
+                    elsif is_fr
+                      if block.id == 'accordion-1' or faq_title contains 'Where do you ship from' or faq_title contains 'expédiez-vous vos produits'
+                        assign faq_title = "D'où sont expédiées vos commandes?"
+                      elsif block.id == 'accordion-2' or faq_title contains 'How long does shipping take' or faq_title contains 'Combien de temps prend la livraison'
+                        assign faq_title = 'Quels sont les délais de livraison?'
+                      elsif block.id == 'accordion-4' or faq_title contains 'What is your return policy' or faq_title contains 'Quelle est votre politique de retour'
+                        assign faq_title = 'Quelles sont les conditions de retour ?'
+                      endif
+                    endif
+                  -%}
                   <collapsible-tab
                     class="m-collapsible no-js-hidden"
                     data-block-id="collapsible-tab-{{ block.id }}"
                     {% if block.settings.open %}open="true"{% endif %}
+                    {% if is_ar %}dir="rtl"{% endif %}
                   >
-                    <h3 class="m-collapsible--button" data-trigger>
-                      <span>{{ block.settings.title }}</span>
+                    <h3 class="m-collapsible--button" data-trigger{% if is_ar %} dir="rtl"{% endif %}>
+                      <span class="m-collapsible--title"{% if is_ar %} dir="rtl"{% endif %}>{{ faq_title }}</span>
                       <span class="m-collapsible--icon">
                         <svg width="12" height="12" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M13.5306 6.53073L8.5306 11.5307C8.46092 11.6007 8.37813 11.6561 8.28696 11.694C8.1958 11.7318 8.09806 11.7513 7.99935 11.7513C7.90064 11.7513 7.8029 11.7318 7.71173 11.694C7.62057 11.6561 7.53778 11.6007 7.4681 11.5307L2.4681 6.53073C2.3272 6.38984 2.24805 6.19874 2.24805 5.99948C2.24805 5.80023 2.3272 5.60913 2.4681 5.46823C2.60899 5.32734 2.80009 5.24818 2.99935 5.24818C3.19861 5.24818 3.3897 5.32734 3.5306 5.46823L7.99997 9.93761L12.4693 5.46761C12.6102 5.32671 12.8013 5.24756 13.0006 5.24756C13.1999 5.24756 13.391 5.32671 13.5318 5.46761C13.6727 5.60851 13.7519 5.7996 13.7519 5.99886C13.7519 6.19812 13.6727 6.38921 13.5318 6.53011L13.5306 6.53073Z" fill="currentColor"/>
                         </svg>
                       </span>
                     </h3>
-                    <div class="m-collapsible--content" data-content hidden>
-                        <div class="m-collapsible--content__inner rte">
-                          {{ block.settings.content }}
+                    <div class="m-collapsible--content" data-content hidden{% if is_ar %} dir="rtl"{% endif %}>
+                        <div class="m-collapsible--content__inner rte"{% if is_ar %} dir="rtl"{% endif %}>
+                          {{ faq_content }}
                         </div>
                     </div>
                   </collapsible-tab>

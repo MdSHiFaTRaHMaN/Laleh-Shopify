@@ -34,27 +34,22 @@
 
 {%- liquid
   assign is_ar = false
-  if request.locale.iso_code contains 'ar'
+  if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
     assign is_ar = true
   endif
   assign is_fr = false
-  if request.locale.iso_code contains 'fr'
+  if request.locale.iso_code contains 'fr' or localization.language.iso_code contains 'fr'
     assign is_fr = true
   endif
 
   assign home_text = 'general.breadcrumbs.home' | t
   assign home_title = 'general.breadcrumbs.home_link_title' | t
-  if is_ar or home_text == 'Home' or home_text contains 'translation missing'
-    if is_ar
-      assign home_text = 'الرئيسية'
-      assign home_title = 'العودة إلى الصفحة الرئيسية'
-    endif
-  endif
-  if is_fr
-    if home_text == 'Home' or home_text contains 'translation missing'
-      assign home_text = 'Accueil'
-      assign home_title = "Retour à la page d'accueil"
-    endif
+  if is_ar
+    assign home_text = 'الرئيسية'
+    assign home_title = 'العودة إلى الصفحة الرئيسية'
+  elsif is_fr
+    assign home_text = 'Accueil'
+    assign home_title = "Retour à la page d'accueil"
   endif
 -%}
 {%- capture separator -%}
@@ -74,9 +69,10 @@
     class="m-breadcrumb m:w-full {{ class }}{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}"
     role="navigation"
     aria-label="{% if is_ar %}مسار التنقل{% elsif is_fr %}fil d'Ariane{% else %}breadcrumbs{% endif %}"
+    {% if is_ar %}dir="rtl"{% endif %}
   >
     <div class="{{ container }}">
-      <div class="m-breadcrumb--wrapper m:flex m:items-center m:justify-{{ justify | default: 'start' }}">
+      <div class="m-breadcrumb--wrapper m:flex m:items-center m:justify-{{ justify | default: 'start' }}"{% if is_ar %} dir="rtl"{% endif %}>
         {% unless template.name == 'product' %}
           {{ home }}
         {% endunless %}
@@ -170,7 +166,7 @@
             if is_ar
               assign p_display_title = p_display_title | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
             elsif is_fr
-              assign p_display_title = p_display_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+              assign p_display_title = p_display_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes' | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
             endif
           %}
           <span class="m-breadcrumb--item-current m-breadcrumb--item">{{ p_display_title }}</span>
@@ -188,7 +184,7 @@
             if is_ar
               assign pt_display = pt_display | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
             elsif is_fr
-              assign pt_display = pt_display | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+              assign pt_display = pt_display | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes' | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
             endif
           %}
           <span class="m-breadcrumb--item-current m-breadcrumb--item">{{ pt_display }}</span>

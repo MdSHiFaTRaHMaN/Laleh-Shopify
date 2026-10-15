@@ -163,7 +163,7 @@
         assign display_button_label = section.settings.button_label
         if is_ar and display_button_label != blank
           assign btn_clean = display_button_label | strip | upcase
-          if btn_clean == 'DISCOVER THE COLLECTION' or display_button_label contains 'اكتشف المجموعة'
+          if btn_clean == 'DISCOVER THE COLLECTION' or display_button_label contains 'اكتشف المجموعة' or display_button_label contains 'اكتشف التشكيلة' or display_button_label contains 'التشكيلة' or display_button_label contains 'اكتشف'
             assign display_button_label = 'اكتشفي المجموعة'
           endif
         endif
