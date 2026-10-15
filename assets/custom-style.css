@@ -617,10 +617,45 @@
 }
 
 .m-page-content {
-  max-width: 880px !important;
+  max-width: 800px !important;
   margin-left: auto !important;
   margin-right: auto !important;
   padding-bottom: 3.5rem !important;
+}
+
+.m-page-content .m-page-subheading,
+.m-page-content h3.m-page-subheading {
+  font-family: var(--font-stack-body), "Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  color: #1a1a1a !important;
+  margin-top: 32px !important;
+  margin-bottom: 12px !important;
+  line-height: 1.4 !important;
+}
+
+.m-page-content .m-page-subheading:first-child,
+.m-page-content h3.m-page-subheading:first-child {
+  margin-top: 0 !important;
+}
+
+[dir="rtl"] .m-page-content,
+[dir="rtl"] .m-page-content.rte,
+html[lang="ar"] .m-page-content,
+html[lang="ar"] .m-page-content.rte {
+  text-align: right !important;
+  direction: rtl !important;
+}
+
+[dir="rtl"] .m-page-content .m-page-subheading,
+[dir="rtl"] .m-page-content h3.m-page-subheading,
+html[lang="ar"] .m-page-content .m-page-subheading,
+html[lang="ar"] .m-page-content h3.m-page-subheading {
+  text-align: right !important;
+  direction: rtl !important;
+  letter-spacing: normal !important;
 }
 
 /* --- 3. Body Text (Paragraphs, Content, RTE) --- */
@@ -833,6 +868,74 @@
   }
 }
 
+/* RTL Lists Alignment */
+[dir="rtl"] .shopify-policy__body ul,
+[dir="rtl"] .shopify-policy__body ol,
+[dir="rtl"] .m-page-content.rte ul,
+[dir="rtl"] .m-page-content.rte ol,
+[dir="rtl"] .m-collapsible--content__inner ul,
+[dir="rtl"] .m-collapsible--content__inner ol,
+html[lang="ar"] .shopify-policy__body ul,
+html[lang="ar"] .shopify-policy__body ol,
+html[lang="ar"] .m-page-content.rte ul,
+html[lang="ar"] .m-page-content.rte ol,
+.m-page-bullet-list[dir="rtl"] {
+  padding-left: 0 !important;
+  padding-right: 24px !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 1.25rem !important;
+  text-align: right !important;
+  direction: rtl !important;
+}
+
+[dir="rtl"] .shopify-policy__body li,
+[dir="rtl"] .m-page-content.rte li,
+[dir="rtl"] .m-collapsible--content__inner li,
+html[lang="ar"] .shopify-policy__body li,
+html[lang="ar"] .m-page-content.rte li,
+.m-page-bullet-list[dir="rtl"] li {
+  text-align: right !important;
+  direction: rtl !important;
+  list-style: disc outside !important;
+}
+
+/* Dedicated Page Bullet List */
+.m-page-bullet-list {
+  list-style-type: disc !important;
+  list-style-position: outside !important;
+  margin: 12px 0 20px 0 !important;
+  padding-left: 24px !important;
+}
+
+.m-page-bullet-list li {
+  margin-bottom: 8px !important;
+  line-height: 1.7 !important;
+  list-style-type: disc !important;
+}
+
+[dir="rtl"] .m-page-bullet-list,
+html[lang="ar"] .m-page-bullet-list {
+  padding-left: 0 !important;
+  padding-right: 24px !important;
+  text-align: right !important;
+  direction: rtl !important;
+}
+
+[dir="rtl"] .m-page-bullet-list li,
+html[lang="ar"] .m-page-bullet-list li {
+  text-align: right !important;
+  direction: rtl !important;
+}
+
+/* LTR Brand Isolation within RTL Text */
+.m-brand-ltr {
+  display: inline-block;
+  direction: ltr !important;
+  unicode-bidi: isolate;
+  font-family: inherit;
+  margin: 0 3px;
+}
+
 /* --- 6. Links in Body Content --- */
 .shopify-policy__body a,
 .m-page-content.rte a,
@@ -869,6 +972,96 @@
   .m-faqs-section .m-collapsible--button {
     font-size: 15px !important;
   }
+}
+
+/* FAQ Policy Link & Inline LTR Formatting */
+.m-faqs-section .m-faq-policy-link,
+.m-collapsible--content__inner a.m-faq-policy-link {
+  display: inline-block !important;
+  margin-top: 6px !important;
+  font-weight: 600 !important;
+  color: rgb(var(--color-heading, 26, 26, 26)) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 4px !important;
+}
+
+.m-faqs-section [dir="ltr"],
+.m-faqs-section .m-ltr-inline {
+  direction: ltr !important;
+  unicode-bidi: isolate !important;
+  display: inline !important;
+}
+
+.m-faqs-section .m-faq-brand-ltr {
+  direction: ltr !important;
+  unicode-bidi: isolate !important;
+  display: inline-block !important;
+  margin-right: 5px !important;
+  margin-left: 2px !important;
+}
+
+/* Arabic / RTL FAQ Layout & Left-Side Accordion Arrows */
+[dir="rtl"] .m-faqs-section,
+html[lang^="ar"] .m-faqs-section,
+.m-faqs-section[dir="rtl"] {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+[dir="rtl"] .m-faqs-section .m-collapsible--button,
+html[lang^="ar"] .m-faqs-section .m-collapsible--button,
+.m-faqs-section[dir="rtl"] .m-collapsible--button {
+  direction: rtl !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  text-align: right !important;
+  letter-spacing: 0 !important;
+  width: 100% !important;
+  gap: 12px !important;
+}
+
+[dir="rtl"] .m-faqs-section .m-collapsible--button > span:first-child,
+html[lang^="ar"] .m-faqs-section .m-collapsible--button > span:first-child,
+.m-faqs-section[dir="rtl"] .m-collapsible--button > span:first-child {
+  direction: rtl !important;
+  text-align: right !important;
+  flex: 1 1 auto !important;
+  margin-left: 12px !important;
+  margin-right: 0 !important;
+  unicode-bidi: isolate !important;
+}
+
+[dir="rtl"] .m-faqs-section .m-collapsible--button > span:first-child > div[dir="rtl"],
+html[lang^="ar"] .m-faqs-section .m-collapsible--button > span:first-child > div[dir="rtl"] {
+  display: inline !important;
+  direction: rtl !important;
+  text-align: right !important;
+  unicode-bidi: isolate !important;
+}
+
+[dir="rtl"] .m-faqs-section .m-collapsible--icon,
+html[lang^="ar"] .m-faqs-section .m-collapsible--icon,
+.m-faqs-section[dir="rtl"] .m-collapsible--icon {
+  flex: 0 0 auto !important;
+  margin-right: auto !important;
+  margin-left: 0 !important;
+}
+
+[dir="rtl"] .m-faqs-section .m-collapsible--content,
+[dir="rtl"] .m-faqs-section .m-collapsible--content__inner,
+[dir="rtl"] .m-faqs-section .m-collapsible--content__inner p,
+html[lang^="ar"] .m-faqs-section .m-collapsible--content,
+html[lang^="ar"] .m-faqs-section .m-collapsible--content__inner,
+html[lang^="ar"] .m-faqs-section .m-collapsible--content__inner p,
+.m-faqs-section[dir="rtl"] .m-collapsible--content,
+.m-faqs-section[dir="rtl"] .m-collapsible--content__inner,
+.m-faqs-section[dir="rtl"] .m-collapsible--content__inner p {
+  direction: rtl !important;
+  text-align: right !important;
+  letter-spacing: 0 !important;
+  unicode-bidi: isolate !important;
 }
 
 /* --- 8. Contact Form Specific Typography --- */
@@ -1178,13 +1371,13 @@
 
   /* --- 1. Global Section & Container Spacing (Less White Space & Shorter Page Height) --- */
   .m-section-py {
-    padding-top: 22px !important;
-    padding-bottom: 22px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
   }
 
   .m-section-my {
-    margin-top: 18px !important;
-    margin-bottom: 18px !important;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
   }
 
   .section__flush-top .m-section-py,
@@ -1437,7 +1630,7 @@
 
   /* Newsletter Section */
   .m-newsletter-section {
-    padding-top: 20px !important;
+    padding-top: 10px !important;
     padding-bottom: 20px !important;
   }
 
@@ -1467,12 +1660,45 @@
     padding: 0 18px !important;
   }
 
-  /* FAQ Section on Mobile */
+  /* FAQ Section on Mobile - Reduced gap between heading and first question */
+  .faqs .m-custom-content .m-section-py,
+  .template-page.faqs .m-custom-content .m-section-py {
+    padding-top: 4px !important;
+    padding-bottom: 0px !important;
+  }
+
+  .faqs .m-custom-content .m-section__header,
+  .template-page.faqs .m-custom-content .m-section__header {
+    margin-bottom: 2px !important;
+    --m-section-header-spacing-bottom: 2px !important;
+  }
+
+  .faqs .m-custom-content .m-section__heading,
+  .template-page.faqs .m-custom-content .m-section__heading {
+    margin-bottom: 0px !important;
+  }
+
+  .faqs .m-custom-content__wrapper:empty,
+  .template-page.faqs .m-custom-content__wrapper:empty {
+    display: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .m-faqs-section {
+    padding-top: 0px !important;
+    margin-top: 0px !important;
+  }
+
   .m-faqs-section .m-collapsible--button {
     font-size: 14.5px !important;
     padding-top: 9px !important;
     padding-bottom: 9px !important;
     line-height: 1.4 !important;
+  }
+
+  .m-faqs-section__block:first-child .m-collapsible--button {
+    padding-top: 4px !important;
   }
 
   .m-collapsible--content__inner {
@@ -1513,7 +1739,7 @@
 
   /* Footer on Mobile */
   .m-footer {
-    padding-top: 22px !important;
+    padding-top: 0px !important;
     padding-bottom: 20px !important;
   }
 
@@ -1549,7 +1775,59 @@
   }
 
   .m-page-content {
-    padding-bottom: 2rem !important;
+    max-width: 540px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  .m-page-content p,
+  .m-page-content.rte p {
+    font-size: 13.5px !important;
+    line-height: 1.65 !important;
+    letter-spacing: 0.1px !important;
+    margin-top: 0 !important;
+    margin-bottom: 11px !important;
+    color: #383838 !important;
+  }
+
+  .m-page-content .m-page-subheading,
+  .m-page-content h3.m-page-subheading {
+    font-size: 13.5px !important;
+    letter-spacing: 1.2px !important;
+    margin-top: 24px !important;
+    margin-bottom: 8px !important;
+  }
+
+  [dir="rtl"] .m-page-content,
+  [dir="rtl"] .m-page-content.rte,
+  html[lang="ar"] .m-page-content,
+  html[lang="ar"] .m-page-content.rte {
+    text-align: right !important;
+    direction: rtl !important;
+  }
+
+  [dir="rtl"] .m-page-content p,
+  [dir="rtl"] .m-page-content.rte p,
+  html[lang="ar"] .m-page-content p,
+  html[lang="ar"] .m-page-content.rte p {
+    font-size: 13.5px !important;
+    line-height: 1.75 !important;
+    text-align: right !important;
+    direction: rtl !important;
+  }
+
+  [dir="rtl"] .m-page-content .m-page-subheading,
+  [dir="rtl"] .m-page-content h3.m-page-subheading,
+  html[lang="ar"] .m-page-content .m-page-subheading,
+  html[lang="ar"] .m-page-content h3.m-page-subheading {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    text-align: right !important;
+    direction: rtl !important;
+    letter-spacing: normal !important;
   }
 }
 
@@ -1566,4 +1844,33 @@
 .product-bundles__item-title {
   unicode-bidi: isolate;
   text-transform: uppercase;
+}
+
+/* Newsletter Confirmation Banner - Neutral LALEH Branding */
+.m-newsletter-form .notification.success,
+.m-newsletter-section .notification.success {
+  background-color: #f2eeeb !important;
+  color: #927e63 !important;
+  font-weight: 500;
+}
+
+.m-newsletter-form .notification.show.success,
+.m-newsletter-section .notification.show.success {
+  border: 1px solid rgba(146, 126, 99, 0.35) !important;
+}
+
+.m-newsletter-form .notification.hide.success,
+.m-newsletter-section .notification.hide.success {
+  border-color: transparent !important;
+}
+
+.m-newsletter-form .notification.success svg,
+.m-newsletter-section .notification.success svg {
+  color: #927e63 !important;
+  stroke: #927e63 !important;
+}
+
+.m-newsletter-form .notification.success .notification--error-message,
+.m-newsletter-section .notification.success .notification--error-message {
+  color: #927e63 !important;
 }

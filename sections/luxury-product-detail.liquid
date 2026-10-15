@@ -25,7 +25,7 @@
     assign downcased_name = option.name | downcase
     if downcased_name contains 'color' or downcased_name contains 'colour'
       assign color_option_index = forloop.index0
-    elsif downcased_name contains 'size' or downcased_name contains 'taille' or downcased_name contains 'talla' or downcased_name contains 'größe'
+    elsif downcased_name contains 'size' or downcased_name contains 'taille' or downcased_name contains 'talla' or downcased_name contains 'größe' or downcased_name contains 'مقاس' or downcased_name contains 'المقاس' or downcased_name contains 'حجم' or downcased_name contains 'الحجم'
       assign size_option_index = forloop.index0
     endif
   endfor
@@ -33,6 +33,31 @@
   assign is_ar = false
   if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
     assign is_ar = true
+  endif
+
+  assign is_fr = false
+  if request.locale.iso_code contains 'fr' or localization.language.iso_code contains 'fr'
+    assign is_fr = true
+  endif
+
+  assign select_size_label = 'products.product.select_size' | t
+  if is_ar or request.locale.iso_code contains 'ar'
+    assign select_size_label = 'اختاري المقاس'
+  elsif is_fr or request.locale.iso_code contains 'fr'
+    assign select_size_label = 'Sélectionner la taille'
+  elsif select_size_label contains 'translation missing' or select_size_label == blank
+    assign select_size_label = 'Select Size'
+  endif
+
+  assign custom_product_desc = product.description
+  if is_fr and product.handle == 'vermeil'
+    if custom_product_desc contains 'corsage structuré' or custom_product_desc contains 'corsage structure' or custom_product_desc contains 'Corsage structuré' or custom_product_desc contains 'Corsage structure'
+      assign custom_product_desc = custom_product_desc | replace: 'corsage structuré', 'haut structuré' | replace: 'Corsage structuré', 'Haut structuré' | replace: 'corsage structure', 'haut structuré' | replace: 'Corsage structure', 'Haut structuré'
+    elsif custom_product_desc contains 'structured bodice'
+      assign custom_product_desc = "<p>Une expression raffinée d'une élégance intemporelle, Vermeil est confectionné dans un tweed vert pâle aux reflets subtils. Son haut structuré, sa taille marquée et ses délicats détails perlés créent une silhouette magnifiquement féminine. Des poignets évasés et une longueur midi flatteuse complètent ce modèle, apportant une sophistication naturelle à chaque occasion.</p>"
+    endif
+  else
+    assign custom_product_desc = custom_product_desc | replace: 'corsage structuré', 'haut structuré' | replace: 'Corsage structuré', 'Haut structuré' | replace: 'corsage structure', 'haut structuré' | replace: 'Corsage structure', 'Haut structuré'
   endif
 %}
 
@@ -368,7 +393,7 @@
           {% assign size_option = product.options_with_values[size_option_index] %}
           <div class="m-luxury-size-section">
             <div class="m-luxury-size-header-row">
-              <span class="size-v-title">{{ 'products.product.select_size' | t | default: 'Select Size' }}</span>
+              <span class="size-v-title">{{ select_size_label }}</span>
               <button type="button" class="m-luxury-size-guide-trigger-btn" data-open-sizeguide>
                 {{ 'products.product.size_guide' | t | default: 'Size guide' }}
               </button>
@@ -417,6 +442,12 @@
           {% if product.options.size > 0 and product.has_only_default_variant == false %}
             {% for option in product.options_with_values %}
               {% unless forloop.index0 == color_option_index %}
+                <div class="m-luxury-size-header-row">
+                  <span class="size-v-title">{{ select_size_label }}</span>
+                  <button type="button" class="m-luxury-size-guide-trigger-btn" data-open-sizeguide>
+                    {{ 'products.product.size_guide' | t | default: 'Size Guide' }}
+                  </button>
+                </div>
                 <div class="m-luxury-sizes-grid" data-option-index="{{ forloop.index0 }}">
                   {% for value in option.values %}
                     <button
@@ -428,11 +459,6 @@
                       {{ value }}
                     </button>
                   {% endfor %}
-                </div>
-                <div class="m-luxury-size-guide-trigger-row">
-                  <button type="button" class="m-luxury-size-guide-trigger-btn" data-open-sizeguide>
-                    {{ 'products.product.size_guide' | t | default: 'Size Guide' }}
-                  </button>
                 </div>
               {% endunless %}
             {% endfor %}
@@ -480,6 +506,7 @@
                 type="button"
                 class="m-wishlist-button m-luxury-wishlist-btn in-prod-page"
                 data-product-handle="{{ product.handle }}"
+                data-keep-text="true"
                 aria-label="{{ 'products.product.add_to_wishlist' | t | default: 'Add to Wishlist' }}"
               >
                 <span class="m-luxury-wishlist-icon m-luxury-wishlist-icon--default">
@@ -512,7 +539,7 @@
                 </span>
                 <span
                   class="m-wishlist-button-text"
-                  data-revert-text="{{ 'products.product.remove_from_wishlist' | t | default: 'Remove from Wishlist' }}"
+                  data-revert-text="{{ 'products.product.add_to_wishlist' | t | default: 'Add to Wishlist' }}"
                 >
                   {{- 'products.product.add_to_wishlist' | t | default: 'Add to Wishlist' -}}
                 </span>
@@ -607,12 +634,31 @@
                 class="m-luxury-accordion-item{% if block.settings.default_open %} is-open{% endif %}"
                 {{ block.shopify_attributes }}
               >
+                {% assign block_heading = block.settings.heading %}
+                {% assign block_h_down = block_heading | downcase %}
+                {% if is_ar %}
+                  {% if block_h_down contains 'desc' %}
+                    {% assign block_heading = 'الوصف' %}
+                  {% elsif block_h_down contains 'deliver' or block_h_down contains 'return' or block_h_down contains 'shipping' %}
+                    {% assign block_heading = 'التوصيل والإرجاع' %}
+                  {% elsif block_h_down contains 'care' %}
+                    {% assign block_heading = 'العناية بالمنتج' %}
+                  {% endif %}
+                {% elsif is_fr %}
+                  {% if block_h_down contains 'desc' %}
+                    {% assign block_heading = 'Description' %}
+                  {% elsif block_h_down contains 'deliver' or block_h_down contains 'return' or block_h_down contains 'shipping' %}
+                    {% assign block_heading = 'Livraison et retours' %}
+                  {% elsif block_h_down contains 'care' %}
+                    {% assign block_heading = 'Entretien du produit' %}
+                  {% endif %}
+                {% endif %}
                 <button
                   type="button"
                   class="m-luxury-accordion-header"
                   aria-expanded="{% if block.settings.default_open %}true{% else %}false{% endif %}"
                 >
-                  <span>{{ block.settings.heading | escape }}</span>
+                  <span>{{ block_heading | escape }}</span>
                   <svg
                     class="m-luxury-accordion-chevron"
                     viewBox="0 0 10 6"
@@ -635,98 +681,65 @@
                       or heading_downcase contains 'إرجاع'
                       or heading_downcase contains 'شحن'
                     %}
-                      <div class="m-luxury-accordion-truncated">
-                        {% if is_ar %}
-                          <p>
-                            شحن مجاني لجميع الطلبات عبر الإنترنت، ويستغرق التوصيل عادةً من 3 إلى 10 أيام عمل.
-                          </p>
-                          <p>
-                            نقبل طلبات الإرجاع خلال 14 يوماً من تاريخ الاستلام.
-                          </p>
-                        {% elsif block.settings.content != blank %}
-                          {{ block.settings.content }}
-                        {% elsif block.settings.liquid != blank %}
-                          {{ block.settings.liquid }}
-                        {% elsif block.settings.page != blank %}
-                          {{ block.settings.page.content }}
-                        {% else %}
-                          <p>
-                            We offer complimentary shipping on all online orders, with delivery typically completed
-                            within 3-10 business days. You can anticipate a slight delay during December 2026.
-                          </p>
-                        {% endif %}
-                      </div>
-                      <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="{{ block.id }}">
-                        {{ 'general.accessibility.view_more' | t | default: 'View more' }}
-                      </button>
-                    {% elsif heading_downcase contains 'desc' %}
-                      <div class="m-luxury-accordion-truncated">
-                        {% if block.settings.liquid != blank %}
-                          {{ block.settings.liquid }}
-                        {% elsif block.settings.content != blank %}
-                          {{ block.settings.content }}
-                        {% elsif block.settings.page != blank %}
-                          {{ block.settings.page.content }}
-                        {% else %}
-                          {{ product.description }}
-                        {% endif %}
-                      </div>
-                      <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="{{ block.id }}">
-                        {{ 'general.accessibility.view_more' | t | default: 'View more' }}
-                      </button>
-                    {% elsif heading_downcase contains 'care' %}
-                      {% capture care_content %}
-                        {% if block.settings.content != blank %}
-                          {{ block.settings.content }}
-                        {% elsif block.settings.liquid != blank %}
-                          {{ block.settings.liquid }}
-                        {% elsif block.settings.page != blank %}
-                          {{ block.settings.page.content }}
-                        {% else %}
-                          <p>
-                            Specialist dry clean only. Do not tumble dry. Store in a breathable garment bag away from direct sunlight.
-                          </p>
-                        {% endif %}
-                      {% endcapture %}
-                      {% assign care_plain = care_content | strip_html | strip %}
-                      {% assign care_word_count = care_plain | split: ' ' | size %}
-                      {% if care_word_count > 45 %}
-                        <div class="m-luxury-accordion-truncated">
-                          {{ care_content }}
-                        </div>
-                        <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="{{ block.id }}">
-                          {{ 'general.accessibility.view_more' | t | default: 'View more' }}
-                        </button>
+                      {% if is_ar %}
+                        <p>
+                          شحن مجاني لجميع الطلبات عبر الإنترنت، ويستغرق التوصيل عادةً من 3 إلى 10 أيام عمل.
+                        </p>
+                        <p>
+                          نقبل طلبات الإرجاع خلال 14 يوماً من تاريخ الاستلام. لتقديم طلب إرجاع، يرجى تعبئة نموذج الإرجاع باستخدام رقم طلبكِ. يجب أن تكون القطع بحالتها الأصلية—غير ملبوسة، غير مغسولة، مع بقاء كافة البطاقات والملصقات والتغليف الأصلي بحالة سليمة.
+                        </p>
+                      {% elsif is_fr %}
+                        <p>
+                          Livraison offerte sur toutes les commandes en ligne, avec un délai de livraison généralement compris entre 3 et 10 jours ouvrés.
+                        </p>
+                        <p>
+                          Nous acceptons les retours dans les 14 jours suivant la livraison. Pour effectuer un retour, veuillez remplir le formulaire de retour en indiquant votre numéro de commande. Les articles doivent être retournés dans leur état d'origine — non portés, non lavés, avec toutes les étiquettes et emballages intacts.
+                        </p>
+                      {% elsif block.settings.content != blank %}
+                        {{ block.settings.content }}
+                      {% elsif block.settings.liquid != blank %}
+                        {{ block.settings.liquid }}
+                      {% elsif block.settings.page != blank %}
+                        {{ block.settings.page.content }}
                       {% else %}
-                        <div>
-                          {{ care_content }}
-                        </div>
+                        <p>
+                          We offer complimentary shipping on all online orders, with delivery typically completed within 3-10 business days.
+                        </p>
+                        <p>
+                          We accept returns within 14 days of delivery. To request a return, please complete the Return Form using your order number. Items must be returned in their original condition—unworn, unwashed, with all tags and packaging intact.
+                        </p>
+                      {% endif %}
+                    {% elsif heading_downcase contains 'desc' %}
+                      {% if block.settings.liquid != blank %}
+                        {{ block.settings.liquid }}
+                      {% elsif block.settings.content != blank %}
+                        {{ block.settings.content }}
+                      {% elsif block.settings.page != blank %}
+                        {{ block.settings.page.content }}
+                      {% else %}
+                        {{ custom_product_desc }}
+                      {% endif %}
+                    {% elsif heading_downcase contains 'care' %}
+                      {% if block.settings.content != blank %}
+                        {{ block.settings.content }}
+                      {% elsif block.settings.liquid != blank %}
+                        {{ block.settings.liquid }}
+                      {% elsif block.settings.page != blank %}
+                        {{ block.settings.page.content }}
+                      {% else %}
+                        <p>
+                          Specialist dry clean only. Do not tumble dry. Store in a breathable garment bag away from direct sunlight.
+                        </p>
                       {% endif %}
                     {% else %}
-                      {% capture other_content %}
-                        {% if block.settings.liquid != blank %}
-                          {{ block.settings.liquid }}
-                        {% elsif block.settings.content != blank %}
-                          {{ block.settings.content }}
-                        {% elsif block.settings.page != blank %}
-                          {{ block.settings.page.content }}
-                        {% else %}
-                          {{ product.description }}
-                        {% endif %}
-                      {% endcapture %}
-                      {% assign other_plain = other_content | strip_html | strip %}
-                      {% assign other_word_count = other_plain | split: ' ' | size %}
-                      {% if other_word_count > 45 %}
-                        <div class="m-luxury-accordion-truncated">
-                          {{ other_content }}
-                        </div>
-                        <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="{{ block.id }}">
-                          {{ 'general.accessibility.view_more' | t | default: 'View more' }}
-                        </button>
+                      {% if block.settings.liquid != blank %}
+                        {{ block.settings.liquid }}
+                      {% elsif block.settings.content != blank %}
+                        {{ block.settings.content }}
+                      {% elsif block.settings.page != blank %}
+                        {{ block.settings.page.content }}
                       {% else %}
-                        <div>
-                          {{ other_content }}
-                        </div>
+                        {{ custom_product_desc }}
                       {% endif %}
                     {% endif %}
                   </div>
@@ -739,7 +752,7 @@
             <!-- Default Built-in Luxury Accordions -->
             <div class="m-luxury-accordion-item is-open">
               <button type="button" class="m-luxury-accordion-header" aria-expanded="true">
-                <span>{{ 'products.product.description_title' | t | default: 'Description' }}</span>
+                <span>{% if is_ar %}الوصف{% elsif is_fr %}Description{% else %}{{ 'products.product.description_title' | t | default: 'Description' }}{% endif %}</span>
                 <svg
                   class="m-luxury-accordion-chevron"
                   viewBox="0 0 10 6"
@@ -754,24 +767,14 @@
               </button>
               <div class="m-luxury-accordion-body">
                 <div class="m-luxury-accordion-content rte">
-                  <div class="m-luxury-accordion-truncated">
-                    <p>
-                      <strong class="notranslate" translate="no">{% render 'product-title', product: product %}</strong>
-                    </p>
-                    <p>
-                      {{ product.description | strip_html | truncatewords: 30, '' }}
-                    </p>
-                  </div>
-                  <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="desc">
-                    {{ 'general.accessibility.view_more' | t | default: 'View more' }}
-                  </button>
+                  {{ custom_product_desc }}
                 </div>
               </div>
             </div>
 
             <div class="m-luxury-accordion-item">
               <button type="button" class="m-luxury-accordion-header" aria-expanded="false">
-                <span>{{ 'products.product.delivery_returns_title' | t | default: 'Delivery & Returns' }}</span>
+                <span>{% if is_ar %}التوصيل والإرجاع{% elsif is_fr %}Livraison et retours{% else %}{{ 'products.product.delivery_returns_title' | t | default: 'Delivery & Returns' }}{% endif %}</span>
                 <svg
                   class="m-luxury-accordion-chevron"
                   viewBox="0 0 10 6"
@@ -786,25 +789,23 @@
               </button>
               <div class="m-luxury-accordion-body">
                 <div class="m-luxury-accordion-content rte">
-                  <div class="m-luxury-accordion-truncated">
-                    <p>
-                      {{
-                        'cart.general.free_shipping_note'
-                        | t
-                        | default: 'We offer complimentary shipping on all orders.'
-                      }}
-                    </p>
-                  </div>
-                  <button type="button" class="m-luxury-view-more-btn" data-open-moredetails="delivery">
-                    {{ 'general.accessibility.view_more' | t | default: 'View more' }}
-                  </button>
+                  {% if is_ar %}
+                    <p>شحن مجاني لجميع الطلبات عبر الإنترنت، ويستغرق التوصيل عادةً من 3 إلى 10 أيام عمل.</p>
+                    <p>نقبل طلبات الإرجاع خلال 14 يوماً من تاريخ الاستلام.</p>
+                  {% elsif is_fr %}
+                    <p>Livraison offerte sur toutes les commandes en ligne, avec un délai de livraison généralement compris entre 3 et 10 jours ouvrés.</p>
+                    <p>Nous acceptons les retours dans les 14 jours suivant la livraison.</p>
+                  {% else %}
+                    <p>We offer complimentary shipping on all online orders, with delivery typically completed within 3-10 business days.</p>
+                    <p>We accept returns within 14 days of delivery.</p>
+                  {% endif %}
                 </div>
               </div>
             </div>
 
             <div class="m-luxury-accordion-item">
               <button type="button" class="m-luxury-accordion-header" aria-expanded="false">
-                <span>{{ 'products.product.product_care_title' | t | default: 'Product Care' }}</span>
+                <span>{% if is_ar %}العناية بالمنتج{% elsif is_fr %}Entretien du produit{% else %}{{ 'products.product.product_care_title' | t | default: 'Product Care' }}{% endif %}</span>
                 <svg
                   class="m-luxury-accordion-chevron"
                   viewBox="0 0 10 6"
@@ -820,8 +821,13 @@
               <div class="m-luxury-accordion-body">
                 <div class="m-luxury-accordion-content rte">
                   <p>
-                    Specialist dry clean only. Do not tumble dry. Store in a breathable garment bag away from direct
-                    sunlight.
+                    {% if is_ar %}
+                      تنظيف جاف متخصص فقط. لا يُجفف في المجفف الآلي. يُحفظ في حقيبة ملابس تسمح بمرور الهواء بعيداً عن أشعة الشمس المباشرة.
+                    {% elsif is_fr %}
+                      Nettoyage à sec spécialisé uniquement. Ne pas sécher en machine. Conserver dans une housse respirante à l'abri de la lumière directe du soleil.
+                    {% else %}
+                      Specialist dry clean only. Do not tumble dry. Store in a breathable garment bag away from direct sunlight.
+                    {% endif %}
                   </p>
                 </div>
               </div>
@@ -892,7 +898,7 @@
                       {% elsif block.settings.page != blank %}
                         {{ block.settings.page.content }}
                       {% else %}
-                        {{ product.description }}
+                        {{ custom_product_desc }}
                       {% endif %}
                     </div>
                   </div>
@@ -915,9 +921,9 @@
                     <li>Floor-Length Hem</li>
                     <li>Silk Lining</li>
                   </ul>
-                  {% if product.description != blank %}
+                  {% if custom_product_desc != blank %}
                     <div class="m-luxury-full-desc-extra" style="margin-top: 14px;">
-                      {{ product.description }}
+                      {{ custom_product_desc }}
                     </div>
                   {% endif %}
                 </div>

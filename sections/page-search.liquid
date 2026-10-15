@@ -28,7 +28,7 @@
           <h1 class="m-page-header__title">{{ 'general.search.title' | t }}</h1>
         {% endif %}
         <form
-          action="/search"
+          action="{{ routes.search_url }}"
           method="GET"
           novalidate
           class="m-search--form"
@@ -98,7 +98,7 @@
               >
                 {% for item in search.results limit: section.settings.results_per_page %}
                   {% if item.object_type == 'product' %}
-                    <div class="m:column m:w-1/2 sm:m:w-4/12 lg:m:w-3/12">
+                    <div class="m:column m:w-1/2 sm:m:w-4/12 lg:m:w-3/12" data-search-product-handle="{{ item.handle }}">
                       {% liquid
                         case settings.pcard_layout
                           when '1'
@@ -163,6 +163,63 @@
     });
   }
 </script>
+
+{% if search.performed %}
+  <script>
+    (function() {
+      function runFilter() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchTerms = urlParams.get('q') || {{ search.terms | json }} || '';
+        if (!searchTerms) return;
+
+        const productItems = document.querySelectorAll('[data-search-product-handle]');
+        if (!productItems.length) return;
+
+        const filterFn = window._scoreAndFilterProducts;
+        if (typeof filterFn !== 'function') {
+          setTimeout(runFilter, 100);
+          return;
+        }
+
+        const pageProducts = [];
+        productItems.forEach(function(el) {
+          const h = el.getAttribute('data-search-product-handle');
+          if (h) pageProducts.push({ handle: h });
+        });
+
+        const catalog = (window._LalehCatalog && window._LalehCatalog.length > 0) ? window._LalehCatalog : pageProducts;
+        const matching = filterFn(searchTerms, catalog);
+        const allowedHandles = new Set(matching.map(function(m) { return m.handle; }));
+
+        let visibleCount = 0;
+        productItems.forEach(function(el) {
+          const h = el.getAttribute('data-search-product-handle');
+          if (allowedHandles.has(h)) {
+            el.style.display = '';
+            visibleCount++;
+          } else {
+            el.style.display = 'none';
+          }
+        });
+
+        const titleEl = document.querySelector('.m-page-header__title');
+        const emptyEl = document.querySelector('.m-search--empty');
+        const resultGrid = document.querySelector('.m-search-result');
+
+        if (visibleCount === 0 && matching.length === 0) {
+          if (resultGrid) resultGrid.style.display = 'none';
+          if (emptyEl) emptyEl.style.display = 'block';
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', runFilter);
+      } else {
+        runFilter();
+      }
+    })();
+  </script>
+{% endif %}
 {% schema %}
 {
   "name": "Search",

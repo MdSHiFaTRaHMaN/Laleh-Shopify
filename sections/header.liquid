@@ -67,6 +67,15 @@
   endif
 
   assign logo_aspect_ratio = section.settings.logo.aspect_ratio | default: 2.333
+
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
+    assign is_ar = true
+  endif
+  assign menu_btn_label = 'general.navigation.menu' | t | default: 'Menu'
+  if is_ar
+    assign menu_btn_label = 'القائمة'
+  endif
 %}
 
 {% style %}
@@ -89,6 +98,7 @@
   class="m-header m:block{% if transparent_on_top %} transparent-on-top{% endif %}"
   data-transparent="{{ transparent_on_top }}"
   data-sticky="{{ section.settings.sticky_header }}"
+  {% if is_ar %}dir="rtl"{% endif %}
 >
   {% render 'header__topbar', header: section %}
   <div class="m-header__wrapper">
@@ -97,6 +107,7 @@
       class="m-header__mobile container-fluid m:flex m:items-center m-gradient m-color-{{ section.settings.color_scheme }}"
       data-screen="m-header__mobile"
       data-transparent="{{ transparent_on_top }}"
+      {% if is_ar %}dir="rtl"{% endif %}
     >
       <div class="m-header__left-luxury m:flex m:flex-1 m:w-3/12">
         <button type="button" class="m-menu-toggle-btn" data-drawer-trigger aria-label="{{ 'general.accessibility.open_menu' | t | default: 'Open menu' }}">
@@ -104,7 +115,7 @@
             <span></span>
             <span></span>
           </span>
-          <span class="m-menu-toggle-text" style="display: none;">{{ 'general.navigation.menu' | t | default: 'Menu' }}</span>
+          <span class="m-menu-toggle-text" style="display: none;">{{ menu_btn_label }}</span>
         </button>
       </div>
       {% comment %} Header-logo-mobile {% endcomment %}
@@ -244,20 +255,21 @@
       class="m-header__desktop {{ design }} m-gradient m-color-{{ section.settings.color_scheme }}"
       data-screen="m-header__desktop"
       data-transparent="{{ transparent_on_top }}"
+      {% if is_ar %}dir="rtl"{% endif %}
     >
       <div class="m-header__bg m-gradient m-color-{{ section.settings.color_scheme }}"></div>
       <div class="m-header__dropdown-bg m-gradient m-color-{{ section.settings.color_scheme }}"></div>
       {% case design %}
         {% when 'luxury-menu-drawer' %}
           <div class="m-header__container {{ container }}">
-            <div class="m-header__inner">
+            <div class="m-header__inner"{% if is_ar %} dir="rtl"{% endif %}>
               <div class="m-header__left-luxury">
                 <button type="button" class="m-menu-toggle-btn" data-drawer-trigger aria-label="{{ 'general.accessibility.open_menu' | t | default: 'Open menu' }}">
                   <span class="m-menu-toggle-icon" aria-hidden="true">
                     <span></span>
                     <span></span>
                   </span>
-                  <span class="m-menu-toggle-text">{{ 'general.navigation.menu' | t | default: 'Menu' }}</span>
+                  <span class="m-menu-toggle-text">{{ menu_btn_label }}</span>
                 </button>
               </div>
               <div class="m-header__center-luxury">

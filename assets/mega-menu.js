@@ -1079,97 +1079,153 @@ class Megamenu {
   // =========================================================================
   // REAL PREDICTIVE SEARCH DYNAMIC CONTROLLER
   // =========================================================================
-  scoreProduct(p, rawQuery) {
-    const q = (rawQuery || '').toLowerCase().trim();
-    if (!q) return 0;
-    const tokens = q.split(/\s+/).filter(Boolean);
-    const handle = p.handle || '';
-    const title = (p.title || '').toLowerCase();
-    const titleWords = title.split(/\s+/);
+  scoreAndFilterProducts(rawQuery, candidateList) {
+    if (window._scoreAndFilterProducts) {
+      return window._scoreAndFilterProducts(rawQuery, candidateList);
+    }
+    const q = (rawQuery || '').toLowerCase().trim().replace(/[«»"'`’‘.,;:!?#@$%^&*()_+=\-\[\]{}|\\/]/g, ' ').trim();
+    if (!q || q.length < 2) return [];
 
-    const catalogKeywords = {
-      'crimson-poise': [
-        'crimson', 'poise', 'crim', 'pink', 'crimson pink', 'red', 'rose', 
-        'dress', 'dresses', 'lace', 'lace dress', 'peplum', 'midi', 'evening', 
-        'party', 'long sleeves', 'luxury', 'gown'
-      ],
-      'vermeil': [
-        'vermeil', 'ver', 'green', 'pale green', 'sage', 'mint', 'emerald', 
-        'tweed', 'tweed dress', 'dress', 'dresses', 'midi', 
-        'gold', 'two-piece', 'flared cuffs', 'luxury', 'gown'
-      ],
-      'lilac-verse': [
-        'lilac', 'verse', 'lavender', 'purple', 'violet', 'dress', 'dresses', 
-        'lace', 'lace dress', 'midi', 'romantic', 'evening', 'high collar', 
-        'paisley', 'luxury', 'gown'
-      ],
-      'iris-pearl': [
-        'iris', 'pearl', 'mauve', 'purple', 'soft mauve', 'pearls', 'dress', 
-        'dresses', 'midi', 'puffed sleeves', 'evening', 'sheen', 'luxury', 'gown',
-        'white', 'cream'
-      ],
-      'obsidian-touch': [
-        'obsidian', 'touch', 'black', 'dark', 'noir', 'dress', 'dresses', 
-        'midi', 'tailored', 'embellished', 'evening', 'gold buttons', 
-        'sleeveless', 'cocktail', 'luxury', 'gown'
-      ],
-      'structured-silence': [
-        'structured', 'silence', 'sand', 'beige', 'sand-beige', 'tan', 'cream', 
-        'taupe', 'neutral', 'suit', 'dress', 'dresses', 'skirt', 'pencil skirt', 
-        'tailored', 'sharp lapels', 'gold buttons', 'evening', 'luxury', 'gown'
-      ]
+    const typoMap = {
+      'dross': 'dress', 'dres': 'dress', 'dresse': 'dress', 'drss': 'dress', 'drees': 'dress',
+      'blck': 'black', 'balck': 'black', 'blak': 'black', 'gren': 'green', 'pnk': 'pink',
+      'purpel': 'purple', 'beig': 'beige', 'robr': 'robe', 'noie': 'noir',
+      'فستن': 'فستان', 'فستانن': 'فستان'
     };
 
-    const keywords = (catalogKeywords[handle] || []).map((k) => k.toLowerCase());
-
-    let score = 0;
-
-    // 1. Exact title match
-    if (title === q) {
-      score += 10000;
-    }
-    // 2. Title starts with query (e.g. "Cri" -> "Crimson Poise")
-    else if (title.startsWith(q)) {
-      score += 5000;
-    }
-    // 3. Word in title starts with query (e.g. "Poise", "Touch", "Silence")
-    else if (titleWords.some((w) => w.startsWith(q))) {
-      score += 3000;
-    }
-    // 4. Title contains query as full word or query is long (>= 4 chars)
-    else if (titleWords.some((w) => w === q) || (q.length >= 4 && title.includes(q))) {
-      score += 1500;
+    function normalizeAr(str) {
+      return (str || '')
+        .replace(/[\u064B-\u065F\u0670]/g, '')
+        .replace(/[إأآٱ]/g, 'ا')
+        .replace(/[ى]/g, 'ي')
+        .replace(/[ؤئ]/g, 'ء')
+        .replace(/ة/g, 'ه');
     }
 
-    // 5. Keyword exact or prefix match (colors, dress, midi, lace, tweed, etc.)
-    for (const kw of keywords) {
-      const kwWords = kw.split(/\s+/);
-      if (kw === q) {
-        score += 2500;
-      } else if (kw.startsWith(q)) {
-        score += 1500;
-      } else if (kwWords.some((w) => w === q || (q.length >= 4 && w.startsWith(q)))) {
-        score += 1000;
+    const normQ = normalizeAr(q);
+    const tokens = normQ.split(/\s+/).filter(Boolean).map((t) => typoMap[t] || t);
+    const cleanQ = tokens.join(' ');
+
+    const productAttributes = {
+      'obsidian-touch': {
+        colors: ['black', 'dark', 'jet black', 'onyx', 'noir', 'noire', 'noires', 'sombre', 'obsidienne', 'اسود', 'سوداء', 'سودا', 'داكن'],
+        names: ['obsidian touch', 'obsidian', 'touch', 'toucher d obsidienne', 'obsidienne', 'اوبسيديان تاتش', 'اوبسيديان', 'تاتش', 'لمسة', 'لمسه'],
+        uniqueKeywords: ['cocktail', 'cocktail dress', 'sleeveless', 'sans manches', 'بدون اكمام', 'بدون أكمام', 'كوكتيل']
+      },
+      'vermeil': {
+        colors: ['green', 'pale green', 'sage', 'mint', 'emerald', 'pastel green', 'vert', 'verte', 'vertes', 'vert pale', 'sauge', 'menthe', 'emeraude', 'اخضر', 'خضراء', 'خضرا', 'ميرميه', 'ميرمية', 'نعناعي', 'زمرد', 'زمردي'],
+        names: ['vermeil', 'فيرميل'],
+        uniqueKeywords: ['tweed', 'robe en tweed', 'تويد', 'فستان تويد', 'flared cuffs', 'deux pieces', 'deux pièces', 'ensemble', 'قطعتين', 'أكمام واسعة', 'اكمام واسعة']
+      },
+      'crimson-poise': {
+        colors: ['crimson', 'red', 'pink', 'rose', 'raspberry', 'cramoisi', 'rouge', 'rose', 'framboise', 'قرمزي', 'احمر', 'حمراء', 'حمرا', 'وردي', 'زهري'],
+        names: ['crimson poise', 'crimson', 'poise', 'equilibre cramoisi', 'équilibre cramoisi', 'cramoisi', 'كرمسون بويز', 'كرمسون', 'بويز'],
+        uniqueKeywords: ['peplum', 'بيبلوم', 'lace', 'dentelle', 'دانتيل', 'long sleeves', 'manches longues', 'أكمام طويلة', 'اكمام طويلة', 'party', 'fete', 'fête', 'حفلات']
+      },
+      'lilac-verse': {
+        colors: ['lilac', 'lavender', 'purple', 'violet', 'soft purple', 'lilas', 'lavande', 'pourpre', 'ليلاك', 'لافندر', 'بنفسجي', 'ارجواني', 'أرجواني'],
+        names: ['lilac verse', 'verse', 'vers lilas', 'ليلاك فيرس', 'فيرس'],
+        uniqueKeywords: ['high collar', 'col montant', 'ياقة عالية', 'lace', 'dentelle', 'دانتيل', 'paisley', 'بيزلي', 'romantic', 'romantique', 'رومانسي']
+      },
+      'iris-pearl': {
+        colors: ['pearl', 'pearls', 'mauve', 'soft mauve', 'sheen', 'perle', 'perles', 'بيرل', 'لؤلؤ', 'لؤلؤي', 'لولو', 'موف', 'موف ناعم'],
+        names: ['iris pearl', 'iris', 'perle', 'ايريس بيرل', 'ايريس'],
+        uniqueKeywords: ['satin', 'robe en satin', 'ساتان', 'فستان ساتان', 'puffed sleeves', 'manches bouffantes', 'أكمام منفوخة', 'اكمام منفوخة']
+      },
+      'structured-silence': {
+        colors: ['sand', 'beige', 'sand-beige', 'tan', 'cream', 'taupe', 'neutral', 'sable', 'creme', 'crème', 'neutre', 'رملي', 'بيج', 'كريمي'],
+        names: ['structured silence', 'structured', 'silence', 'silence structure', 'silence structuré', 'structure', 'ستركتشر سايلنس', 'ستركتشر', 'سايلنس', 'صمت', 'منظم'],
+        uniqueKeywords: ['suit', 'skirt', 'pencil skirt', 'sharp lapels', 'costume', 'tailleur', 'jupe', 'jupe crayon', 'revers pointus', 'طقم', 'بدلة', 'بدله', 'تنورة', 'تنوره', 'تنورة قلم', 'ياقة حادة']
+      }
+    };
+
+    const genericDressTerms = [
+      'dress', 'dresses', 'gown', 'gowns', 'midi', 'evening', 'luxury',
+      'robe', 'robes', 'soiree', 'soirée', 'luxe',
+      'فستان', 'فساتين', 'ثوب', 'ميدي', 'سهرة', 'فاخر',
+      'laleh', 'لاليه', 'لاله', 'collection', 'women', 'femme', 'نساء', 'نسائي'
+    ].map((d) => normalizeAr(d.toLowerCase()));
+
+    const foundQualifiersByProduct = {};
+    let totalQualifiersFound = 0;
+
+    for (const [handle, attrs] of Object.entries(productAttributes)) {
+      foundQualifiersByProduct[handle] = [];
+      const allSpecific = [
+        ...attrs.colors.map((c) => normalizeAr(c.toLowerCase())),
+        ...attrs.names.map((n) => normalizeAr(n.toLowerCase())),
+        ...attrs.uniqueKeywords.map((u) => normalizeAr(u.toLowerCase()))
+      ];
+
+      for (const spec of allSpecific) {
+        if (spec.includes(' ') && cleanQ.includes(spec)) {
+          foundQualifiersByProduct[handle].push({ term: spec, weight: 10000 });
+          totalQualifiersFound++;
+        }
+      }
+
+      for (const tok of tokens) {
+        if (tok.length < 2) continue;
+        if (genericDressTerms.includes(tok)) continue;
+
+        for (const spec of allSpecific) {
+          if (spec === tok) {
+            foundQualifiersByProduct[handle].push({ term: spec, weight: 8000 });
+            totalQualifiersFound++;
+            break;
+          } else if (tok.length >= 4 && (spec.startsWith(tok) || tok.startsWith(spec))) {
+            foundQualifiersByProduct[handle].push({ term: spec, weight: 4000 });
+            totalQualifiersFound++;
+            break;
+          }
+        }
       }
     }
 
-    // 6. Token matching: every token must match title or keywords as word prefix/exact
-    const allTokensMatch = tokens.every((tok) => {
-      // Exact or prefix match on title words
-      if (titleWords.some((w) => w.startsWith(tok) || (tok.length >= 4 && w.includes(tok)))) return true;
-      // Exact or prefix match on keyword words
-      for (const kw of keywords) {
-        if (kw === tok || kw.startsWith(tok)) return true;
-        if (kw.split(/\s+/).some((w) => w === tok || (tok.length >= 4 && w.startsWith(tok)))) return true;
-      }
-      return false;
-    });
+    const isGenericQuery = tokens.some((t) => genericDressTerms.includes(t)) ||
+                           genericDressTerms.some((d) => cleanQ.includes(d));
 
-    if (!allTokensMatch || score === 0) {
-      return 0; // Filter out unrelated products
+    const scored = [];
+
+    for (const p of candidateList) {
+      const handle = p.handle || (p.url ? p.url.split('/products/')[1]?.split('?')[0] : '');
+      const qualifiers = foundQualifiersByProduct[handle] || [];
+      let score = 0;
+
+      for (const qf of qualifiers) {
+        score += qf.weight;
+      }
+
+      if (totalQualifiersFound > 0) {
+        if (qualifiers.length === 0) {
+          score = 0;
+        } else if (isGenericQuery) {
+          score += 2000;
+        }
+      } else if (isGenericQuery) {
+        score = 5000;
+      }
+
+      if (score > 0) {
+        scored.push({ product: p, score });
+      }
     }
 
-    return score;
+    scored.sort((a, b) => b.score - a.score);
+
+    if (scored.length > 0) {
+      const topScore = scored[0].score;
+      if (topScore >= 7000) {
+        return scored.filter((item) => item.score >= topScore * 0.4).map((item) => item.product);
+      }
+    }
+
+    return scored.map((item) => item.product);
+  }
+
+  scoreProduct(p, rawQuery) {
+    const list = this.scoreAndFilterProducts(rawQuery, [p]);
+    return list.length > 0 ? 1000 : 0;
   }
 
   parseSearchPriceToCents(val) {
@@ -1220,11 +1276,19 @@ class Megamenu {
     itemsList.innerHTML = `<div style="text-align: center; padding: 20px 0; color: rgba(var(--color-foreground), 0.6); font-size: 13px;">${searchingText}</div>`;
 
     try {
-      const res = await fetch(
-        `/search/suggest.json?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=10&resources[options][unavailable_products]=last`
-      );
-      const data = await res.json();
-      let products = data?.resources?.results?.products || [];
+      const suggestBase = window.MinimogSettings?.routes?.predictive_search_url || '/search/suggest.json';
+      const searchUrl = `${suggestBase}?q=${encodeURIComponent(query)}&resources[type]=product&resources[limit]=10&resources[options][unavailable_products]=last`;
+
+      let products = [];
+      try {
+        const res = await fetch(searchUrl);
+        if (res.ok) {
+          const data = await res.json();
+          products = data?.resources?.results?.products || [];
+        }
+      } catch (err) {
+        console.warn("Suggest fetch warning:", err);
+      }
 
       // Update global localized price cache for sitewide currency consistency
       if (!window._LalehLocalizedPrices) window._LalehLocalizedPrices = {};
@@ -1237,21 +1301,45 @@ class Megamenu {
         }
       });
 
-      // Filter and rank products by relevance to what the customer actually typed
-      const scoredItems = products
-        .map((p) => ({
-          product: p,
-          score: this.scoreProduct(p, query)
-        }))
-        .filter((item) => item.score > 0)
-        .sort((a, b) => b.score - a.score)
-        .map((item) => item.product);
+      // Combine suggest products and local catalog into candidate pool
+      const candidateMap = new Map();
+      (products || []).forEach((p) => {
+        const h = p.handle || (p.url ? p.url.split('/products/')[1]?.split('?')[0] : '');
+        if (h) candidateMap.set(h, p);
+      });
+      if (window._LalehCatalog && window._LalehCatalog.length > 0) {
+        window._LalehCatalog.forEach((p) => {
+          const h = p.handle || (p.url ? p.url.split('/products/')[1]?.split('?')[0] : '');
+          if (h) {
+            if (!candidateMap.has(h)) {
+              candidateMap.set(h, p);
+            } else {
+              const existing = candidateMap.get(h);
+              if (!existing.image && p.image) existing.image = p.image;
+              if (!existing.url && p.url) existing.url = p.url;
+            }
+          }
+        });
+      }
+      const candidatePool = Array.from(candidateMap.values());
+      const scoredItems = this.scoreAndFilterProducts(query, candidatePool);
 
       if (scoredItems.length === 0) {
-        const noFoundTemplate = window.MinimogStrings?.noProductsFound || 'No products found for "{{ query }}"';
-        const noFoundText = noFoundTemplate.replace('{{ query }}', query);
+        const lang = (document.documentElement.lang || '').toLowerCase();
+        const path = window.location.pathname;
+        const isFr = lang.startsWith('fr') || path.startsWith('/fr');
+        const isAr = lang.startsWith('ar') || path.startsWith('/ar');
+        const safeQ = String(query || '').trim();
+
+        let noFoundText = `No products found for "${safeQ}".`;
+        if (isFr) {
+          noFoundText = `Aucun produit trouvé pour « ${safeQ} ».`;
+        } else if (isAr) {
+          noFoundText = `لم يتم العثور على منتجات لـ "${safeQ}".`;
+        }
+
         itemsList.innerHTML = `
-          <div style="text-align: center; padding: 24px 0; color: rgba(var(--color-foreground), 0.6); font-size: 13px;">
+          <div style="text-align: center; padding: 28px 12px; color: rgba(var(--color-foreground), 0.65); font-size: 13px; line-height: 1.5;">
             ${noFoundText}
           </div>
         `;
@@ -1278,7 +1366,7 @@ class Megamenu {
                 ${img ? `<img src="${img}" alt="${searchTitle}" loading="lazy">` : `<div style="width:100%;height:100%;background:#f3f3f3;"></div>`}
               </a>
               <div class="m-right-item-card__details" style="justify-content: center;">
-                <a href="${p.url}" class="m-right-item-card__title notranslate" translate="no" style="text-decoration: none; font-size: 13px;">
+                <a href="${p.url}" class="m-right-item-card__title notranslate" translate="no" style="text-decoration: none; font-size: 13px; font-weight: 500; text-transform: uppercase;">
                   ${searchTitle}
                 </a>
                 <div class="m-right-item-card__price-row" style="margin-top: 4px;">
@@ -1296,7 +1384,12 @@ class Megamenu {
       }
     } catch (e) {
       console.error("Predictive search error:", e);
-      itemsList.innerHTML = `<div style="text-align: center; padding: 20px 0; color: rgba(var(--color-foreground), 0.6); font-size: 13px;">Error fetching search results.</div>`;
+      const isFr = document.documentElement.lang === "fr" || window.location.pathname.startsWith("/fr");
+      const isAr = document.documentElement.lang === "ar" || window.location.pathname.startsWith("/ar");
+      let msg = `No products found for "${query}".`;
+      if (isFr) msg = `Aucun produit trouvé pour « ${query} ».`;
+      else if (isAr) msg = `لم يتم العثور على منتجات لـ "${query}".`;
+      itemsList.innerHTML = `<div style="text-align: center; padding: 28px 12px; color: rgba(var(--color-foreground), 0.65); font-size: 13px;">${msg}</div>`;
     }
   }
 
@@ -1573,36 +1666,365 @@ if (typeof window !== "undefined") {
 
   // LALEH Brand & Translation Guard for Arabic and French
   function applyLanguageTextGuards() {
-    const isAr = document.documentElement.lang === "ar" || window.location.pathname.startsWith("/ar");
+    const isAr = document.documentElement.lang === "ar" || window.location.pathname.startsWith("/ar") || document.documentElement.dir === "rtl";
     const isFr = document.documentElement.lang === "fr" || window.location.pathname.startsWith("/fr");
 
     if (isAr) {
+      // 0. FAQ "How can I contact LALEH?" & Answers RTL formatting fix
+      const faqSection = document.querySelector(".m-faqs-section");
+      if (faqSection) {
+        faqSection.setAttribute("dir", "rtl");
+      }
+      const faqButtons = document.querySelectorAll(".m-faqs-section .m-collapsible--button > span:first-child, [data-block-id*='accordion_7fKgjR'] .m-collapsible--button > span:first-child");
+      faqButtons.forEach((span) => {
+        span.setAttribute("dir", "rtl");
+        const btn = span.closest(".m-collapsible--button");
+        if (btn) btn.setAttribute("dir", "rtl");
+        const txt = (span.textContent || "").trim();
+        if (
+          span.closest("[data-block-id*='accordion_7fKgjR']") ||
+          txt.includes("التواصل مع") ||
+          txt.includes("الاتصال ب") ||
+          /contact\s+laleh/i.test(txt) ||
+          (txt.includes("كيف") && (txt.includes("LALEH") || txt.includes("لاله") || txt.includes("لالة")))
+        ) {
+          span.innerHTML = 'كيف يمكنني التواصل مع <span class="m-faq-brand-ltr" dir="ltr">LALEH</span>';
+        }
+      });
+
+      // 0b. Announcement bar delivery message in Arabic: "التوصيل خلال 3 إلى 10 أيام عمل"
+      const announceItems = document.querySelectorAll(".m-announcement-bar__desktop-item span, .m-announcement-bar__desktop-item a, .m-announcement-bar__slide span, .m-announcement-bar__slide a");
+      announceItems.forEach((el) => {
+        const txt = (el.textContent || "").trim();
+        if (
+          txt.includes("3–10") ||
+          txt.includes("3-10") ||
+          txt.includes("3—10") ||
+          txt.includes("10–3") ||
+          txt.includes("10-3") ||
+          txt.includes("أيام عمل") ||
+          /business\s+days/i.test(txt)
+        ) {
+          el.setAttribute("dir", "rtl");
+          el.textContent = "التوصيل خلال 3 إلى 10 أيام عمل";
+        }
+      });
+
+      // 0c. FAQ Answers: delivery numbers, return policy link, and email LTR isolation
+      const faqAnswers = document.querySelectorAll(".m-faqs-section .m-collapsible--content__inner");
+      faqAnswers.forEach((inner) => {
+        inner.setAttribute("dir", "rtl");
+        if (inner.innerHTML.includes("3—10") || inner.innerHTML.includes("3–10") || inner.innerHTML.includes("3-10") || inner.innerHTML.includes("10—3") || inner.innerHTML.includes("10–3")) {
+          inner.innerHTML = inner.innerHTML.replace(/3[—–-]10|10[—–-]3/g, "3 إلى 10");
+        }
+        const policyLink = inner.querySelector("a[href*='refund-policy']");
+        if (policyLink) {
+          policyLink.classList.add("m-faq-policy-link");
+        }
+      });
+
+      // 1. Brand name & Arabic typo guards (أداقة -> أناقة)
       const brandElements = document.querySelectorAll(
-        "h1, h2, h3, h4, h5, h6, .m-footer--block-title, .m-link, .m-menu__link, .m-luxury-drawer__nav-link, .m-breadcrumb--item, .m-breadcrumb--item-current, .m-richtext__title, .m-content-box__heading"
+        "h1, h2, h3, h4, h5, h6, .m-footer--block-title, .m-link, .m-menu__link, .m-luxury-drawer__nav-link, .m-breadcrumb--item, .m-breadcrumb--item-current, .m-richtext__title, .m-content-box__heading, p, span"
       );
       brandElements.forEach((el) => {
-        if (el.textContent && (el.textContent.includes("لاله") || el.textContent.includes("لالة"))) {
-          el.innerHTML = el.innerHTML.replace(/لماذا\s+لال[هة]/g, "لماذا LALEH")
-                                     .replace(/امرأة\s+لال[هة]/g, "امرأة LALEH")
-                                     .replace(/اكتشفوا\s+لال[هة]/g, "اكتشفوا LALEH")
-                                     .replace(/لال[هة]/g, "LALEH");
+        if (el.children.length === 0 && el.textContent) {
+          if (el.textContent.includes("لاله") || el.textContent.includes("لالة")) {
+            el.innerHTML = el.innerHTML.replace(/لماذا\s+لال[هة]/g, 'لماذا <span dir="ltr">LALEH</span>')
+                                       .replace(/امرأة\s+لال[هة]/g, 'امرأة <span dir="ltr">LALEH</span>')
+                                       .replace(/اكتشفوا\s+لال[هة]/g, 'اكتشفوا <span dir="ltr">LALEH</span>')
+                                       .replace(/لال[هة]/g, '<span dir="ltr">LALEH</span>');
+          }
+          if (el.textContent.includes("أداقة")) {
+            el.innerHTML = el.innerHTML.replace(/أداقة/g, "أناقة");
+          }
+        }
+      });
+
+      // 2. Navigation & Drawer links: تسوقي المجموعة / تسوق المجموعة -> المجموعة
+      const navElements = document.querySelectorAll(
+        ".m-luxury-drawer__nav-link span, .m-luxury-drawer__back-btn span, .m-menu__link, .m-menu-mobile__item a"
+      );
+      navElements.forEach((el) => {
+        if (el.textContent) {
+          const txt = el.textContent.trim();
+          if (txt === "تسوقي المجموعة" || txt === "تسوق المجموعة" || txt === "تسوق الكل") {
+            el.textContent = "المجموعة";
+          }
+        }
+      });
+
+      // 3. CTA Buttons: اكتشف التشكيلة -> اكتشفي المجموعة
+      const btnElements = document.querySelectorAll(
+        ".m-button, .m-btn, .button, a[class*='button'], .m-hero__button"
+      );
+      btnElements.forEach((el) => {
+        if (el.textContent && (el.textContent.includes("اكتشف التشكيلة") || el.textContent.includes("اكتشف المجموعة"))) {
+          el.textContent = el.textContent.replace(/اكتشف\s+(التشكيلة|المجموعة)/g, "اكتشفي المجموعة");
+        }
+      });
+
+      // 4. Drawer Footer labels in Arabic
+      const drawerLabels = document.querySelectorAll(".m-luxury-drawer__footer-label");
+      drawerLabels.forEach((el) => {
+        if (el.textContent) {
+          const txt = el.textContent.trim().toUpperCase();
+          if (txt.includes("REGION") && txt.includes("CURRENCY")) {
+            el.textContent = "البلد والعملة";
+          }
+          if (txt.includes("SOCIAL") && txt.includes("MEDIA")) {
+            el.textContent = "وسائل التواصل الاجتماعي";
+          }
+        }
+      });
+
+      // 5. Sold out badges in Arabic: "Sold out" / "Out of stock" -> "نفدت الكمية"
+      const arSoldOutBadges = document.querySelectorAll(
+        ".m-product-tag--soldout, .m-product-tag, .m-price__badge-sold-out, [data-sold-out-badge], .m-product-card__tag-name"
+      );
+      arSoldOutBadges.forEach((el) => {
+        if (el.textContent) {
+          const txt = el.textContent.trim().toLowerCase();
+          if (txt === "sold out" || txt === "out of stock" || txt === "sold_out") {
+            el.textContent = "نفدت الكمية";
+          }
+        }
+      });
+
+      // 6. Collection section heading & description in Arabic
+      const colHeadings = document.querySelectorAll(".m-section__heading, h1, h2, h3");
+      colHeadings.forEach((el) => {
+        if (el.textContent && el.textContent.trim() === "The Collection") {
+          el.textContent = "المجموعة";
+        }
+      });
+      const colDescs = document.querySelectorAll(".m-section__description");
+      colDescs.forEach((el) => {
+        if (el.textContent && el.textContent.includes("Ready-to-wear defined by quiet sophistication")) {
+          el.innerHTML = "<p>أزياء راقية صُممت بأناقة هادئة وتفاصيل مميزة.</p>";
         }
       });
     }
 
     if (isFr) {
+      // 1. FAQ label & Breadcrumb "Maison" -> "Accueil"
       const faqElements = document.querySelectorAll(
-        "h1, h2, h3, h4, .m-section__heading, .m-page-header__title, .m-breadcrumb--item-current, .m-breadcrumb--item, .m-link, .m-menu__link"
+        "h1, h2, h3, h4, .m-section__heading, .m-page-header__title, .m-breadcrumb--item-current, .m-breadcrumb--item, .m-link, .m-menu__link, .m-luxury-drawer__nav-link"
       );
       faqElements.forEach((el) => {
         if (el.textContent && /foire\s+aux\s+questions/i.test(el.textContent)) {
           el.innerHTML = el.innerHTML.replace(/foire\s+aux\s+questions/gi, "Questions fréquentes");
         }
+        if (el.classList.contains("m-breadcrumb--item") && el.textContent && /^maison$/i.test(el.textContent.trim())) {
+          el.textContent = "Accueil";
+        }
       });
       if (document.title && /foire\s+aux\s+questions/i.test(document.title)) {
         document.title = document.title.replace(/foire\s+aux\s+questions/gi, "Questions fréquentes");
       }
+
+      // 1b. French FAQ Accordion Question Refinements
+      const frFaqSpans = document.querySelectorAll(".m-faqs-section .m-collapsible--button > span:first-child");
+      frFaqSpans.forEach((span) => {
+        const txt = (span.textContent || "").trim();
+        if (
+          span.closest("[data-block-id*='accordion-1']") ||
+          /expédiez-vous\s+vos\s+produits/i.test(txt) ||
+          /where\s+do\s+you\s+ship\s+from/i.test(txt)
+        ) {
+          span.textContent = "D'où sont expédiées vos commandes?";
+        } else if (
+          span.closest("[data-block-id*='accordion-2']") ||
+          /combien\s+de\s+temps\s+prend\s+la\s+livraison/i.test(txt) ||
+          /how\s+long\s+does\s+shipping\s+take/i.test(txt)
+        ) {
+          span.textContent = "Quels sont les délais de livraison?";
+        } else if (
+          span.closest("[data-block-id*='accordion-4']") ||
+          /quelle\s+est\s+votre\s+politique\s+de\s+retour/i.test(txt) ||
+          /what\s+is\s+your\s+return\s+policy/i.test(txt)
+        ) {
+          span.textContent = "Quelles sont les conditions de retour ?";
+        }
+      });
+
+      // 2. Navigation & Drawer links in French
+      const frNavElements = document.querySelectorAll(
+        ".m-luxury-drawer__nav-link span, .m-luxury-drawer__back-btn span, .m-menu__link, .m-menu-mobile__item a"
+      );
+      frNavElements.forEach((el) => {
+        if (el.textContent) {
+          const txt = el.textContent.trim();
+          if (txt === "Tout voir" || txt === "tout voir") {
+            el.textContent = "Voir toute la collection";
+          } else if (txt === "Expédition et retours" || txt === "Expéditions et retours") {
+            el.textContent = "Livraison et retours";
+          }
+        }
+      });
+
+      // 3. Drawer Footer labels in French
+      const drawerLabels = document.querySelectorAll(".m-luxury-drawer__footer-label");
+      drawerLabels.forEach((el) => {
+        if (el.textContent) {
+          const txt = el.textContent.trim().toUpperCase();
+          if (txt.includes("SOCIAL") && txt.includes("MEDIA")) {
+            el.textContent = "RÉSEAUX SOCIAUX";
+          }
+          if (txt.includes("REGION") && txt.includes("CURRENCY")) {
+            el.textContent = "PAYS ET DEVISE";
+          }
+        }
+      });
+
+      // 4. Unavailable products sold out badges in French: ÉPUISÉ -> RUPTURE DE STOCK
+      const soldOutBadges = document.querySelectorAll(
+        ".m-product-tag--soldout, .m-product-tag, .m-price__badge-sold-out, [data-sold-out-badge], .m-product-card__tag-name"
+      );
+      soldOutBadges.forEach((el) => {
+        if (el.textContent) {
+          const txt = el.textContent.trim();
+          if (/^épuis[ée]?$/i.test(txt) || txt.toUpperCase() === "ÉPUISÉ" || txt.toUpperCase() === "ÉPUISE") {
+            el.textContent = "RUPTURE DE STOCK";
+          }
+        }
+      });
+
+      // 5. Collection section heading & description in French
+      const colHeadingsFr = document.querySelectorAll(".m-section__heading, h1, h2, h3");
+      colHeadingsFr.forEach((el) => {
+        if (el.textContent && el.textContent.trim() === "The Collection") {
+          el.textContent = "La Collection";
+        }
+      });
+      const colDescsFr = document.querySelectorAll(".m-section__description");
+      colDescsFr.forEach((el) => {
+        if (el.textContent && el.textContent.includes("Ready-to-wear defined by quiet sophistication")) {
+          el.innerHTML = "<p>Du prêt-à-porter caractérisé par une élégance discrète et raffinée.</p>";
+        }
+      });
+
+      // 6. Contact Form submit button in French: SOUMETTRE MAINTENANT -> ENVOYER LE MESSAGE
+      const contactBtnsFr = document.querySelectorAll(
+        ".m-contact-form__submit-btn, button[type='submit'], .m-button"
+      );
+      contactBtnsFr.forEach((btn) => {
+        if (btn.textContent) {
+          const txt = btn.textContent.trim().toUpperCase();
+          if (txt === "SOUMETTRE MAINTENANT" || txt === "SOUMETTRE") {
+            btn.textContent = "ENVOYER LE MESSAGE";
+          }
+        }
+      });
+
+      // 7. Clean up leaked prompt instructions and polish Shipping & Returns
+      const leakedSnippets = [
+        "keep the text slightly smaller on mobile",
+        "avoid very long lines/large spacing",
+        "reducing the text size on mobile",
+        "instruction for you, not part of the website content",
+        "réduire légèrement la taille du texte sur mobile",
+        "espacements importants afin que la page soit plus épurée",
+        "يرجى جعل النص أصغر قليلاً على الهاتف المحمول",
+        "الأسطر الطويلة جداً أو التباعد الكبير",
+        "تعليمات موجهة إليك"
+      ];
+      document.querySelectorAll(".m-page-content p, .shopify-policy__body p, .rte p, p").forEach((p) => {
+        const text = (p.textContent || "").trim();
+        for (let i = 0; i < leakedSnippets.length; i++) {
+          if (text.includes(leakedSnippets[i])) {
+            p.remove();
+            break;
+          }
+        }
+      });
     }
+
+    // Always run leaked instructions cleanup and page text polishing
+    const globalLeakedSnippets = [
+      "keep the text slightly smaller on mobile",
+      "avoid very long lines/large spacing",
+      "reducing the text size on mobile",
+      "instruction for you, not part of the website content",
+      "réduire légèrement la taille du texte sur mobile",
+      "espacements importants afin que la page soit plus épurée",
+      "يرجى جعل النص أصغر قليلاً على الهاتف المحمول",
+      "الأسطر الطويلة جداً أو التباعد الكبير",
+      "تعليمات موجهة إليك"
+    ];
+    const subheadings = new Set([
+      "SHIPPING", "RETURNS", "EXCHANGES",
+      "EXPÉDITION", "RETOURS", "ÉCHANGES", "ECHANGES",
+      "الشحن", "الإرجاع", "الاستبدال"
+    ]);
+    document.querySelectorAll(".m-page-content p, .shopify-policy__body p, .rte p, p").forEach((p) => {
+      const text = (p.textContent || "").trim();
+      for (let i = 0; i < globalLeakedSnippets.length; i++) {
+        if (text.includes(globalLeakedSnippets[i])) {
+          p.remove();
+          return;
+        }
+      }
+      if (subheadings.has(text)) {
+        p.classList.add("m-page-subheading");
+        if (text === "ECHANGES") p.textContent = "ÉCHANGES";
+      }
+    });
+
+    // Client-side polish for French and Arabic Shipping & Returns
+    document.querySelectorAll(".m-page-content, .shopify-policy__body, .rte").forEach((container) => {
+      if (isFr) {
+        container.querySelectorAll("h1, h2, h3, h4, p").forEach((el) => {
+          let html = el.innerHTML;
+          if (html.includes("Emirats arabes unis")) html = html.replace(/Emirats arabes unis/g, "Émirats arabes unis");
+          if (html.includes("LALEH. si vous")) html = html.replace(/LALEH\.\s*si vous/g, "LALEH. Si vous");
+          if (html.includes("satisfait (e)")) html = html.replace(/satisfait\s*\(e\)/g, "satisfait(e)");
+          if (/^\s*ECHANGES\s*$/i.test(el.textContent.trim())) el.textContent = "ÉCHANGES";
+          if (html.includes("Une fois votre article retourné reçu et inspecté")) html = html.replace(/Une fois votre article retourné reçu et inspecté/g, "Une fois votre retour reçu et inspecté");
+          if (el.tagName === "P" && (html.includes("Les articles doivent être non portés") || html.includes("Toutes les étiquettes d'origine"))) {
+            const ul = document.createElement("ul");
+            ul.className = "m-page-bullet-list";
+            ul.innerHTML = "<li>Les articles doivent être non portés, inutilisés et dans leur état d'origine.</li><li>Toutes les étiquettes d'origine doivent rester attachées.</li><li>Les articles doivent être retournés dans leur emballage d'origine dans la mesure du possible.</li>";
+            el.replaceWith(ul);
+            return;
+          }
+          el.innerHTML = html;
+        });
+      } else if (isAr) {
+        container.setAttribute("dir", "rtl");
+        container.querySelectorAll("h1, h2, h3, h4, p").forEach((el) => {
+          el.setAttribute("dir", "rtl");
+          let html = el.innerHTML;
+          if (html.includes("بستعرق") || html.includes("يستعرق") || html.includes("بستغرق")) html = html.replace(/(بستعرق|يستعرق|بستغرق)/g, "يستغرق");
+          if (html.includes("علق العميل") || html.includes("عائق العميل")) html = html.replace(/(علق العميل|عائق العميل)/g, "على عاتق العميل");
+          if (html.includes("يتم إعداد جميع الطلبات") && html.includes("الإمارات العربية المتحدة")) {
+            html = "يتم إعداد جميع الطلبات بعناية وشحنها من دولة الإمارات العربية المتحدة. يستغرق التوصيل عادةً من 3 إلى 10 أيام عمل، اعتماداً على الوجهة. بمجرد إرسال طلبكِ، ستتلقين بريداً إلكترونياً يحتوي على معلومات التتبع الخاصة بكِ.";
+          }
+          if (html.includes("نأمل أن تنال") && (html.includes("LALEH") || html.includes("لاله"))) {
+            html = 'نأمل أن تنال قطعة <span class="m-brand-ltr" dir="ltr">LALEH</span> إعجابكِ. إذا لم تكوني راضيةً تماماً، يمكنكِ طلب إرجاع المنتج في غضون 14 يوماً من استلام طلبكِ.';
+          }
+          if (el.tagName === "P" && (html.includes("يجب أن تكون القطع غير ملبوسة") || html.includes("العلامات الأصلية مرفقة"))) {
+            const ul = document.createElement("ul");
+            ul.className = "m-page-bullet-list";
+            ul.setAttribute("dir", "rtl");
+            ul.innerHTML = "<li>يجب أن تكون القطع غير ملبوسة وغير مستخدمة وفي حالتها الأصلية.</li><li>يجب أن تظل جميع العلامات الأصلية مرفقة بالمنتج.</li><li>يجب إرجاع القطع في عبواتها الأصلية كلما أمكن ذلك.</li>";
+            el.replaceWith(ul);
+            return;
+          }
+          el.innerHTML = html;
+        });
+      } else {
+        container.querySelectorAll("p").forEach((el) => {
+          let html = el.innerHTML;
+          if (html.includes("Items must be unworn") || html.includes("All original tags must remain attached")) {
+            const ul = document.createElement("ul");
+            ul.className = "m-page-bullet-list";
+            ul.innerHTML = "<li>Items must be unworn, unused, and in their original condition.</li><li>All original tags must remain attached.</li><li>Items must be returned in their original packaging whenever possible.</li>";
+            el.replaceWith(ul);
+          }
+        });
+      }
+    });
   }
 
   if (document.readyState === "loading") {
