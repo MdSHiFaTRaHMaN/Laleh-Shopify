@@ -115,9 +115,14 @@ class Wishlist {
     }
 
     if (wishlistText) {
-      const temp = wishlistText.dataset.revertText
-      wishlistText.dataset.revertText = wishlistText.textContent
-      wishlistText.textContent = temp
+      const keepText = btn.hasAttribute('data-keep-text') || btn.classList.contains('m-luxury-wishlist-btn') || btn.classList.contains('in-prod-page');
+      if (!keepText) {
+        const temp = wishlistText.dataset.revertText
+        if (temp) {
+          wishlistText.dataset.revertText = wishlistText.textContent
+          wishlistText.textContent = temp
+        }
+      }
     }
   }
 

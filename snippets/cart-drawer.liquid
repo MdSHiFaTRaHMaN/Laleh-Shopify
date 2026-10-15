@@ -169,9 +169,15 @@
             {% assign show_terms = false %}
             {% if settings.agree_text != blank and settings.show_agree_on_cart %}
               <div class="m-terms-conditons">
+                {% liquid
+                  assign agree_text_label = settings.agree_text
+                  if request.locale.iso_code contains 'fr'
+                    assign agree_text_label = agree_text_label | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
+                  endif
+                %}
                 <label class="form-field--checkbox">
                   <input type="checkbox" name="agree_terms" value="yes" required>
-                  <span class="form-field--checkbox__label">{{ settings.agree_text }}</span>
+                  <span class="form-field--checkbox__label">{{ agree_text_label }}</span>
                   <span class="form-field--checkbox__icon">
                     <svg
                       class="m-svg-icon--medium"

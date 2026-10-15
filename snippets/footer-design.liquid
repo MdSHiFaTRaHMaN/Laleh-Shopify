@@ -5,6 +5,11 @@
   endif
 
   assign current_year = 'now' | date: '%Y'
+
+  assign is_ar = false
+  if request.locale.iso_code contains 'ar' or localization.language.iso_code contains 'ar'
+    assign is_ar = true
+  endif
 %}
 <div class="m-footer--bottom m-footer--bottom-{{ section.settings.design }} m-gradient m-color-{{ section.settings.footer_bottom_color_scheme }}">
   <div class="{{ container }}">
@@ -13,8 +18,12 @@
         {% when 'footer-1' %}
           {% if section.settings.copyright != blank %}
             <div class="m-footer--bottom-left m:flex-none m:text-left m:w-full xl:m:text-left">
-              <span class="m-footer__copyright">
-                {{- section.settings.copyright | replace: '[year]', current_year -}}
+              <span class="m-footer__copyright"{% if is_ar %} dir="rtl"{% endif %}>
+                {% if is_ar %}
+                  <span dir="rtl">© {{ current_year }} <span dir="ltr">LALEH</span>. جميع الحقوق محفوظة.</span>
+                {% else %}
+                  {{- section.settings.copyright | replace: '[year]', current_year -}}
+                {% endif %}
               </span>
               {%- if show_follow_on_shop -%}
                 <div class="m-follow-on-shop">
@@ -57,7 +66,7 @@
                     if request.locale.iso_code contains 'ar'
                       assign l_title = l_title | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
                     elsif request.locale.iso_code contains 'fr'
-                      assign l_title = l_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+                      assign l_title = l_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes' | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
                     endif
                   %}
                   <li class="m-footer--bottom-menu-item m-link-lists--item">
@@ -76,8 +85,12 @@
 
           {% if section.settings.copyright != blank %}
             <div class="m-footer--bottom-center m:flex-1 m:text-left xl:m:text-center xl:m:w-auto m:w-full{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
-              <span class="m-footer__copyright">
-                {{- section.settings.copyright | replace: '[year]', current_year -}}
+              <span class="m-footer__copyright"{% if is_ar %} dir="rtl"{% endif %}>
+                {% if is_ar %}
+                  <span dir="rtl">© {{ current_year }} <span dir="ltr">LALEH</span>. جميع الحقوق محفوظة.</span>
+                {% else %}
+                  {{- section.settings.copyright | replace: '[year]', current_year -}}
+                {% endif %}
               </span>
               {%- if show_follow_on_shop -%}
                 <div class="m-follow-on-shop">
@@ -164,8 +177,12 @@
           {% endif %}
           {% if section.settings.copyright != blank %}
             <div class="m-footer--bottom-center m:flex-1 xl:m:text-center xl:m:w-auto m:w-full{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
-              <span class="m-footer__copyright">
-                {{- section.settings.copyright | replace: '[year]', current_year -}}
+              <span class="m-footer__copyright"{% if is_ar %} dir="rtl"{% endif %}>
+                {% if is_ar %}
+                  <span dir="rtl">© {{ current_year }} <span dir="ltr">LALEH</span>. جميع الحقوق محفوظة.</span>
+                {% else %}
+                  {{- section.settings.copyright | replace: '[year]', current_year -}}
+                {% endif %}
               </span>
               {%- if show_follow_on_shop -%}
                 <div class="m-follow-on-shop">

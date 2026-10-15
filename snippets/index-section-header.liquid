@@ -47,8 +47,16 @@
       {% liquid
         assign h_display = section_settings.heading
         if request.locale.iso_code contains 'ar'
+          assign h_clean = h_display | strip
+          if h_clean == 'The Collection' or h_clean == 'the collection'
+            assign h_display = 'المجموعة'
+          endif
           assign h_display = h_display | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
         elsif request.locale.iso_code contains 'fr'
+          assign h_clean = h_display | strip
+          if h_clean == 'The Collection' or h_clean == 'the collection'
+            assign h_display = 'La Collection'
+          endif
           assign h_display = h_display | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
         endif
       %}
@@ -57,8 +65,21 @@
       </h2>
     {% endif %}
     {% if section_settings.description != blank %}
+      {% liquid
+        assign d_display = section_settings.description
+        if request.locale.iso_code contains 'ar'
+          if d_display contains 'Ready-to-wear defined by quiet sophistication'
+            assign d_display = '<p>أزياء راقية صُممت بأناقة هادئة وتفاصيل مميزة.</p>'
+          endif
+          assign d_display = d_display | replace: 'أداقة', 'أناقة' | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
+        elsif request.locale.iso_code contains 'fr'
+          if d_display contains 'Ready-to-wear defined by quiet sophistication'
+            assign d_display = '<p>Du prêt-à-porter caractérisé par une élégance discrète et raffinée.</p>'
+          endif
+        endif
+      %}
       <div class="m-section__description rte{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
-        {{ section_settings.description }}
+        {{ d_display }}
       </div>
     {% endif %}
     {% if show_button_on_header %}</div>{% endif %}

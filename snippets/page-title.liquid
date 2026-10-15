@@ -61,7 +61,7 @@
     if request.locale.iso_code contains 'ar'
       assign clean_page_title = clean_page_title | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
     elsif request.locale.iso_code contains 'fr'
-      assign clean_page_title = clean_page_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+      assign clean_page_title = clean_page_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes' | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
     endif
   %}
   <div class="{{ classes }}{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">

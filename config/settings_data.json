@@ -10,6 +10,7 @@
 {
   "current": {
     "favicon": "",
+    "show_scroll_top_button": false,
     "container_width": 1640,
     "container_fluid_width": 1600,
     "container_fluid_offset": 65,
@@ -271,7 +272,7 @@
   },
   "platform_customizations": {
     "custom_css": [
-      ".template-page #MainContent {padding-bottom: 12px;}"
+      ".template-page #MainContent {padding-bottom: 0;}"
     ]
   }
 }
