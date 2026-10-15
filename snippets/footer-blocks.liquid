@@ -40,7 +40,7 @@
             if request.locale.iso_code contains 'ar'
               assign block_title = block_title | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
             elsif request.locale.iso_code contains 'fr'
-              assign block_title = block_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+              assign block_title = block_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes' | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
             endif
 
             assign enable_accordion = block.settings.enable_accordion
@@ -101,7 +101,7 @@
                           if request.locale.iso_code contains 'ar'
                             assign l_title = l_title | replace: 'لاله', 'LALEH' | replace: 'لالة', 'LALEH'
                           elsif request.locale.iso_code contains 'fr'
-                            assign l_title = l_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes'
+                            assign l_title = l_title | replace: 'Foire aux questions', 'Questions fréquentes' | replace: 'foire aux questions', 'questions fréquentes' | replace: "Conditions d'utilisation", "Conditions générales de vente et d'utilisation" | replace: "Conditions d’utilisation", "Conditions générales de vente et d'utilisation"
                           endif
                         %}
                         <li class="m-link-lists--item m:block">

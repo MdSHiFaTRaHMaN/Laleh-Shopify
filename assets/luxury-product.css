@@ -246,7 +246,7 @@
   width: 100%;
   height: auto;
   max-height: 840px;
-  object-fit: contain;
+  object-fit: cover;
   display: block;
   pointer-events: none;
 }
@@ -352,7 +352,7 @@
    ========================================================================== */
 .m-luxury-col-info {
   position: relative;
-  padding-left: 36px;
+  padding: 0px 40px;
   min-height: 500px;
   box-sizing: border-box;
 }
@@ -1174,16 +1174,15 @@ button.m-luxury-wishlist-btn *,
    VIEW MORE: EXPANDED TABS DETAILS PANEL
    ========================================================================== */
 .m-luxury-accordion-truncated {
-  display: block;
-  line-height: 1.7;
-  max-height: calc(1.7em * 3);
-  overflow: hidden;
-  text-overflow: clip;
-  word-break: break-word;
+  display: block !important;
+  max-height: none !important;
+  overflow: visible !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
 }
 
-.m-luxury-accordion-truncated>*:not(:first-child) {
-  display: none !important;
+.m-luxury-accordion-truncated > * {
+  display: block !important;
 }
 
 .m-luxury-accordion-truncated.is-expanded {
@@ -1192,16 +1191,19 @@ button.m-luxury-wishlist-btn *,
   overflow: visible !important;
 }
 
-.m-luxury-accordion-truncated.is-expanded>* {
+.m-luxury-accordion-truncated.is-expanded > * {
   display: block !important;
 }
 
 .m-luxury-accordion-truncated p {
-  margin: 0;
-  display: block;
-  line-height: 1.7;
-  overflow: hidden;
-  text-overflow: clip;
+  margin: 0 0 0.75rem 0;
+  display: block !important;
+  line-height: 1.7 !important;
+  overflow: visible !important;
+}
+
+.m-luxury-accordion-truncated p:last-child {
+  margin-bottom: 0;
 }
 
 .m-luxury-accordion-truncated.is-expanded p {
@@ -1210,23 +1212,30 @@ button.m-luxury-wishlist-btn *,
 }
 
 .m-luxury-view-more-btn {
-  display: inline-block;
-  margin-top: 10px;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  color: #18181b;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
+  display: none !important;
 }
 
-.m-luxury-view-more-btn:hover {
-  opacity: 0.7;
+/* RTL Support for Accordions (Arabic) */
+html[dir="rtl"] .m-luxury-accordion-header,
+html[lang="ar"] .m-luxury-accordion-header {
+  text-align: right !important;
+  flex-direction: row !important;
+}
+
+html[dir="rtl"] .m-luxury-accordion-content,
+html[lang="ar"] .m-luxury-accordion-content {
+  text-align: right !important;
+  direction: rtl !important;
+}
+
+html[dir="rtl"] .m-luxury-accordion-content p,
+html[lang="ar"] .m-luxury-accordion-content p,
+html[dir="rtl"] .m-luxury-accordion-content ul,
+html[lang="ar"] .m-luxury-accordion-content ul,
+html[dir="rtl"] .m-luxury-accordion-content li,
+html[lang="ar"] .m-luxury-accordion-content li {
+  text-align: right !important;
+  direction: rtl !important;
 }
 
 .m-luxury-more-details-panel {
@@ -1540,7 +1549,7 @@ button.m-luxury-wishlist-btn *,
     max-height: 600px;
     width: 100%;
     height: auto;
-    object-fit: contain;
+    object-fit: cover;
     border-radius: 4px;
   }
 
@@ -1707,7 +1716,7 @@ button.m-luxury-wishlist-btn *,
     max-height: 540px;
     min-height: unset;
     height: auto;
-    object-fit: contain;
+    object-fit: cover;
   }
 
   .m-luxury-thumb-box {

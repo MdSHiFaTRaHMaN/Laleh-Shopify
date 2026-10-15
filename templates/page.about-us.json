@@ -41,7 +41,7 @@
         "sub_title": "",
         "title": "THE STORY",
         "text_size": "h4",
-        "text": "<p>Founded by a Middle Eastern woman raised in Switzerland, LALEH brings together timeless elegance, femininity and a modern perspective.</p><p><br/>Growing between two cultures shaped an appreciation for different expressions of style and femininity. LALEH was created from the desire to translate that perspective into pieces that feel refined, confident and distinctly feminine.</p>",
+        "text": "<p>Founded by a Middle Eastern woman raised in Switzerland, LALEH brings together timeless elegance, femininity and a contemporary perspective.</p><p><br/>Growing up between two cultures shaped an appreciation for different expressions of style and femininity. LALEH was created from the desire to translate that perspective into pieces that feel refined, confident and distinctly feminine.</p>",
         "desc_size": "text-base",
         "content_alignment": "left",
         "button_label": "",
@@ -81,7 +81,7 @@
         "sub_title": "",
         "title": "WHY LALEH",
         "text_size": "h4",
-        "text": "<p>LALEH began with a simple idea: to create pieces that feel considered, refined and effortless to wear.<br/></p><p><br/>Each design is shaped with attention to proportion, detail, and fit, creating pieces with a distinctive yet timeless presence.</p>",
+        "text": "<p>LALEH began with a simple idea: to create elegant, refined pieces that feel effortless to wear.</p><p><br/>Each design is thoughtfully created with attention to proportion, detail, and fit, offering timeless elegance and a distinctive look.</p>",
         "desc_size": "text-base",
         "content_alignment": "left",
         "button_label": "",
@@ -121,7 +121,7 @@
         "sub_title": "",
         "title": "THE LALEH WOMAN",
         "text_size": "h4",
-        "text": "<p>She is feminine, confident and intentional.</p><p><br/>She appreciates elegance without excess and chooses pieces that feel considered rather than dictated by trends. LALEH is designed to become part of her wardrobe, her occasions and the moments she remembers.</p>",
+        "text": "<p>She is feminine, confident and intentional.</p><p><br/>She appreciates elegance without excess and chooses timeless pieces over passing trends. LALEH is designed to accompany her through everyday moments, special occasions and unforgettable memories.</p>",
         "desc_size": "text-base",
         "content_alignment": "left",
         "button_label": "",
@@ -147,7 +147,7 @@
         "text_HKhAxV": {
           "type": "text",
           "settings": {
-            "text": "<p>LALEH begins with a first collection and a clear point of view, with every new chapter designed to build naturally on the one before it.</p>",
+            "text": "<p>LALEH begins with its first collection, guided by a clear vision. Each new chapter will build upon the last, staying true to the elegance and femininity at the heart of the brand.</p>",
             "text_size": "text-base"
           }
         },
@@ -246,7 +246,7 @@
             "title": "",
             "text_size": "h5",
             "subheading": "",
-            "text": "<p>Founded by a Middle Eastern woman raised in Switzerland, LALEH was born from the meeting of two worlds, bringing together timeless elegance, femininity and a modern perspective.</p><p><br/>We believe true luxury lies in restraint. Each garment is thoughtfully designed with refined proportions and clean seamlines. Every order is carefully packaged and dispatched from the UAE.</p>",
+            "text": "<p>Founded by a Middle Eastern woman raised in Switzerland, LALEH was born from the meeting of two worlds, bringing together timeless elegance, femininity and a contemporary perspective.</p><p><br/>We believe true luxury lies in restraint. Each garment is thoughtfully designed with refined proportions and clean seamlines. Every order is carefully packaged and dispatched from the UAE.</p>",
             "desc_size": "text-sm",
             "text_color": "inherit",
             "button_label": "",

@@ -293,7 +293,15 @@
               {{- tag_name -}}
             </span>
           {% elsif tag contains 'Restocked' or tag contains 'restocked' %}
-            <span class="m-product-card__tag-name m-product-tag m-product-tag--restocked"> Restocked </span>
+            {% liquid
+              assign restocked_text = 'Restocked'
+              if request.locale.iso_code contains 'ar'
+                assign restocked_text = 'توفر مجدداً'
+              elsif request.locale.iso_code contains 'fr'
+                assign restocked_text = 'De retour'
+              endif
+            %}
+            <span class="m-product-card__tag-name m-product-tag m-product-tag--restocked"> {{ restocked_text }} </span>
           {% endif %}
         {% endfor %}
       {% endif %}

@@ -4,12 +4,33 @@
   if animation_effect != 'none'
     assign animated = true
   endif
+
+  assign cleaned_content = page.content
+
+  assign leaked_en_p = '<p>Also, please keep the text slightly smaller on mobile and avoid very long lines/large spacing so the page feels cleaner and easier to read.</p>'
+  assign leaked_en_text = 'Also, please keep the text slightly smaller on mobile and avoid very long lines/large spacing so the page feels cleaner and easier to read.'
+  assign leaked_fr_p = '<p>De plus, veuillez réduire légèrement la taille du texte sur mobile et éviter les lignes trop longues ou les espacements importants afin que la page soit plus épurée et facile à lire.</p>'
+  assign leaked_fr_text = 'De plus, veuillez réduire légèrement la taille du texte sur mobile et éviter les lignes trop longues ou les espacements importants afin que la page soit plus épurée et facile à lire.'
+  assign leaked_ar_p = '<p>أيضاً، يرجى جعل النص أصغر قليلاً على الهاتف المحمول وتجنب الأسطر الطويلة جداً أو التباعد الكبير لتكون الصفحة أكثر ترتيباً وسهولة في القراءة.</p>'
+  assign leaked_ar_text = 'أيضاً، يرجى جعل النص أصغر قليلاً على الهاتف المحمول وتجنب الأسطر الطويلة جداً أو التباعد الكبير لتكون الصفحة أكثر ترتيباً وسهولة في القراءة.'
+
+  assign cleaned_content = cleaned_content | replace: leaked_en_p, '' | replace: leaked_en_text, '' | replace: leaked_fr_p, '' | replace: leaked_fr_text, '' | replace: leaked_ar_p, '' | replace: leaked_ar_text, ''
+
+  assign cleaned_content = cleaned_content | replace: '<p>SHIPPING</p>', '<h3 class="m-page-subheading">SHIPPING</h3>'
+  assign cleaned_content = cleaned_content | replace: '<p>RETURNS</p>', '<h3 class="m-page-subheading">RETURNS</h3>'
+  assign cleaned_content = cleaned_content | replace: '<p>EXCHANGES</p>', '<h3 class="m-page-subheading">EXCHANGES</h3>'
+  assign cleaned_content = cleaned_content | replace: '<p>EXPÉDITION</p>', '<h3 class="m-page-subheading">EXPÉDITION</h3>'
+  assign cleaned_content = cleaned_content | replace: '<p>RETOURS</p>', '<h3 class="m-page-subheading">RETOURS</h3>'
+  assign cleaned_content = cleaned_content | replace: '<p>ÉCHANGES</p>', '<h3 class="m-page-subheading">ÉCHANGES</h3>'
+  assign cleaned_content = cleaned_content | replace: '<p>الشحن</p>', '<h3 class="m-page-subheading">الشحن</h3>'
+  assign cleaned_content = cleaned_content | replace: '<p>الإرجاع</p>', '<h3 class="m-page-subheading">الإرجاع</h3>'
+  assign cleaned_content = cleaned_content | replace: '<p>الاستبدال</p>', '<h3 class="m-page-subheading">الاستبدال</h3>'
 -%}
 {% render 'page-title', title: page.title, container: 'container' %}
-{%- if page.content != blank -%}
+{%- if cleaned_content != blank -%}
   <div class="container">
     <div class="m-page-content rte{% if animated %} m-scroll-trigger animate--{{ animation_effect }}{% endif %}">
-      {{ page.content }}
+      {{ cleaned_content }}
     </div>
   </div>
 {%- endif -%}
